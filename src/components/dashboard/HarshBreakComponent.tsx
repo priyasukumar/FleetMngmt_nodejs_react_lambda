@@ -2,6 +2,7 @@ import * as React from 'react';
 import Bar from '../../core/BarComponent';
 import { Weekly } from '../../constants/enum';
 import { IBarData } from '../../models/dashboard';
+import CollapsibleTable from '../../core/Table/TableComponent';
 
 const HarshBreakComponent = () => {
     const barData = [
@@ -12,10 +13,13 @@ const HarshBreakComponent = () => {
         { name: Weekly.Friday, value: 3 },
         { name: Weekly.Saturday, value: 10 },
         { name: Weekly.Sunday, value: 1 }
-      ] as IBarData[];
-      
+    ] as IBarData[];
+
     return (
-        <Bar data={barData} title="Harsh Break" />
+        <>
+            <Bar data={barData} title="Harsh Break" />
+            <CollapsibleTable />
+        </>
     );
 };
 

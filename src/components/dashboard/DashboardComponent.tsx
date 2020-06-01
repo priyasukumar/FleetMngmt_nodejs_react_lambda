@@ -4,6 +4,7 @@ import { Grid, makeStyles, Theme, createStyles } from '@material-ui/core';
 import { IPieData, IBarData, IDashboardProps } from '../../models/dashboard';
 import Legend from '../../core/LegendComponent';
 import { Weekly } from '../../constants/enum';
+import CollapsibleTable from '../../core/Table/TableComponent';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -46,6 +47,7 @@ const DashboardComponent = (props: IDashboardProps) => {
                 <Legend data={pieData} />
                 <Legend data={pieData} />
             </Grid>
+            <CollapsibleTable />
         </div>
     );
 };
