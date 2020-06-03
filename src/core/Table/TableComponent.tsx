@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { ICollapsibleTableProps, IRowProps } from '../../models/dashboard';
 
 const useRowStyles = makeStyles({
   root: {
@@ -22,30 +23,7 @@ const useRowStyles = makeStyles({
   },
 });
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  price: number,
-) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      { date: '2020-01-05', customerId: '11091700', amount: 3 },
-      { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
-    ],
-  };
-}
-
-function Row(props: { row: ReturnType<typeof createData> }) {
-  const { row } = props;
+const Row = (row: IRowProps) => {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -58,18 +36,21 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.name}
+          {row.data.DriverId}
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
+        <TableCell align="left">{row.data.DriverName}</TableCell>
+        <TableCell align="left">{row.data.DriverMobile}</TableCell>
+        <TableCell align="left">{row.data.VehicleName}</TableCell>
+        <TableCell align="left">{row.data.VehicleLicenseNo}</TableCell>
+        <TableCell align="left">{row.data.OverSpeed}</TableCell>
+        <TableCell align="left">{row.data.HarshBreaking}</TableCell>
+        <TableCell align="left">{row.data.HarshTurning}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom={true} component="div">
+              {/* <Typography variant="h6" gutterBottom={true} component="div">
                 History
               </Typography>
               <Table size="small" aria-label="purchases">
@@ -95,41 +76,41 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              </Table> */}
             </Box>
           </Collapse>
         </TableCell>
       </TableRow>
     </React.Fragment>
   );
-}
+};
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
-
-const CollapsibleTable = () => {
+const CollapsibleTable = (props: ICollapsibleTableProps) => {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell>Driver Id</TableCell>
+            <TableCell align="left">Driver Name</TableCell>
+            <TableCell align="left">Driver Mobile</TableCell>
+            <TableCell align="left">Vehicle Name</TableCell>
+            <TableCell align="left">Vehicle License No</TableCell>
+            <TableCell align="left">Over Speed</TableCell>
+            <TableCell align="left">Harsh Break</TableCell>
+            <TableCell align="left">Harsh Turn</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
+          {
+            props.data.map((driver, index) => {
+              const rowProps: IRowProps = {
+                data: driver
+              } as IRowProps;
+              return (<Row key={index} {...rowProps} />);
+            })
+          }
         </TableBody>
       </Table>
     </TableContainer>

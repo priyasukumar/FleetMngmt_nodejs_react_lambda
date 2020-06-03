@@ -36,7 +36,7 @@ const LinksComponent = ({ links }: { links: ILink[] }) => {
             .map((link: ILink) => {
                 return (
                     <ListItem selected={activeRoute(link.to)} button={true} key={link.name} component={NavLink} to={link.to} exact={true}>
-                        <ListItemIcon><InboxIcon /> </ListItemIcon>
+                        <ListItemIcon><link.icon/> </ListItemIcon>
                         <ListItemText primary={link.name} />
                     </ListItem>
                 );

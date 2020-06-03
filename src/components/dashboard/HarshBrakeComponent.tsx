@@ -1,10 +1,9 @@
 import * as React from 'react';
 import Bar from '../../core/BarComponent';
 import { Weekly } from '../../constants/enum';
-import { IBarData } from '../../models/dashboard';
-import CollapsibleTable from '../../core/Table/TableComponent';
+import { IBarData, IDashboardProps } from '../../models/dashboard';
 
-const HarshBreakComponent = () => {
+const HarshBrakeComponent = (props: IDashboardProps) => {
     const barData = [
         { name: Weekly.Monday, value: 4 },
         { name: Weekly.Tuesday, value: 5 },
@@ -17,10 +16,10 @@ const HarshBreakComponent = () => {
 
     return (
         <>
-            <Bar data={barData} title="Harsh Break" />
-            <CollapsibleTable />
+            <div>{props.dashboard.length}</div>
+            <Bar data={barData} title="Harsh Brake" />
         </>
     );
 };
 
-export default HarshBreakComponent;
+export default HarshBrakeComponent;

@@ -2,7 +2,7 @@ import { IDashboardProps } from '../models/dashboard';
 import { UPDATE_DASHBOARD } from '../constants/Actions';
 
 const initialState = {
-    data: []
+    dashboard: []
 } as IDashboardProps;
 
 const DashboardReducer = (state = initialState, action: any) => {

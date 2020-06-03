@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, withStyles, Theme, createStyles, TableCell, makeStyles } from '@material-ui/core';
+import { IDriverServiceTimeModel } from '../../models/driverServiceTime';
 
 const StyledTableCell = withStyles((theme: Theme) =>
     createStyles({
@@ -23,25 +24,13 @@ const StyledTableRow = withStyles((theme: Theme) =>
     }),
 )(TableRow);
 
-const createData = (name: string, calories: number, fat: number, carbs: number, protein: number) => {
-    return { name, calories, fat, carbs, protein };
-};
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 const useStyles = makeStyles({
     table: {
         minWidth: 700,
     },
 });
 
-const DriverServiceComponent = () => {
+const DriverServiceComponent = ({ driversServiceTime }: { driversServiceTime: IDriverServiceTimeModel[] }) => {
     const classes = useStyles();
 
     return (
@@ -49,25 +38,33 @@ const DriverServiceComponent = () => {
             <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-                        <StyledTableCell align="right">Calories</StyledTableCell>
-                        <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
+                        <StyledTableCell align="left">Driver Id</StyledTableCell>
+                        <StyledTableCell align="left">Driver Name</StyledTableCell>
+                        <StyledTableCell align="left">Driver Mobile</StyledTableCell>
+                        <StyledTableCell align="left">Resting StartTime</StyledTableCell>
+                        <StyledTableCell align="left">Resting EndTime</StyledTableCell>
+                        <StyledTableCell align="left">Vehicle Name</StyledTableCell>
+                        <StyledTableCell align="left">Vehicle License No</StyledTableCell>
+                        <StyledTableCell align="left">Vehicle StartTime</StyledTableCell>
+                        <StyledTableCell align="left">Vehicle EndTime</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <StyledTableRow key={row.name}>
-                            <StyledTableCell component="th" scope="row">
-                                {row.name}
-                            </StyledTableCell>
-                            <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                            <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                            <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                            <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                        </StyledTableRow>
-                    ))}
+                    {driversServiceTime.map((row) => {
+                        return (
+                            <StyledTableRow key={row.DriverVehicleId}>
+                                <StyledTableCell align="left">{row.DriverServiceId}</StyledTableCell>
+                                <StyledTableCell align="left">{row.DCS_DriverMaster.DriverName}</StyledTableCell>
+                                <StyledTableCell align="left">{row.DCS_DriverMaster.DriverMobile}</StyledTableCell>
+                                <StyledTableCell align="left">{row.RestingStartTime}</StyledTableCell>
+                                <StyledTableCell align="left">{row.RestingEndTime}</StyledTableCell>
+                                <StyledTableCell align="left">{row.DCS_VehicleMaster.VehicleName}</StyledTableCell>
+                                <StyledTableCell align="left">{row.DCS_VehicleMaster.VehicleLicenseNo}</StyledTableCell>
+                                <StyledTableCell align="left">{row.VehicleStartTime}</StyledTableCell>
+                                <StyledTableCell align="left">{row.VehicleEndTime}</StyledTableCell>
+                            </StyledTableRow>
+                        );
+                    })}
                 </TableBody>
             </Table>
         </TableContainer>

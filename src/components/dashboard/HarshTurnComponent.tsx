@@ -2,7 +2,6 @@ import * as React from 'react';
 import Bar from '../../core/BarComponent';
 import { Weekly } from '../../constants/enum';
 import { IBarData } from '../../models/dashboard';
-import CollapsibleTable from '../../core/Table/TableComponent';
 
 const HarshTurnComponent = () => {
   const barData = [
@@ -18,7 +17,6 @@ const HarshTurnComponent = () => {
   return (
     <>
       <Bar data={barData} title="Harsh Turn" />
-      <CollapsibleTable />
     </>
   );
 };

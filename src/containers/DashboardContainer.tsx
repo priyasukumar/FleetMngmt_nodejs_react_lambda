@@ -11,16 +11,16 @@ const DashboardContainer = (props: IDashboardProps & IDashboardActionProps) => {
         () => {
             props.loadData();
         },
-        [props.data]);
+        [props.loadData]);
 
     return (
-        <DashboardComponent data={props.data} />
+        <DashboardComponent dashboard={props.dashboard} />
     );
 };
 
 const mapStateToProps = ({ dashboard }: { dashboard: IDashboardProps }) => {
     return {
-        data: dashboard.data
+        dashboard: dashboard.dashboard
     };
 };
 

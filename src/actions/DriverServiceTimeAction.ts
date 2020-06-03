@@ -1,17 +1,17 @@
-import { UPDATE_DASHBOARD, API } from '../constants/Actions';
+import { API, UPDATE_DRIVER_SERVICE_TIME } from '../constants/Actions';
 import { Http } from '../constants/enum';
 
-export const loadDashboard = () => {
+export const loadDriversServiceTime = () => {
     return (dispatch: any) => {
         dispatch({
             type: API,
             payload: {
-                url: '/harshandturn',
+                url: '/DriverServiceTime',
                 method: Http.Get,
                 onSuccess: (response: any) => {
                     dispatch({
-                        type: UPDATE_DASHBOARD,
-                        payload: { dashboard: response }
+                        type: UPDATE_DRIVER_SERVICE_TIME,
+                        payload: { driversServiceTime: response }
                     });
                 }
             }

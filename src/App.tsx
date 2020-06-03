@@ -3,7 +3,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import List from '@material-ui/core/List';
-
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import SpeedIcon from '@material-ui/icons/Speed';
+import CallSplit from '@material-ui/icons/CallSplit';
+import AlternateEmailOutlined from '@material-ui/icons/AlternateEmailOutlined';
+import AirlineSeatLegroomExtra from '@material-ui/icons/AirlineSeatLegroomExtra';
 import React from 'react';
 import { Route, HashRouter } from 'react-router-dom';
 import './App.css';
@@ -13,10 +17,10 @@ import Footer from './components/FooterComponent';
 import LinksComponent from './components/LinkComponent';
 import OverSpeed from './components/dashboard/OverSpeedComponent';
 import HarshTurn from './components/dashboard/HarshTurnComponent';
-import HarshBreak from './components/dashboard/HarshBreakComponent';
 import Dashboard from './containers/DashboardContainer';
 import { Container } from '@material-ui/core';
-import DriverService from './components/dashboard/DriverServiceComponent';
+import HarshBrake from './containers/HarshBrakeContainer';
+import DriverServiceTime from './containers/DriverServiceTimeContainer';
 
 const drawerWidth = 240;
 
@@ -44,11 +48,11 @@ const App = () => {
   );
 
   const menuLinks: ILink[] = [
-    { name: 'Dashboard', to: '/' },
-    { name: 'Driver Service', to: '/driverservice' },
-    { name: 'Over Speed', to: '/overspeed' },
-    { name: 'Harsh Break', to: '/harshBreak' },
-    { name: 'Harsh Turn', to: '/harshTurn' },
+    { name: 'Dashboard', to: '/', icon: DashboardIcon },
+    { name: 'Driver Service', to: '/driverservice', icon: AlternateEmailOutlined },
+    { name: 'Over Speed', to: '/overspeed', icon: SpeedIcon },
+    { name: 'Harsh Brake', to: '/harshbrake', icon: CallSplit },
+    { name: 'Harsh Turn', to: '/harshturn', icon: AirlineSeatLegroomExtra },
   ];
 
   const classes = useStyles();
@@ -74,10 +78,10 @@ const App = () => {
           <Toolbar />
           <HashRouter>
             <Route path="/" component={Dashboard} exact={true} />
-            <Route path="/driverservice" component={DriverService} />
+            <Route path="/driverservice" component={DriverServiceTime} />
             <Route path="/overspeed" component={OverSpeed} />
-            <Route path="/harshTurn" component={HarshTurn} />
-            <Route path="/harshBreak" component={HarshBreak} />
+            <Route path="/harshturn" component={HarshTurn} />
+            <Route path="/harshbrake" component={HarshBrake} />
           </HashRouter>
         </main>
       </Container>
