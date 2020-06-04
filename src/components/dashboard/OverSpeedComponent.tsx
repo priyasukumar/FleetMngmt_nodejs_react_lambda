@@ -1,24 +1,17 @@
 import * as React from 'react';
 import Bar from '../../core/BarComponent';
 import DiscreteSlider from '../shared/DiscreteSliderComponent';
-import { Weekly } from '../../constants/enum';
-import { IBarData } from '../../models/dashboard';
+import { IOverSpeedComponentProps } from '../../models/overSpeed';
+import CollapsibleTable from '../../core/Table/TableComponent';
 
-const OverSpeedComponent = () => {
-  const barData = [
-    { name: Weekly.Monday, value: 4 },
-    { name: Weekly.Tuesday, value: 5 },
-    { name: Weekly.Wednesday, value: 7 },
-    { name: Weekly.Thursday, value: 9 },
-    { name: Weekly.Friday, value: 3 },
-    { name: Weekly.Saturday, value: 10 },
-    { name: Weekly.Sunday, value: 1 }
-  ] as IBarData[];
-
+const OverSpeedComponent = (props: IOverSpeedComponentProps) => {
+  const { barData, discreteSlider, tableData } = props;
+  
   return (
     <>
-      <DiscreteSlider title="Speed Limit" value={10} min={0} max={120} />
-      <Bar data={barData} title="Over Speed" />
+      <DiscreteSlider {...discreteSlider} />
+      <Bar data={barData} title="No. of Persons" />
+      <CollapsibleTable {...tableData} />
     </>
   );
 };

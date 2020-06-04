@@ -1,14 +1,22 @@
-import { IDriver, IVehicle } from './dashboard';
+import { IDriver, IVehicle, ICollapsibleTableProps } from './dashboard';
 
 export interface IDriverServiceTimeActionProps {
     loadDriversServiceTime(): void;
 }
 
-export interface IDriverServiceTimeProps {
-    driversServiceTime: IDriverServiceTimeModel[];
+export interface IDriverServiceTimeContainerProps {
+    driversServiceTime: IDriverServiceTime[];
 }
 
-export interface IDriverServiceTimeModel {
+export interface IDriverServiceTimeComponentProps {
+    tableData: ICollapsibleTableProps;
+}
+
+export interface IGroupedDriverServiceTime {
+    [key: string]: IDriverServiceTime[];
+}
+
+export interface IDriverServiceTime {
     DriverServiceId: number;
     DriverVehicleId: number;
     VehicleStartTime: string;
@@ -19,4 +27,20 @@ export interface IDriverServiceTimeModel {
     ModifiedDate: string;
     DCS_DriverMaster: IDriver;
     DCS_VehicleMaster: IVehicle;
+}
+
+export interface IDriverServiceTimeModel {
+    DriverId: number;
+    DriverName: string;
+    DriverMobile: string;
+    VehicleName: string;
+    VehicleLicenseNo: string;
+    SubModel: IDriverServiceTimeSubModel[];
+}
+
+export interface IDriverServiceTimeSubModel {
+    RestingStartTime: string;
+    RestingEndTime: string;
+    VehicleStartTime: string;
+    VehicleEndTime: string;
 }

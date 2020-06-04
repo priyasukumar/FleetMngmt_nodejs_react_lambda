@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { API_URL, BASE_URL, BASE_URL1 } from '../utils/environment';
+import { API_URL } from '../utils/environment';
 import { Http } from '../constants/enum';
 import { API, API_TRANSACTION } from '../constants/Actions';
 import { apiStart, showApiFailure, showApiSuccess, apiEnd } from '../actions/ApiStatus';
@@ -14,13 +14,7 @@ const apiMiddleware = ({ dispatch }: { dispatch: any }) => (next: any) => (actio
 
     const { url, method, data, onSuccess, onFailure } = action.payload;
     const dataOrParams = [Http.Get, Http.Delete].includes(method) ? 'params' : 'data';
-    let apiUrl;
-    if (url === '/harshandturn') {
-        apiUrl = `${BASE_URL}${url}`;
-    }
-    if (url === '/DriverServiceTime') {
-        apiUrl = `${BASE_URL1}${url}`;
-    }
+    let apiUrl = `${API_URL}${url}`;
 
     // axios default configs
     axios.defaults.headers.common['Content-Type'] = 'application/json';

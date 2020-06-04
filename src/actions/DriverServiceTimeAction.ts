@@ -6,7 +6,7 @@ export const loadDriversServiceTime = () => {
         dispatch({
             type: API,
             payload: {
-                url: '/DriverServiceTime',
+                url: '/driverservice',
                 method: Http.Get,
                 onSuccess: (response: any) => {
                     dispatch({

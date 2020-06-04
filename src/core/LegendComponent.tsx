@@ -53,7 +53,7 @@ const LegendComponent = (props: ILegendComponentProps) => {
             .text((d) => `${d}`)
             .attr('text-anchor', 'left')
             .style('alignment-baseline', 'middle');
-    }
+    };
 
     useEffect(() => Legend(), []);
 

@@ -1,9 +1,9 @@
-import { IDashboardProps } from '../models/dashboard';
+import { IDashboardContainerProps } from '../models/dashboard';
 import { UPDATE_DASHBOARD } from '../constants/Actions';
 
 const initialState = {
     dashboard: []
-} as IDashboardProps;
+} as IDashboardContainerProps;
 
 const DashboardReducer = (state = initialState, action: any) => {
     switch (action.type) {

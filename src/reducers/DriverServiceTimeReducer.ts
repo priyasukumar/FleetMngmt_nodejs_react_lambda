@@ -1,9 +1,9 @@
 import { UPDATE_DRIVER_SERVICE_TIME } from '../constants/Actions';
-import { IDriverServiceTimeProps } from '../models/driverServiceTime';
+import { IDriverServiceTimeContainerProps } from '../models/driverServiceTime';
 
 const initialState = {
     driversServiceTime: []
-} as IDriverServiceTimeProps;
+} as IDriverServiceTimeContainerProps;
 
 const DriverServiceTimeReducer = (state = initialState, action: any) => {
     switch (action.type) {

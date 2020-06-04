@@ -6,7 +6,7 @@ export const loadDashboard = () => {
         dispatch({
             type: API,
             payload: {
-                url: '/harshandturn',
+                url: '/drivinginsights',
                 method: Http.Get,
                 onSuccess: (response: any) => {
                     dispatch({

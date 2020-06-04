@@ -1,7 +1,17 @@
 import { ScaleBand, PieArcDatum } from 'd3';
+import { IDriverServiceTimeModel } from './driverServiceTime';
+
+export interface IDashboardContainerProps {
+    dashboard: IDashboard[];
+}
 
 export interface IDashboardProps {
     dashboard: IDashboard[];
+}
+
+export interface IDashboardComponentProps {
+    graphData: IPieData[];
+    tableData: ICollapsibleTableProps;
 }
 
 export interface IHarshBrakeProps {
@@ -26,14 +36,24 @@ export interface IDashboard {
 
 export interface IDashboardModel {
     DriverId: number;
-    HarshTurning: number;
-    HarshBreaking: number;
-    OverSpeed: number;
-    CreatedDate: string;
     DriverName: string;
     DriverMobile: string;
-    VehicleLicenseNo: string;
     VehicleName: string;
+    VehicleLicenseNo: string;
+    OverSpeed: number;
+    HarshBreaking: number;
+    HarshTurning: number;
+    PacketTime: string;
+    CreatedDate: string;
+    VehicleSpeed: number;
+    SubModel: IDashboardSubModel[];
+}
+
+export interface IDashboardSubModel {
+    HarshBreaking: number;
+    HarshTurning: number;
+    PacketTime: string;
+    VehicleSpeed: number;
 }
 
 export interface IDriver {
@@ -63,14 +83,36 @@ export interface IPieData extends PieArcDatum<IPieData> {
     value: number;
 }
 
+// export interface ICollapsibleTableProps {
+//     tableProps: ITableProps[];
+// }
+
+// export interface ITableProps {
+//     headers: string;
+//     data: IDashboardModel;
+// }
+
 export interface ICollapsibleTableProps {
-    data: IDashboardModel[];
+    headers: string[];
+    data: IDashboardModel[] | IDriverServiceTimeModel[];
+    driverCondition: IDriverCondition;
 }
 
 export interface IRowProps {
-    data: IDashboardModel;
+    data: IDashboardModel | IDriverServiceTimeModel;
+    driverCondition: IDriverCondition;
+}
+
+export interface IHeaderProps {
+    headers: string[];
 }
 
 export interface IGroupedDashboard {
     [key: string]: IDashboard[];
+}
+
+export interface IDriverCondition {
+    includeHarshTurn: boolean;
+    includeHarshBrake: boolean;
+    includeOverSpeed: boolean;
 }

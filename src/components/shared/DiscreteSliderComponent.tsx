@@ -8,6 +8,8 @@ export interface IDiscreteSliderProps {
     value: number;
     min: number;
     max: number;
+    speedLimit: number;
+    onSliderChange: (limit: number) => void;
 }
 
 const useStyles = makeStyles({
@@ -21,14 +23,15 @@ const valuetext = (value: number) => {
 };
 
 const DiscreteSliderComponent = (props: IDiscreteSliderProps) => {
-    const { title, value, min, max } = props;
+    const { title, min, max, speedLimit, onSliderChange } = props;
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <Typography id="discrete-slider-always" gutterBottom={true}>{title}</Typography>
             <Slider
-                defaultValue={60}
+                value={speedLimit ? speedLimit : 60}
+                onChange={(e, limit) => onSliderChange(Number(limit))}
                 getAriaValueText={valuetext}
                 aria-labelledby="discrete-slider"
                 valueLabelDisplay="on"

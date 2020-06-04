@@ -4,6 +4,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { Avatar } from '@material-ui/core';
+
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -11,8 +14,10 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         appBar: {
-            zIndex: theme.zIndex.drawer + 1,
-        }
+            flexGrow: 1,
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: drawerWidth,
+        },
     }),
 );
 
@@ -21,8 +26,9 @@ const HeaderComponent = () => {
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-                <Typography variant="h6" className={classes.title}>WABCO FMS</Typography>
-                <Button color="inherit">Logoff</Button>
+                <Typography variant="h6" noWrap={true}>
+                    WABCO FMS
+           </Typography>
             </Toolbar>
         </AppBar>
     );
