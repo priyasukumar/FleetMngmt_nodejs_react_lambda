@@ -96,11 +96,13 @@ export interface ICollapsibleTableProps {
     headers: string[];
     data: IDashboardModel[] | IDriverServiceTimeModel[];
     driverCondition: IDriverCondition;
+    barData: IBarData[];
 }
 
 export interface IRowProps {
     data: IDashboardModel | IDriverServiceTimeModel;
     driverCondition: IDriverCondition;
+    barData: IBarData[];
 }
 
 export interface IHeaderProps {

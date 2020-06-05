@@ -12,12 +12,12 @@ const HarshTurnContainer = (props: IHarshTurnContainerProps) => {
     const barData = props.dashboard.map(c => {
         const data = {
             name: c.PacketTime,
-            value: c.OverSpeed
+            value: harshTurn.length
         } as IBarData;
         return data;
     });
 
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Turn'];
+    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Turn Count'];
 
     const driverCondition = {
         includeHarshBrake: false,

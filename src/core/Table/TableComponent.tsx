@@ -1,5 +1,6 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Moment from 'moment';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,7 +17,9 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel } from '../../models/dashboard';
 import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
+import Bar from '../../core/BarComponent';
 
+const dateFormat = 'd/MM/YY HH:mm:ss A';
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -25,14 +28,26 @@ const useRowStyles = makeStyles({
   },
 });
 
+const StyledTableCell = withStyles((theme: Theme) =>
+  createStyles({
+    head: {
+      backgroundColor: '#1976d2',
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 14,
+    },
+  }),
+)(TableCell);
+
 const Header = (props: IHeaderProps) => {
   const { headers } = props;
   return (
     <TableHead>
       <TableRow>
-        <TableCell />
+        <StyledTableCell />
         {
-          headers.map((header, index) => <TableCell key={index} align="left">{header}</TableCell>)
+          headers.map((header, index) => <StyledTableCell key={index} align="left">{header}</StyledTableCell>)
         }
       </TableRow>
     </TableHead>
@@ -40,39 +55,39 @@ const Header = (props: IHeaderProps) => {
 };
 
 const Row = (rowProps: IRowProps) => {
-  const { data, driverCondition } = rowProps;
+  const { data, driverCondition, barData } = rowProps;
   let dashboardModel = data as IDashboardModel;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
   return (
     <React.Fragment>
-      <TableRow className={classes.root}>
-        <TableCell>
+      <StyledTableRow className={classes.root}>
+        <StyledTableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
-        </TableCell>
+        </StyledTableCell>
 
-        <TableCell component="th" scope="row">
+        <StyledTableCell component="th" scope="row">
           {dashboardModel.DriverId}
-        </TableCell>
-        <TableCell align="left">{dashboardModel.DriverName}</TableCell>
-        <TableCell align="left">{dashboardModel.DriverMobile}</TableCell>
-        <TableCell align="left">{dashboardModel.VehicleName}</TableCell>
-        <TableCell align="left">{dashboardModel.VehicleLicenseNo}</TableCell>
+        </StyledTableCell>
+        <StyledTableCell align="left">{dashboardModel.DriverName}</StyledTableCell>
+        <StyledTableCell align="left">{dashboardModel.DriverMobile}</StyledTableCell>
+        <StyledTableCell align="left">{dashboardModel.VehicleName}</StyledTableCell>
+        <StyledTableCell align="left">{dashboardModel.VehicleLicenseNo}</StyledTableCell>
         {
-          driverCondition.includeOverSpeed && <TableCell align="left">{dashboardModel.OverSpeed}</TableCell>
+          driverCondition.includeOverSpeed && <StyledTableCell align="center">{dashboardModel.OverSpeed}</StyledTableCell>
         }
         {
-          driverCondition.includeHarshBrake && <TableCell align="left">{dashboardModel.HarshBreaking}</TableCell>
+          driverCondition.includeHarshBrake && <StyledTableCell align="center">{dashboardModel.HarshBreaking}</StyledTableCell>
         }
         {
-          driverCondition.includeHarshTurn && <TableCell align="left">{dashboardModel.HarshTurning}</TableCell>
+          driverCondition.includeHarshTurn && <StyledTableCell align="center">{dashboardModel.HarshTurning}</StyledTableCell>
         }
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+      </StyledTableRow >
+      <StyledTableRow >
+        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom={true} component="div">
@@ -80,40 +95,41 @@ const Row = (rowProps: IRowProps) => {
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
-                  <TableRow>
+                  <StyledTableRow >
                     {
-                      driverCondition.includeHarshBrake && <TableCell align="center">Harsh Breaking</TableCell>
+                      driverCondition.includeHarshBrake && <StyledTableCell align="center">Harsh Breaking</StyledTableCell>
                     }
                     {
-                      driverCondition.includeHarshTurn && <TableCell align="center">Harsh Turning</TableCell>
+                      driverCondition.includeHarshTurn && <StyledTableCell align="center">Harsh Turning</StyledTableCell>
                     }
                     {
-                      driverCondition.includeOverSpeed && <TableCell align="center">Vehicle Speed</TableCell>
+                      driverCondition.includeOverSpeed && <StyledTableCell align="center">Vehicle Speed</StyledTableCell>
                     }
-                    <TableCell align="center">Packet Time</TableCell>
-                  </TableRow>
+                    <StyledTableCell align="center">Packet Time</StyledTableCell>
+                  </StyledTableRow >
                 </TableHead>
                 <TableBody>
                   {(dashboardModel.SubModel as Array<IDashboardSubModel>).map((subRow, index) => (
-                    <TableRow key={index}>
+                    <StyledTableRow key={index}>
                       {
-                        driverCondition.includeHarshBrake && <TableCell align="center">{subRow.HarshBreaking}</TableCell>
+                        driverCondition.includeHarshBrake && <StyledTableCell align="center">{subRow.HarshBreaking}</StyledTableCell>
                       }
                       {
-                        driverCondition.includeHarshTurn && <TableCell align="center">{subRow.HarshTurning}</TableCell>
+                        driverCondition.includeHarshTurn && <StyledTableCell align="center">{subRow.HarshTurning}</StyledTableCell>
                       }
                       {
-                        driverCondition.includeOverSpeed && <TableCell align="center">{subRow.VehicleSpeed}</TableCell>
+                        driverCondition.includeOverSpeed && <StyledTableCell align="center">{subRow.VehicleSpeed}</StyledTableCell>
                       }
-                      <TableCell align="center">{subRow.PacketTime}</TableCell>
-                    </TableRow>
+                      <StyledTableCell align="center">{subRow.PacketTime}</StyledTableCell>
+                    </StyledTableRow>
                   ))}
                 </TableBody>
               </Table>
+              {/* <Bar data={barData} title="No. of Persons" /> */}
             </Box>
           </Collapse>
-        </TableCell>
-      </TableRow>
+        </StyledTableCell>
+      </StyledTableRow >
     </React.Fragment>
   );
 };
@@ -125,23 +141,23 @@ const SRow = (rowProps: IRowProps) => {
 
   return (
     <React.Fragment>
-      <TableRow className={classes.root}>
-        <TableCell>
+      <StyledTableRow className={classes.root}>
+        <StyledTableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
-        </TableCell>
+        </StyledTableCell>
 
-        <TableCell component="th" scope="row">
+        <StyledTableCell component="th" scope="row">
           {data.DriverId}
-        </TableCell>
-        <TableCell align="left">{data.DriverName}</TableCell>
-        <TableCell align="left">{data.DriverMobile}</TableCell>
-        <TableCell align="left">{data.VehicleName}</TableCell>
-        <TableCell align="left">{data.VehicleLicenseNo}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+        </StyledTableCell>
+        <StyledTableCell align="left">{data.DriverName}</StyledTableCell>
+        <StyledTableCell align="left">{data.DriverMobile}</StyledTableCell>
+        <StyledTableCell align="left">{data.VehicleName}</StyledTableCell>
+        <StyledTableCell align="left">{data.VehicleLicenseNo}</StyledTableCell>
+      </StyledTableRow>
+      <StyledTableRow>
+        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom={true} component="div">
@@ -149,36 +165,48 @@ const SRow = (rowProps: IRowProps) => {
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
-                  <TableRow>
-                    <TableCell align="center">Resting StartTime</TableCell>
-                    <TableCell align="center">Resting EndTime</TableCell>
-                    <TableCell align="center">Vehicle StartTime</TableCell>
-                    <TableCell align="center">Vehicle EndTime</TableCell>
-                  </TableRow>
+                  <StyledTableRow>
+                    <StyledTableCell align="center">Resting StartTime</StyledTableCell>
+                    <StyledTableCell align="center">Resting EndTime</StyledTableCell>
+                    <StyledTableCell align="center">Vehicle StartTime</StyledTableCell>
+                    <StyledTableCell align="center">Vehicle EndTime</StyledTableCell>
+                  </StyledTableRow>
                 </TableHead>
                 <TableBody>
                   {
                     (data.SubModel as Array<IDriverServiceTimeSubModel>).map((subRow, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="center">{subRow.RestingStartTime}</TableCell>
-                        <TableCell align="center">{subRow.RestingEndTime}</TableCell>
-                        <TableCell align="center">{subRow.VehicleStartTime}</TableCell>
-                        <TableCell align="center">{subRow.VehicleEndTime}</TableCell>
-                      </TableRow>
+                      <StyledTableRow key={index}>
+                        <StyledTableCell align="center">{subRow.RestingStartTime}</StyledTableCell>
+                        <StyledTableCell align="center">{subRow.RestingEndTime}</StyledTableCell>
+                        <StyledTableCell align="center">{subRow.VehicleStartTime}</StyledTableCell>
+                        <StyledTableCell align="center">{subRow.VehicleEndTime}</StyledTableCell>
+                      </StyledTableRow>
                     ))
                   }
                 </TableBody>
               </Table>
             </Box>
           </Collapse>
-        </TableCell>
-      </TableRow>
+        </StyledTableCell>
+      </StyledTableRow>
     </React.Fragment>
   );
 };
 
+const StyledTableRow = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  }),
+)(TableRow);
+
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
-  const { driverCondition, headers } = props;
+  const { driverCondition, headers, barData } = props;
+  const classes = useRowStyles();
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -187,22 +215,43 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
           {
             (isDashboard(props.data[0])) &&
             (props.data as Array<IDashboardModel>).map((driver: IDashboardModel, index: number): JSX.Element => {
+              // driver.SubModel.map(c => {
+              //   c.PacketTime = Moment(c.PacketTime).format(dateFormat);
+
+              //   return c;
+              // });
+
               const rowProps = {
                 data: driver as IDashboardModel,
-                driverCondition
+                driverCondition,
+                barData
               } as IRowProps;
               return (<Row key={index} {...rowProps} />);
             })
           }
           {
             (!isDashboard(props.data[0])) &&
-            (props.data as Array<IDriverServiceTimeModel>).map((driver, index) => {
+            (props.data as Array<IDriverServiceTimeModel>).map((driverService, index) => {
+              // driverService.SubModel.map(c => {
+              //   c.RestingStartTime = Moment(c.RestingStartTime).format(dateFormat);
+              //   c.RestingEndTime = Moment(c.RestingEndTime).format(dateFormat);
+              //   c.VehicleStartTime = Moment(c.VehicleStartTime).format(dateFormat);
+              //   c.VehicleEndTime = Moment(c.VehicleEndTime).format(dateFormat);
+
+              //   return c;
+              // });
               const rowProps = {
-                data: driver,
+                data: driverService,
                 driverCondition
               } as IRowProps;
               return (<SRow key={index} {...rowProps} />);
             })
+          }
+          {
+            props.data.length === 0 &&
+            <StyledTableRow className={classes.root}>
+              <StyledTableCell component="th" scope="row" style={{ textAlign: 'center' }} colSpan={10}>No Data Available</StyledTableCell>
+            </StyledTableRow>
           }
         </TableBody>
       </Table>

@@ -2,14 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect } from 'react';
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboard, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
-import Moment from 'moment';
 
 const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionProps) => {
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Over Speed', 'Harsh Break', 'Harsh Turn'];
+    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Over Speed Count', 'Harsh Break Count', 'Harsh Turn Count'];
     const groupedDataByDriverId = groupBy(props.dashboard, 'DriverVehicleId') as IGroupedDashboard;
     const driverCondition = {
         includeHarshBrake: true,
@@ -80,10 +79,13 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 60)
                 dashboardModel.SubModel[index].VehicleSpeed = p.VehicleSpeed;
                 dashboardModel.SubModel[index].PacketTime = p.PacketTime;
                 dashboardModel.SubModel[index].HarshBreaking = p.HarshBreaking;
-                dashboardModel.HarshBreaking = Number(c.HarshBreaking) + Number(p.HarshBreaking);
+                dashboardModel.HarshBreaking = dashboardModel.HarshBreaking + c.HarshBreaking + p.HarshBreaking;
                 dashboardModel.SubModel[index].HarshTurning = p.HarshTurning;
-                dashboardModel.HarshTurning = Number(c.HarshTurning) + Number(p.HarshTurning);
-                dashboardModel.OverSpeed = Number(p.VehicleSpeed) > speedLimit ? count += 1 : 0;
+                dashboardModel.HarshTurning = dashboardModel.HarshBreaking + c.HarshTurning + p.HarshTurning;
+                if (p.VehicleSpeed >= speedLimit) {
+                    count += 1;
+                }
+                dashboardModel.OverSpeed = count;
 
                 return c;
             }, {
@@ -92,6 +94,7 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 60)
             } as IDashboardModel);
 
             dashboard.push(dashboardModel);
+            count = 0;
         }
     }
     return dashboard;

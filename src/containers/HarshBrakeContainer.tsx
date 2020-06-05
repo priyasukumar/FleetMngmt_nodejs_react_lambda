@@ -4,23 +4,21 @@ import { IDashboardContainerProps, IGroupedDashboard, IBarData, IDriverCondition
 import HarshBrakeComponent from '../components/dashboard/HarshBrakeComponent';
 import { groupBy } from '../utils/database';
 import { getWithSubModel } from './DashboardContainer';
-import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderComponent';
 import { IHarshBrakeContainerProps, IHarshBrakeComponentProps } from '../models/harshBrake';
 
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps) => {
     const groupedDataByDriverId = groupBy(props.dashboard, 'DriverVehicleId') as IGroupedDashboard;
     const harshBrake = getWithSubModel(groupedDataByDriverId);
-    const dateFormat1 = 'd/MM/YY HH:mm a';
-    const dateFormat = 'dddd';
     const barData = props.dashboard.map(c => {
         const data = {
             name: c.PacketTime,
-            value: c.OverSpeed
+            value: harshBrake.length
         } as IBarData;
+
         return data;
     });
 
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Brake'];
+    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Brake Count'];
 
     const driverCondition = {
         includeHarshBrake: true,

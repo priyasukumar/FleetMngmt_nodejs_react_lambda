@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { Line, ScaleBand, AxisDomain, AxisScale } from 'd3';
-import { Monthly, Weekly } from '../constants/enum';
 import { Container } from '@material-ui/core';
 import { IBarData } from '../models/dashboard';
 import Moment from 'moment';
@@ -14,7 +13,7 @@ interface IBarComponentProps {
 
 const BarComponent = (props: IBarComponentProps) => {
     const barContainer = useRef(null);
-    const dateFormat = 'dddd';
+    const dateFormat = 'd-MMM';
     const { data, title } = props;
     const styles = {
         container: {

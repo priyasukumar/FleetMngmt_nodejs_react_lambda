@@ -17,7 +17,7 @@ import Footer from './components/FooterComponent';
 import LinksComponent from './components/LinkComponent';
 import HarshTurn from './containers/HarshTurnContainer';
 import Dashboard from './containers/DashboardContainer';
-import { Container, Avatar, Typography } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import DriverServiceTime from './containers/DriverServiceTimeContainer';
 import OverSpeed from './containers/OverSpeedContainer';
 import HarshBrake from './containers/HarshBrakeContainer';
