@@ -1,12 +1,18 @@
 import { API, UPDATE_DRIVER_SERVICE_TIME } from '../constants/Actions';
 import { Http } from '../constants/enum';
+import * as DateFns from 'date-fns';
 
-export const loadDriversServiceTime = () => {
+export const loadDriversServiceTime = (fromDate: Date, toDate: Date) => {
+    const dateFormat = 'yyyy-MM-d hh:mm:ss';
+    const formattedFromDate = DateFns.format(fromDate, dateFormat);
+    const formattedToDate = DateFns.format(toDate, dateFormat);
+    const driverServiceUrl = `/driverservice?from=${formattedFromDate}&to=${formattedToDate}`;
+
     return (dispatch: any) => {
         dispatch({
             type: API,
             payload: {
-                url: '/driverservice?from=2020-04-20%2007:40:00&to=2020-05-30%2007:40:40',
+                url: driverServiceUrl,
                 method: Http.Get,
                 onSuccess: (response: any) => {
                     dispatch({

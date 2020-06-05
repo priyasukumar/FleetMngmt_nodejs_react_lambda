@@ -5,12 +5,12 @@ import CollapsibleTable from '../../core/Table/TableComponent';
 import DatePicker from '../../core/DatePicker';
 
 const HarshBrakeComponent = (props: IHarshBrakeComponentProps) => {
-    const { barData, tableData } = props;
+    const { barData, tableData, datePicker } = props;
 
     return (
         <>
             <Bar data={barData} title="No. of Persons" />
-            <DatePicker />
+            <DatePicker {...datePicker} />
             <CollapsibleTable {...tableData} />
         </>
     );

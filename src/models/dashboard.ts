@@ -1,5 +1,6 @@
 import { ScaleBand, PieArcDatum } from 'd3';
 import { IDriverServiceTimeModel } from './driverServiceTime';
+import { IDatePickerProps } from './datePicker';
 
 export interface IDashboardContainerProps {
     dashboard: IDashboard[];
@@ -12,6 +13,7 @@ export interface IDashboardProps {
 export interface IDashboardComponentProps {
     graphData: IPieData[];
     tableData: ICollapsibleTableProps;
+    datePicker: IDatePickerProps;
 }
 
 export interface IHarshBrakeProps {
@@ -69,7 +71,7 @@ export interface IVehicle {
 }
 
 export interface IDashboardActionProps {
-    loadData(): void;
+    loadData: (fromDate: Date, toDate: Date) => void;
 }
 
 export interface IBarData extends ScaleBand<IBarData> {

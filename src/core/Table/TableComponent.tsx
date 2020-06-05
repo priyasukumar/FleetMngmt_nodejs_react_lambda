@@ -19,7 +19,7 @@ import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../model
 import { isDashboard } from '../../containers/DashboardContainer';
 import Bar from '../../core/BarComponent';
 
-const dateFormat = 'd/MM/YY HH:mm:ss A';
+const dateFormat = 'd/MM/yy HH:mm:ss A';
 const useRowStyles = makeStyles({
   root: {
     '& > *': {

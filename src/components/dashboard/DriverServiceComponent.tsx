@@ -4,11 +4,11 @@ import CollapsibleTable from '../../core/Table/TableComponent';
 import DatePicker from '../../core/DatePicker';
 
 const DriverServiceComponent = (props: IDriverServiceTimeComponentProps) => {
-    const { tableData } = props;
+    const { tableData, datePicker } = props;
 
     return (
         <>
-            <DatePicker />
+            <DatePicker {...datePicker} />
             <CollapsibleTable {...tableData} />
         </>
     );

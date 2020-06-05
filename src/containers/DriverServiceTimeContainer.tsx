@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { IDriverServiceTimeActionProps, IDriverServiceTimeContainerProps, IDriverServiceTimeComponentProps, IGroupedDriverServiceTime, IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../models/driverServiceTime';
 import DriverServiceComponent from '../components/dashboard/DriverServiceComponent';
 import { loadDriversServiceTime } from '../actions/DriverServiceTimeAction';
 import { groupBy } from '../utils/database';
 import { ICollapsibleTableProps } from '../models/dashboard';
+import { IDatePickerProps } from '../models/datePicker';
 
 const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & IDriverServiceTimeActionProps) => {
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No'];
@@ -18,18 +19,50 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         headers,
     } as ICollapsibleTableProps;
 
-    const dashboardComponentProps = {
-        tableData: collapsibleTableProps
+    const dateFormat = 'MM/dd/yyyy';
+    const currentDate = new Date();
+    const minDate = new Date();
+    minDate.setMonth(currentDate.getMonth() - 3);
+    const [fromDate, setFromDate] = useState<Date | null>(minDate);
+    const [toDate, setToDate] = useState<Date | null>(currentDate);
+    const handleFromDateChange = (date: Date | null) => {
+        if (date && toDate) {
+            setFromDate(date);
+            props.loadDriversServiceTime(date, toDate);
+        }
+    };
+    const handleToDateChange = (date: Date | null) => {
+        if (date && fromDate) {
+            setToDate(date);
+            props.loadDriversServiceTime(fromDate, date);
+        }
+    };
+
+    const datePickerProps = {
+        datePickerDateFormat: dateFormat,
+        datePickerMinDate: minDate,
+        datePickerMaxDate: currentDate,
+        datePickerFromDate: fromDate ? fromDate : minDate,
+        datePickerToDate: toDate ? toDate : currentDate,
+        handleFromDateChange: (date: Date) => handleFromDateChange(date),
+        handleToDateChange: (date: Date) => handleToDateChange(date)
+    } as IDatePickerProps;
+
+    const driverServiceTimeComponentProps = {
+        tableData: collapsibleTableProps,
+        datePicker: datePickerProps
     } as IDriverServiceTimeComponentProps;
 
     useEffect(
         () => {
-            props.loadDriversServiceTime();
+            if (fromDate && toDate) {
+                props.loadDriversServiceTime(fromDate, toDate);
+            }
         },
         [props.loadDriversServiceTime]);
 
     return (
-        <DriverServiceComponent {...dashboardComponentProps} />
+        <DriverServiceComponent {...driverServiceTimeComponentProps} />
     );
 };
 
@@ -83,7 +116,7 @@ const mapStateToProps = ({ driversServiceTime }: { driversServiceTime: IDriverSe
 const mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            loadDriversServiceTime: () => loadDriversServiceTime()
+            loadDriversServiceTime: (fromDate: Date, toDate: Date) => loadDriversServiceTime(fromDate, toDate)
         },
         dispatch
     );

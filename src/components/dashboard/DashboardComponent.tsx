@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const DashboardComponent = (props: IDashboardComponentProps) => {
     const classes = useStyles();
-    const { graphData, tableData } = props;
+    const { graphData, tableData, datePicker } = props;
 
     return (
         <div className={classes.root}>
@@ -41,7 +41,7 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
                 <Legend data={graphData} />
                 <Legend data={graphData} />
             </Grid>
-            <DatePicker />
+            <DatePicker {...datePicker} />
             <CollapsibleTable {...tableData} />
         </div>
     );
