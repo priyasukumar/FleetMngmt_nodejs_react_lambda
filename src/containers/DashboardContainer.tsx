@@ -17,10 +17,28 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         includeOverSpeed: true
     } as IDriverCondition;
     const drivers = getWithSubModel(groupedDataByDriverId);
-    const pieData = [
-        { name: '0 - 50', value: 70, color: '#488f31' },
-        { name: '50 - 60', value: 20, color: '#ffe03b' },
-        { name: '60 - 120', value: 10, color: '#de3e16' },
+
+    let overSpeed = 0, harshBreaking = 0, harshTurning = 0, overSpeedPercentage = 0, harshBreakPercentage = 0, harshTurnPercentage = 0, total = 0;
+    total = drivers?.length;
+    drivers.map(c => {
+        if (c.OverSpeed > 0) {
+            overSpeed += 1;
+        }
+        if (c.HarshBreaking > 0) {
+            harshBreaking += 1;
+        }
+        if (c.HarshTurning > 0) {
+            harshTurning += 1;
+        }
+    });
+
+    overSpeedPercentage = overSpeed / total;
+    harshBreakPercentage = harshBreaking / total;
+    harshTurnPercentage = harshTurning / total;
+    const graphData = [
+        { name: 'Over Speed', value: overSpeedPercentage, color: '#ff7f0e' },
+        { name: 'Harsh Break', value: harshBreakPercentage, color: '#aec7e8' },
+        { name: 'Harsh Turn', value: harshTurnPercentage, color: '#1f77b4' },
     ] as IPieData[];
 
     const collapsibleTableProps = {
@@ -29,11 +47,14 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         driverCondition
     } as ICollapsibleTableProps;
 
-    const dateFormat = 'MM/dd/yyyy';
+    const datePickerFormat = 'dd/MM/yyyy';
+    
     const currentDate = new Date();
+    const initialToDate = new Date();
+    initialToDate.setDate(initialToDate.getDate() - 1);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
-    const [fromDate, setFromDate] = useState<Date | null>(minDate);
+    const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
     const [toDate, setToDate] = useState<Date | null>(currentDate);
     const handleFromDateChange = (date: Date | null) => {
         if (date && toDate) {
@@ -49,17 +70,17 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     };
 
     const datePickerProps = {
-        datePickerDateFormat: dateFormat,
+        datePickerDateFormat: datePickerFormat,
         datePickerMinDate: minDate,
         datePickerMaxDate: currentDate,
-        datePickerFromDate: fromDate ? fromDate : minDate,
+        datePickerFromDate: fromDate ? fromDate : initialToDate,
         datePickerToDate: toDate ? toDate : currentDate,
         handleFromDateChange: (date: Date) => handleFromDateChange(date),
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
     const dashboardComponentProps = {
-        graphData: pieData,
+        graphData: graphData,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps
     } as IDashboardComponentProps;
@@ -77,7 +98,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     );
 };
 
-export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 60): IDashboardModel[] => {
+export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80): IDashboardModel[] => {
     let dashboard = [] as IDashboardModel[];
 
     for (let key in groupedData) {

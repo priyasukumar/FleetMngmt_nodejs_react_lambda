@@ -3,10 +3,9 @@ import * as d3 from 'd3';
 import { Line, ScaleBand, AxisDomain, AxisScale } from 'd3';
 import { Container } from '@material-ui/core';
 import { IBarData } from '../models/dashboard';
-import Moment from 'moment';
 
 interface IBarComponentProps {
-    data: IBarData[];
+    plot: IBarData[];
     frequency?: string;
     title: string;
 }
@@ -14,7 +13,7 @@ interface IBarComponentProps {
 const BarComponent = (props: IBarComponentProps) => {
     const barContainer = useRef(null);
     const dateFormat = 'd-MMM';
-    const { data, title } = props;
+    const { plot, title } = props;
     const styles = {
         container: {
             display: 'grid',
@@ -28,25 +27,38 @@ const BarComponent = (props: IBarComponentProps) => {
         const color: string = '#3f51b5';
         const margin = ({ top: 30, right: 0, bottom: 30, left: 40 });
 
-        let svg = d3
+        const svg = d3
             .select<any, ScaleBand<IBarData>>(barContainer.current)
-            .append('svg')
             .attr('viewBox', `0, 0, ${width}, ${height}`);
 
-        const range = d3.range(data.length);
+        const range = d3.range(plot.length);
         const x = d3.scaleBand<number>()
             .domain(range)
             .range([margin.left, width - margin.right])
             .padding(0.1);
 
-        const max = d3.max(data, d => d.value) as number;
+        const max = d3.max(plot, d => d.value) as number;
         const y = d3.scaleLinear<number, number>()
             .domain([0, max]).nice()
             .range([height - margin.bottom, margin.top]);
 
+        const xValue = (d: ScaleBand<IBarData>, i: number) => x(i) as number;
+
+        svg.selectAll('g').remove();
+
+        svg.append('g')
+            .attr('fill', color)
+            .selectAll('rect')
+            .data(plot)
+            .join('rect')
+            .attr('x', xValue)
+            .attr('y', d => y(d.value))
+            .attr('height', d => y(0) - y(d.value))
+            .attr('width', x.bandwidth());
+
         const xAxis = (g: any) => g
             .attr('transform', `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(x).tickFormat((d, i) => Moment(data[i].name).format(dateFormat)).tickSizeOuter(0));
+            .call(d3.axisBottom(x).tickFormat((d, i) => plot[i].name).tickSizeOuter(0));
 
         const yAxis = (g: any) => g
             .attr('transform', `translate(${margin.left},0)`)
@@ -59,17 +71,6 @@ const BarComponent = (props: IBarComponentProps) => {
                 .attr('text-anchor', 'start')
                 .text(`${title}`));
 
-        const xValue = (d: ScaleBand<IBarData>, i: number) => x(i) as number;
-        svg.append('g')
-            .attr('fill', color)
-            .selectAll('rect')
-            .data(data)
-            .join('rect')
-            .attr('x', xValue)
-            .attr('y', d => y(d.value))
-            .attr('height', d => y(0) - y(d.value))
-            .attr('width', x.bandwidth());
-
         svg.append('g')
             .call(xAxis);
 
@@ -77,11 +78,16 @@ const BarComponent = (props: IBarComponentProps) => {
             .call(yAxis);
     };
 
-    useEffect(() => Bar(), []);
+    useEffect(() => {
+        if (plot && barContainer.current) {
+            Bar();
+        }
+    }, [plot, barContainer.current]);
 
     return (
         <Container maxWidth="sm">
-            <div ref={barContainer} style={styles.container} />
+            <h1 style={{ textAlign: 'center' }}>Harsh Brake</h1>
+            <svg style={styles.container} ref={barContainer} />
         </Container>
     );
 };

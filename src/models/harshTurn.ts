@@ -3,8 +3,12 @@ import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderCompone
 import { IDatePickerProps } from './datePicker';
 
 export interface IHarshTurnContainerProps {
-    dashboard: IDashboard[];
-    onDateChange: (fromDate: Date, toDate: Date) => void;
+    harshTurn: IDashboard[];
+    onDateChange?: (fromDate: Date, toDate: Date) => void;
+}
+
+export interface IHarshTurnActionProps {
+    loadData: (fromDate: Date, toDate: Date) => void;
 }
 
 export interface IHarshTurnComponentProps {

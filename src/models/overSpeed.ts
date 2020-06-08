@@ -3,11 +3,15 @@ import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderCompone
 import { IDatePickerProps } from './datePicker';
 
 export interface IOverSpeedContainerProps {
-    dashboard: IDashboard[];
-    onDateChange: (fromDate: Date, toDate: Date) => void;
+    overSpeed: IDashboard[];
+}
+
+export interface IOverSpeedActionProps {
+    loadData: (fromDate: Date, toDate: Date) => void;
 }
 
 export interface IOverSpeedComponentProps {
+    onDateChange?: (fromDate: Date, toDate: Date) => void;
     barData: IBarData[];
     discreteSlider: IDiscreteSliderProps;
     tableData: ICollapsibleTableProps;
@@ -24,5 +28,5 @@ export interface IOverSpeedModel {
     HarshBreaking: number;
     HarshTurning: number;
     CreatedDate: string;
-    VehicleSpeed: number;    
+    VehicleSpeed: number;
 }

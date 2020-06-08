@@ -25,21 +25,13 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
 
     return (
         <div className={classes.root}>
-            <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={3}>
+            <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
                 <Grid item={true} xs={4}>
-                    <PieChart data={graphData} title="Over Speed" />
+                    <PieChart plot={graphData} title="Over All" />
                 </Grid>
                 <Grid item={true} xs={4}>
-                    <PieChart data={graphData} title="Harsh Brake" />
+                    <Legend data={graphData} />
                 </Grid>
-                <Grid item={true} xs={4}>
-                    <PieChart data={graphData} title="Harsh Turn" />
-                </Grid>
-            </Grid>
-            <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={3}>
-                <Legend data={graphData} />
-                <Legend data={graphData} />
-                <Legend data={graphData} />
             </Grid>
             <DatePicker {...datePicker} />
             <CollapsibleTable {...tableData} />

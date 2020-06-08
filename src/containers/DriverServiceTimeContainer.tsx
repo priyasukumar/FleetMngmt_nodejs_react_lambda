@@ -19,11 +19,13 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         headers,
     } as ICollapsibleTableProps;
 
-    const dateFormat = 'MM/dd/yyyy';
+    const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
+    const initialToDate = new Date();
+    initialToDate.setDate(initialToDate.getDate() - 1);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
-    const [fromDate, setFromDate] = useState<Date | null>(minDate);
+    const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
     const [toDate, setToDate] = useState<Date | null>(currentDate);
     const handleFromDateChange = (date: Date | null) => {
         if (date && toDate) {
@@ -39,10 +41,10 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     };
 
     const datePickerProps = {
-        datePickerDateFormat: dateFormat,
+        datePickerDateFormat: datePickerFormat,
         datePickerMinDate: minDate,
         datePickerMaxDate: currentDate,
-        datePickerFromDate: fromDate ? fromDate : minDate,
+        datePickerFromDate: fromDate ? fromDate : initialToDate,
         datePickerToDate: toDate ? toDate : currentDate,
         handleFromDateChange: (date: Date) => handleFromDateChange(date),
         handleToDateChange: (date: Date) => handleToDateChange(date)

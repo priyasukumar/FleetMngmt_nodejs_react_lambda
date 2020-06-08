@@ -3,8 +3,12 @@ import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderCompone
 import { IDatePickerProps } from './datePicker';
 
 export interface IHarshBrakeContainerProps {
-    dashboard: IDashboard[];
-    onDateChange: (fromDate: Date, toDate: Date) => void;
+    harshBrake: IDashboard[];
+    onDateChange?: (fromDate: Date, toDate: Date) => void;
+}
+
+export interface IHarshBrakeActionProps {
+    loadData: (fromDate: Date, toDate: Date) => void;
 }
 
 export interface IHarshBrakeComponentProps {

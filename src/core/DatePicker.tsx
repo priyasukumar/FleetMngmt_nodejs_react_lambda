@@ -7,43 +7,91 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { IDatePickerProps } from '../models/datePicker';
+import { getDateRangeDiff } from '../utils/date';
+import { MuiThemeProvider, makeStyles, createMuiTheme } from '@material-ui/core';
+
+const useCustomThemeStyles = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#1976d2',
+        },
+        background: {
+            default: '#1976d2',
+        }
+    },
+});
 
 const DatePicker = (props: IDatePickerProps) => {
-    const { datePickerFromDate, datePickerToDate, datePickerMinDate, datePickerMaxDate, datePickerDateFormat, handleFromDateChange, handleToDateChange } = props;
-    
+    const { datePickerFromDate, datePickerToDate, datePickerMinDate, datePickerMaxDate, datePickerDateFormat } = props;
+    const [errorMessage, setError] = useState<string | null>(null);
+
+    const handleFromDateChange = (fromDate: Date) => {
+        const diff = getDateRangeDiff(fromDate, datePickerToDate, 'days');
+        if (fromDate > datePickerToDate) {
+            setError('From date should not be in future');
+            return;
+        }
+        if (diff > 3) {
+            setError('Date range should be less than 3 days');
+            return;
+        }
+        setError(null);
+        props.handleFromDateChange(fromDate);
+    };
+
+    const handleToDateChange = (toDate: Date) => {
+        if (toDate < datePickerFromDate) {
+            setError('To date cannot be lesser then From date');
+            return;
+        }
+        const diff = getDateRangeDiff(datePickerFromDate, toDate, 'days');
+        if (diff > 3) {
+            setError('Date range should be less than 3 days');
+            return;
+        }
+        setError(null);
+        props.handleToDateChange(toDate);
+    };
+
     return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Grid container={true} xl={10} alignItems="flex-end" justify="space-around">
-                <KeyboardDatePicker
-                    variant="inline"
-                    minDate={datePickerMinDate}
-                    maxDate={datePickerMaxDate}
-                    format={datePickerDateFormat}
-                    margin="normal"
-                    id="date-picker-inline"
-                    label="From Date"
-                    value={datePickerFromDate}
-                    onChange={handleFromDateChange}
-                    KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                    }}
-                />
-                <KeyboardDatePicker
-                    variant="inline"
-                    minDate={datePickerMinDate}
-                    maxDate={datePickerMaxDate}
-                    margin="normal"
-                    id="date-picker-dialog"
-                    label="To Date"
-                    format={datePickerDateFormat}
-                    value={datePickerToDate}
-                    onChange={handleToDateChange}
-                    KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                    }}
-                />
-            </Grid>
-        </MuiPickersUtilsProvider>
+        <MuiThemeProvider theme={useCustomThemeStyles}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Grid container={true} xl={10} alignItems="flex-end" justify="space-around">
+                    <KeyboardDatePicker
+                        variant="inline"
+                        minDate={datePickerMinDate}
+                        maxDate={datePickerMaxDate}
+                        format={datePickerDateFormat}
+                        helperText={errorMessage ? errorMessage : null}
+                        error={errorMessage != null}
+                        margin="normal"
+                        id="date-picker-inline"
+                        label="From Date"
+                        value={datePickerFromDate}
+                        onChange={(value: any) => handleFromDateChange(value)}
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                    />
+                    <KeyboardDatePicker
+                        variant="inline"
+                        minDate={datePickerMinDate}
+                        maxDate={datePickerMaxDate}
+                        helperText={errorMessage ? errorMessage : null}
+                        error={errorMessage != null}
+                        margin="normal"
+                        id="date-picker-dialog"
+                        label="To Date"
+                        format={datePickerDateFormat}
+                        value={datePickerToDate}
+                        onChange={(value: any) => handleToDateChange(value)}
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                    />
+                </Grid>
+            </MuiPickersUtilsProvider>
+        </MuiThemeProvider>
     );
 };
 

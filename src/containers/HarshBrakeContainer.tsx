@@ -1,27 +1,42 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IDashboardContainerProps, IGroupedDashboard, IBarData, IDriverCondition, ICollapsibleTableProps, IDashboardActionProps } from '../models/dashboard';
+import { IGroupedDashboard, IBarData, IDriverCondition, ICollapsibleTableProps, IDashboardActionProps, IDashboard } from '../models/dashboard';
 import HarshBrakeComponent from '../components/dashboard/HarshBrakeComponent';
 import { groupBy } from '../utils/database';
 import { getWithSubModel } from './DashboardContainer';
-import { IHarshBrakeContainerProps, IHarshBrakeComponentProps } from '../models/harshBrake';
+import { IHarshBrakeContainerProps, IHarshBrakeComponentProps, IHarshBrakeActionProps } from '../models/harshBrake';
 import { IDatePickerProps } from '../models/datePicker';
 import { loadDashboard } from '../actions/DashboardActions';
 import { useState, useEffect } from 'react';
+import { isoToLocal, getDateRange } from '../utils/date';
+import { loadOverSpeed } from '../actions/OverSpeedActions';
+import { loadHarshBrake } from '../actions/HarshBrakeActions';
 
-const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IDashboardActionProps) => {
-    const groupedDataByDriverId = groupBy(props.dashboard, 'DriverVehicleId') as IGroupedDashboard;
-    const harshBrake = getWithSubModel(groupedDataByDriverId);
-    const barData = props.dashboard.map(c => {
-        const data = {
-            name: c.PacketTime,
-            value: harshBrake.length
-        } as IBarData;
+export const getBarData = (groupedData: IGroupedDashboard, fromDate: Date | null, toDate: Date | null, dateFormat: string): IBarData[] => {
+    let barData = [] as IBarData[];
+    if (fromDate && toDate) {
+        const range = getDateRange(fromDate, toDate, 'date');
+        range.map(d => {
+            const date = isoToLocal(d.toISOString(), dateFormat);
+            const dashboard = groupedData[date];
+            const harshBrakeCount = dashboard ? dashboard.reduce((c, p) => c + p.HarshBreaking, 0) : 0;
+            let barModel = {
+                name: date,
+                value: harshBrakeCount
+            } as IBarData;
 
-        return data;
-    });
+            barData.push(barModel);
+        });
+    }
 
+    return barData;
+};
+
+const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
+    const dateFormat = 'DD/MM/YYYY';
+    const groupedDataByDriverId = groupBy(props.harshBrake, 'DriverVehicleId') as IGroupedDashboard;
+    const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBreaking > 0);
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Brake Count'];
 
     const driverCondition = {
@@ -36,11 +51,13 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IDashboardAction
         driverCondition
     } as ICollapsibleTableProps;
 
-    const dateFormat = 'MM/dd/yyyy';
+    const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
+    const initialToDate = new Date();
+    initialToDate.setDate(initialToDate.getDate() - 1);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
-    const [fromDate, setFromDate] = useState<Date | null>(minDate);
+    const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
     const [toDate, setToDate] = useState<Date | null>(currentDate);
     const handleFromDateChange = (date: Date | null) => {
         if (date && toDate) {
@@ -56,14 +73,20 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IDashboardAction
     };
 
     const datePickerProps = {
-        datePickerDateFormat: dateFormat,
+        datePickerDateFormat: datePickerFormat,
         datePickerMinDate: minDate,
         datePickerMaxDate: currentDate,
-        datePickerFromDate: fromDate ? fromDate : minDate,
+        datePickerFromDate: fromDate ? fromDate : initialToDate,
         datePickerToDate: toDate ? toDate : currentDate,
         handleFromDateChange: (date: Date) => handleFromDateChange(date),
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
+
+    const dashboardClone = [] as IDashboard[];
+    const dashboardClone1 = Object.assign(dashboardClone, props.harshBrake);
+    dashboardClone1.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
+    const groupedDataByPacketTime = groupBy(dashboardClone1, 'PacketTime') as IGroupedDashboard;
+    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat);
 
     const harshBrakeComponentProps = {
         barData: barData,
@@ -73,8 +96,8 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IDashboardAction
 
     useEffect(
         () => {
-            if (fromDate && toDate) {
-                props.loadData(fromDate, toDate);
+            if (fromDate && toDate && !props.harshBrake) {
+                props.loadData(fromDate, toDate); 
             }
         },
         [props.loadData]);
@@ -84,16 +107,16 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IDashboardAction
     );
 };
 
-const mapStateToProps = ({ dashboard }: { dashboard: IDashboardContainerProps }) => {
+const mapStateToProps = ({ harshBrake }: { harshBrake: IHarshBrakeContainerProps }) => {
     return {
-        dashboard: dashboard.dashboard
+        harshBrake: harshBrake.harshBrake
     };
 };
 
 const mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            loadData: (fromDate: Date, toDate: Date) => loadDashboard(fromDate, toDate),
+            loadData: (fromDate: Date, toDate: Date) => loadHarshBrake(fromDate, toDate),
         },
         dispatch
     );

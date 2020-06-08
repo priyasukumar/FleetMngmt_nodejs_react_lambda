@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Moment from 'moment';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,8 +17,9 @@ import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDash
 import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
 import Bar from '../../core/BarComponent';
+import { isoToLocal } from '../../utils/date';
 
-const dateFormat = 'd/MM/yy HH:mm:ss A';
+const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -120,7 +120,7 @@ const Row = (rowProps: IRowProps) => {
                       {
                         driverCondition.includeOverSpeed && <StyledTableCell align="center">{subRow.VehicleSpeed}</StyledTableCell>
                       }
-                      <StyledTableCell align="center">{subRow.PacketTime}</StyledTableCell>
+                      <StyledTableCell align="center">{isoToLocal(subRow.PacketTime, dateFormat)}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -135,7 +135,7 @@ const Row = (rowProps: IRowProps) => {
 };
 
 const SRow = (rowProps: IRowProps) => {
-  const { data, driverCondition } = rowProps;
+  const { data } = rowProps;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -176,10 +176,10 @@ const SRow = (rowProps: IRowProps) => {
                   {
                     (data.SubModel as Array<IDriverServiceTimeSubModel>).map((subRow, index) => (
                       <StyledTableRow key={index}>
-                        <StyledTableCell align="center">{subRow.RestingStartTime}</StyledTableCell>
-                        <StyledTableCell align="center">{subRow.RestingEndTime}</StyledTableCell>
-                        <StyledTableCell align="center">{subRow.VehicleStartTime}</StyledTableCell>
-                        <StyledTableCell align="center">{subRow.VehicleEndTime}</StyledTableCell>
+                        <StyledTableCell align="center">{isoToLocal(subRow.RestingStartTime, dateFormat)}</StyledTableCell>
+                        <StyledTableCell align="center">{isoToLocal(subRow.RestingEndTime, dateFormat)}</StyledTableCell>
+                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleStartTime, dateFormat)}</StyledTableCell>
+                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleEndTime, dateFormat)}</StyledTableCell>
                       </StyledTableRow>
                     ))
                   }
@@ -215,12 +215,6 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
           {
             (isDashboard(props.data[0])) &&
             (props.data as Array<IDashboardModel>).map((driver: IDashboardModel, index: number): JSX.Element => {
-              // driver.SubModel.map(c => {
-              //   c.PacketTime = Moment(c.PacketTime).format(dateFormat);
-
-              //   return c;
-              // });
-
               const rowProps = {
                 data: driver as IDashboardModel,
                 driverCondition,
@@ -232,14 +226,6 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
           {
             (!isDashboard(props.data[0])) &&
             (props.data as Array<IDriverServiceTimeModel>).map((driverService, index) => {
-              // driverService.SubModel.map(c => {
-              //   c.RestingStartTime = Moment(c.RestingStartTime).format(dateFormat);
-              //   c.RestingEndTime = Moment(c.RestingEndTime).format(dateFormat);
-              //   c.VehicleStartTime = Moment(c.VehicleStartTime).format(dateFormat);
-              //   c.VehicleEndTime = Moment(c.VehicleEndTime).format(dateFormat);
-
-              //   return c;
-              // });
               const rowProps = {
                 data: driverService,
                 driverCondition

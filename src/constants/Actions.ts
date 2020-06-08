@@ -1,6 +1,15 @@
 /* dashboard */
 export const UPDATE_DASHBOARD = 'dashboard/UPDATE_DASHBOARD';
 
+/* over speed */
+export const UPDATE_OVERSPEED = 'dashboard/UPDATE_OVERSPEED';
+
+/* harsh brake */
+export const UPDATE_HARSHBRAKE = 'dashboard/UPDATE_HARSHBRAKE';
+
+/* harsh turn */
+export const UPDATE_HARSHTURN = 'dashboard/UPDATE_HARSHTURN';
+
 /* driver service time */
 export const UPDATE_DRIVER_SERVICE_TIME = 'driver/UPDATE_DRIVER_SERVICE_TIME';
 
