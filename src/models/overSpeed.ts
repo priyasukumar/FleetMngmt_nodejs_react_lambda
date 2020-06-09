@@ -13,8 +13,8 @@ export interface IOverSpeedActionProps {
 
 export interface IOverSpeedComponentProps {
     onDateChange?: (fromDate: Date, toDate: Date) => void;
-    leastAppliedDrivers: IBarComponentProps;
-    mostAppliedDrivers: IBarComponentProps;
+    leastCrossedDrivers: IBarComponentProps;
+    mostCrossedrivers: IBarComponentProps;
     discreteSlider: IDiscreteSliderProps;
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;

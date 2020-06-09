@@ -35,7 +35,7 @@ const LinksComponent = ({ links }: { links: ILink[] }) => {
             .map((link: ILink) => {
                 return (
                     <ListItem selected={activeRoute(link.to)} button={true} key={link.name} component={NavLink} to={link.to} exact={true}>
-                        <ListItemIcon><link.icon/> </ListItemIcon>
+                        <ListItemIcon><link.icon /> </ListItemIcon>
                         <ListItemText primary={link.name} />
                     </ListItem>
                 );
@@ -43,9 +43,9 @@ const LinksComponent = ({ links }: { links: ILink[] }) => {
     };
 
     return (
-        <div className={classes.drawerContainer}>
+        <>
             {buildMenu(links)}
-        </div>
+        </>
     );
 };
 

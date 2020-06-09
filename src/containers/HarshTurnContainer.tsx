@@ -71,13 +71,15 @@ const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionPr
     const leastAppliedHarshTurn = {
         title: 'Top Most Applied',
         yaxisTitle: 'Harsh Turn Count',
-        plot: sortBy(harshTurn, Driver.HarshTurn, 'desc')
+        plot: sortBy(harshTurn, Driver.HarshTurn, 'desc'),
+        barColor: '#1f77b4'
     } as IBarComponentProps;
 
     const mostAppliedHarshTurn = {
         title: 'Top Least Applied',
         yaxisTitle: 'Harsh Turn Count',
-        plot: sortBy(harshTurn, Driver.HarshTurn)
+        plot: sortBy(harshTurn, Driver.HarshTurn),
+        barColor: '#1f77b4'
     } as IBarComponentProps;
 
     const harshTurnComponentProps = {

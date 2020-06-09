@@ -7,7 +7,7 @@ import DatePicker from '../../core/DatePicker';
 import { Grid } from '@material-ui/core';
 
 const OverSpeedComponent = (props: IOverSpeedComponentProps) => {
-  const { leastAppliedDrivers, mostAppliedDrivers, discreteSlider, tableData, datePicker } = props;
+  const { leastCrossedDrivers, mostCrossedrivers, discreteSlider, tableData, datePicker } = props;
 
   return (
     <>
@@ -15,10 +15,10 @@ const OverSpeedComponent = (props: IOverSpeedComponentProps) => {
       <DiscreteSlider {...discreteSlider} />
       <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
         <Grid item={true} xs={4}>
-          <Bar {...leastAppliedDrivers} />
+          <Bar {...leastCrossedDrivers} />
         </Grid>
         <Grid item={true} xs={4}>
-          <Bar {...mostAppliedDrivers} />
+          <Bar {...mostCrossedrivers} />
         </Grid>
       </Grid>
       <DatePicker {...datePicker} />

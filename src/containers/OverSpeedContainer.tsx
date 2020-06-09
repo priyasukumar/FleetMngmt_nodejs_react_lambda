@@ -80,21 +80,23 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         barData
     } as ICollapsibleTableProps;
 
-    const leasCrossedtOverSpeed = {
-        title: 'Top Most Crossed',
+    const leastCrossedOverSpeed = {
+        title: 'Top Least Crossed',
         yaxisTitle: 'Over Speed Count',
-        plot: sortBy(overSpeed, Driver.OverSpeed , 'desc')
+        plot: sortBy(overSpeed, Driver.OverSpeed , 'desc'),
+        barColor: '#e6601d'
     } as IBarComponentProps;
 
     const mostCrossedOverSpeed = {
-        title: 'Top Least Crossed',
+        title: 'Top Most Crossed',
         yaxisTitle: 'Over Speed Count',
-        plot: sortBy(overSpeed, Driver.OverSpeed)
+        plot: sortBy(overSpeed, Driver.OverSpeed),
+        barColor: '#e6601d'
     } as IBarComponentProps;
 
     const overSpeedComponentProps = {
-        leastAppliedDrivers: mostCrossedOverSpeed,
-        mostAppliedDrivers: leasCrossedtOverSpeed,
+        leastCrossedDrivers: leastCrossedOverSpeed,
+        mostCrossedrivers: mostCrossedOverSpeed,
         discreteSlider: discreteSliderProps,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps

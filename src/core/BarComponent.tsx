@@ -6,14 +6,14 @@ import { IBarData } from '../models/dashboard';
 
 export interface IBarComponentProps {
     plot: IBarData[];
+    barColor: string;
     title: string;
     yaxisTitle: string;
 }
 
 const BarComponent = (props: IBarComponentProps) => {
     const barContainer = useRef(null);
-    const dateFormat = 'd-MMM';
-    const { plot, title, yaxisTitle } = props;
+    const { plot, title, yaxisTitle, barColor } = props;
     const styles = {
         container: {
             display: 'grid',
@@ -24,7 +24,6 @@ const BarComponent = (props: IBarComponentProps) => {
     const Bar = () => {
         const width = 600;
         const height = 400;
-        const color: string = '#3f51b5';
         const margin = ({ top: 30, right: 0, bottom: 30, left: 40 });
 
         const svg = d3
@@ -47,7 +46,7 @@ const BarComponent = (props: IBarComponentProps) => {
         svg.selectAll('g').remove();
 
         svg.append('g')
-            .attr('fill', color)
+            .attr('fill', barColor)
             .selectAll('rect')
             .data(plot)
             .join('rect')
