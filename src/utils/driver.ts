@@ -21,3 +21,23 @@ export const getBarData = (groupedData: any, fromDate: Date | null, toDate: Date
 
     return barData;
 };
+
+export const sortBy = (drivers: any, property: string, by?: string) => {
+    const driversClone = JSON.parse(JSON.stringify(drivers));
+    let bestDrivers = [] as IBarData[];
+    let topBestDrivers;
+    topBestDrivers = driversClone.sort((a: any, b: any) => a[property] - b[property]).slice(0, 5);
+    if (by) {
+        topBestDrivers = driversClone.sort((a: any, b: any) => b[property] - a[property]).slice(0, 5);
+    }
+    topBestDrivers.map((c: any) => {
+        const barModel = {
+            name: c.DriverName,
+            value: c.HarshBreaking,
+        } as IBarData;
+
+        bestDrivers.push(barModel);
+    });
+
+    return bestDrivers;
+};

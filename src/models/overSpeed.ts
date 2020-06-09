@@ -1,6 +1,7 @@
 import { IBarData, IDashboard, IDashboardModel, ICollapsibleTableProps } from './dashboard';
 import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderComponent';
 import { IDatePickerProps } from './datePicker';
+import { IBarComponentProps } from '../core/BarComponent';
 
 export interface IOverSpeedContainerProps {
     overSpeed: IDashboard[];
@@ -12,7 +13,8 @@ export interface IOverSpeedActionProps {
 
 export interface IOverSpeedComponentProps {
     onDateChange?: (fromDate: Date, toDate: Date) => void;
-    barData: IBarData[];
+    leastAppliedDrivers: IBarComponentProps;
+    mostAppliedDrivers: IBarComponentProps;
     discreteSlider: IDiscreteSliderProps;
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;

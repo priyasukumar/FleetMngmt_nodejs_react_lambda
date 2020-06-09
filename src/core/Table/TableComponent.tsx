@@ -28,6 +28,16 @@ const useRowStyles = makeStyles({
   },
 });
 
+const StyledTableRow = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  }),
+)(TableRow);
+
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
     head: {
@@ -55,23 +65,21 @@ const Header = (props: IHeaderProps) => {
 };
 
 const Row = (rowProps: IRowProps) => {
-  const { data, driverCondition, barData } = rowProps;
+  const { data, driverCondition } = rowProps;
   let dashboardModel = data as IDashboardModel;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
   return (
-    <React.Fragment>
-      <StyledTableRow className={classes.root}>
+    <>
+      <StyledTableRow>
         <StyledTableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </StyledTableCell>
 
-        <StyledTableCell component="th" scope="row">
-          {dashboardModel.DriverId}
-        </StyledTableCell>
+        <StyledTableCell component="th" scope="row">{dashboardModel.DriverId}</StyledTableCell>
         <StyledTableCell align="left">{dashboardModel.DriverName}</StyledTableCell>
         <StyledTableCell align="left">{dashboardModel.DriverMobile}</StyledTableCell>
         <StyledTableCell align="left">{dashboardModel.VehicleName}</StyledTableCell>
@@ -130,7 +138,7 @@ const Row = (rowProps: IRowProps) => {
           </Collapse>
         </StyledTableCell>
       </StyledTableRow >
-    </React.Fragment>
+    </>
   );
 };
 
@@ -195,16 +203,6 @@ const SRow = (rowProps: IRowProps) => {
   );
 };
 
-const StyledTableRow = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-      },
-    },
-  }),
-)(TableRow);
-
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const { driverCondition, headers, barData } = props;
   const classes = useRowStyles();
@@ -222,7 +220,7 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
                 driverCondition,
                 barData
               } as IRowProps;
-              return (<Row key={index} {...rowProps} />);
+              return (<Row key={driver.DriverId} {...rowProps} />);
             })
           }
           {
@@ -232,7 +230,7 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
                 data: driverService,
                 driverCondition
               } as IRowProps;
-              return (<SRow key={index} {...rowProps} />);
+              return (<SRow key={driverService.DriverId} {...rowProps} />);
             })
           }
           {

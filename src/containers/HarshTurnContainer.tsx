@@ -10,7 +10,9 @@ import { IDatePickerProps } from '../models/datePicker';
 import { useState, useEffect } from 'react';
 import { isoToLocal } from '../utils/date';
 import { loadHarshTurn } from '../actions/HarshTurnActions';
-import { getBarData } from '../utils/driver';
+import { getBarData, sortBy } from '../utils/driver';
+import { Driver } from '../constants/enum';
+import { IBarComponentProps } from '../core/BarComponent';
 
 const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
@@ -63,11 +65,24 @@ const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionPr
 
     const dashboardClone = JSON.parse(JSON.stringify(props.harshTurn)) as IDashboard[];
     dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
-    const groupedDataByPacketTime = groupBy(dashboardClone, 'PacketTime') as IGroupedDashboard;
-    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, 'HarshBreaking');
+    const groupedDataByPacketTime = groupBy(dashboardClone, Driver.PacketTime) as IGroupedDashboard;
+    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, Driver.HarshBrake);
     
+    const leastAppliedHarshTurn = {
+        title: 'Top Most Applied',
+        yaxisTitle: 'Harsh Turn Count',
+        plot: sortBy(harshTurn, Driver.HarshTurn, 'desc')
+    } as IBarComponentProps;
+
+    const mostAppliedHarshTurn = {
+        title: 'Top Least Applied',
+        yaxisTitle: 'Harsh Turn Count',
+        plot: sortBy(harshTurn, Driver.HarshTurn)
+    } as IBarComponentProps;
+
     const harshTurnComponentProps = {
-        barData: barData,
+        leastAppliedDrivers: leastAppliedHarshTurn,
+        mostAppliedDrivers: mostAppliedHarshTurn,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps
     } as IHarshTurnComponentProps;

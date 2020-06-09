@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IGroupedDashboard, IBarData, IDriverCondition, ICollapsibleTableProps, IDashboardActionProps, IDashboard } from '../models/dashboard';
+import { IGroupedDashboard, IBarData, IDriverCondition, ICollapsibleTableProps, IDashboardActionProps, IDashboard, IDashboardModel } from '../models/dashboard';
 import HarshBrakeComponent from '../components/dashboard/HarshBrakeComponent';
 import { groupBy } from '../utils/database';
 import { getWithSubModel } from './DashboardContainer';
@@ -12,7 +12,9 @@ import { useState, useEffect } from 'react';
 import { isoToLocal, getDateRange } from '../utils/date';
 import { loadOverSpeed } from '../actions/OverSpeedActions';
 import { loadHarshBrake } from '../actions/HarshBrakeActions';
-import { getBarData } from '../utils/driver';
+import { getBarData, sortBy } from '../utils/driver';
+import { IBarComponentProps } from '../core/BarComponent';
+import { Driver } from '../constants/enum';
 
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
@@ -65,11 +67,24 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
 
     const dashboardClone = JSON.parse(JSON.stringify(props.harshBrake)) as IDashboard[];
     dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
-    const groupedDataByPacketTime = groupBy(dashboardClone, 'PacketTime') as IGroupedDashboard;
-    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, 'HarshBreaking');
+    const groupedDataByPacketTime = groupBy(dashboardClone, Driver.PacketTime) as IGroupedDashboard;
+    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, Driver.HarshBrake);
+
+    const leastAppliedHarshBrake = {
+        title: 'Top Most Applied',
+        yaxisTitle: 'Harsh Brake Count',
+        plot: sortBy(harshBrake, Driver.HarshBrake, 'desc')
+    } as IBarComponentProps;
+
+    const mostAppliedHarshBrake = {
+        title: 'Top Least Applied',
+        yaxisTitle: 'Top Harsh Brake Count',
+        plot: sortBy(harshBrake, Driver.HarshBrake)
+    } as IBarComponentProps;
 
     const harshBrakeComponentProps = {
-        barData: barData,
+        leastAppliedDrivers: leastAppliedHarshBrake,
+        mostAppliedDrivers: mostAppliedHarshBrake,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps
     } as IHarshBrakeComponentProps;

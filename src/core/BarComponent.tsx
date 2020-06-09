@@ -4,15 +4,16 @@ import { Line, ScaleBand, AxisDomain, AxisScale } from 'd3';
 import { Container } from '@material-ui/core';
 import { IBarData } from '../models/dashboard';
 
-interface IBarComponentProps {
+export interface IBarComponentProps {
     plot: IBarData[];
     title: string;
+    yaxisTitle: string;
 }
 
 const BarComponent = (props: IBarComponentProps) => {
     const barContainer = useRef(null);
     const dateFormat = 'd-MMM';
-    const { plot, title } = props;
+    const { plot, title, yaxisTitle } = props;
     const styles = {
         container: {
             display: 'grid',
@@ -68,7 +69,7 @@ const BarComponent = (props: IBarComponentProps) => {
                 .attr('y', 10)
                 .attr('fill', 'currentColor')
                 .attr('text-anchor', 'start')
-                .text(`${title} Count`));
+                .text(yaxisTitle));
 
         svg.append('g')
             .call(xAxis);

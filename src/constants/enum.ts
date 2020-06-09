@@ -4,3 +4,11 @@ export enum Http {
     Put = 'PUT',
     Delete = 'DELETE'
 }
+
+export enum Driver {
+    HarshBrake = 'HarshBreaking',
+    HarshTurn = 'HarshTurning',
+    OverSpeed = 'OverSpeed',
+    DriverId = 'DriverId',
+    PacketTime = 'PacketTime'
+}

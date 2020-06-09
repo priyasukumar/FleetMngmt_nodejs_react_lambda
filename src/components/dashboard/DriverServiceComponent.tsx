@@ -8,6 +8,7 @@ const DriverServiceComponent = (props: IDriverServiceTimeComponentProps) => {
 
     return (
         <>
+            <h1 style={{ textAlign: 'center' }}>Driver Service</h1>
             <DatePicker {...datePicker} />
             <CollapsibleTable {...tableData} />
         </>

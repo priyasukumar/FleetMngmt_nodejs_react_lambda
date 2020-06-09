@@ -11,7 +11,9 @@ import { getWithSubModel } from './DashboardContainer';
 import { IDatePickerProps } from '../models/datePicker';
 import { isoToLocal } from '../utils/date';
 import { loadOverSpeed } from '../actions/OverSpeedActions';
-import { getBarData } from '../utils/driver';
+import { getBarData, sortBy } from '../utils/driver';
+import { Driver } from '../constants/enum';
+import { IBarComponentProps } from '../core/BarComponent';
 
 const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
@@ -68,8 +70,8 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
 
     const dashboardClone = JSON.parse(JSON.stringify(overSpeed)) as IDashboardModel[];
     dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
-    const groupedDataByPacketTime = groupBy(dashboardClone, 'PacketTime') as IGroupedDashboard;
-    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, 'OverSpeed');
+    const groupedDataByPacketTime = groupBy(dashboardClone, Driver.PacketTime) as IGroupedDashboard;
+    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, Driver.OverSpeed);
 
     const collapsibleTableProps = {
         data: overSpeed,
@@ -78,8 +80,21 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         barData
     } as ICollapsibleTableProps;
 
+    const leasCrossedtOverSpeed = {
+        title: 'Top Most Crossed',
+        yaxisTitle: 'Over Speed Count',
+        plot: sortBy(overSpeed, Driver.OverSpeed , 'desc')
+    } as IBarComponentProps;
+
+    const mostCrossedOverSpeed = {
+        title: 'Top Least Crossed',
+        yaxisTitle: 'Over Speed Count',
+        plot: sortBy(overSpeed, Driver.OverSpeed)
+    } as IBarComponentProps;
+
     const overSpeedComponentProps = {
-        barData: barData,
+        leastAppliedDrivers: mostCrossedOverSpeed,
+        mostAppliedDrivers: leasCrossedtOverSpeed,
         discreteSlider: discreteSliderProps,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps

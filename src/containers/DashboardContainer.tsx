@@ -7,6 +7,7 @@ import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
 import { IDatePickerProps } from '../models/datePicker';
+import { Driver } from '../constants/enum';
 
 const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionProps) => {
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Over Speed Count', 'Harsh Break Count', 'Harsh Turn Count'];
@@ -159,7 +160,7 @@ export const isDashboard = (object: any): object is IDashboardModel => {
     if (object === undefined) {
         return false;
     }
-    return 'HarshTurning' in object;
+    return Driver.HarshTurn in object;
 };
 
 const mapStateToProps = ({ dashboard }: { dashboard: IDashboardContainerProps }) => {

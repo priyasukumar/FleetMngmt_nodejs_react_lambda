@@ -93,8 +93,8 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
             } as IDriverServiceTimeModel;
 
             groupedData[key].map((c, index) => {
-                driverServiceTimeModel.RestTimeHours += toFixed(c.RestTimeHours);
-                driverServiceTimeModel.DrivingTimeHours += toFixed(c.DrivingTimeHours);
+                driverServiceTimeModel.RestTimeHours += c.RestTimeHours;
+                driverServiceTimeModel.DrivingTimeHours += c.DrivingTimeHours;
                 driverServiceTimeModel.SubModel[index] = {
                     RestingStartTime: '',
                     RestingEndTime: '',
@@ -109,6 +109,8 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
                 return c;
             });
 
+            driverServiceTimeModel.RestTimeHours = toFixed(driverServiceTimeModel.RestTimeHours);
+            driverServiceTimeModel.DrivingTimeHours = toFixed(driverServiceTimeModel.DrivingTimeHours);
             driverServiceTime.push(driverServiceTimeModel);
         }
     }

@@ -1,6 +1,7 @@
 import { IBarData, IDashboard, IDashboardModel, ICollapsibleTableProps } from './dashboard';
 import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderComponent';
 import { IDatePickerProps } from './datePicker';
+import { IBarComponentProps } from '../core/BarComponent';
 
 export interface IHarshBrakeContainerProps {
     harshBrake: IDashboard[];
@@ -12,7 +13,8 @@ export interface IHarshBrakeActionProps {
 }
 
 export interface IHarshBrakeComponentProps {
-    barData: IBarData[];
+    leastAppliedDrivers: IBarComponentProps;
+    mostAppliedDrivers: IBarComponentProps;
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
 }
