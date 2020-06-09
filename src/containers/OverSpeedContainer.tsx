@@ -25,7 +25,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         onSliderChange: (limit: number) => onSpeedLimitChange(limit),
     } as IDiscreteSliderProps;
     const groupedDataByDriverId = groupBy(props.overSpeed, 'DriverVehicleId') as IGroupedDashboard;
-    const overSpeed = getWithSubModel(groupedDataByDriverId, speedLimit).filter(c => c.OverSpeed > 0);
+    const overSpeed = getWithSubModel(groupedDataByDriverId, speedLimit).filter(c => c.OverSpeed > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.VehicleSpeed >= speedLimit));
 
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Over Speed Count'];
 
@@ -66,7 +66,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
-    const dashboardClone = JSON.parse(JSON.stringify(props.overSpeed)) as IDashboardModel[];
+    const dashboardClone = JSON.parse(JSON.stringify(overSpeed)) as IDashboardModel[];
     dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
     const groupedDataByPacketTime = groupBy(dashboardClone, 'PacketTime') as IGroupedDashboard;
     const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, 'OverSpeed');

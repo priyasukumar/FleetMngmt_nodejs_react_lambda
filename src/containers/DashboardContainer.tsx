@@ -107,11 +107,13 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
             const {
                 DCS_DriverMaster: { DriverId, DriverMobile, DriverName },
                 CreatedDate,
+                PacketTime,
                 DCS_VehicleMaster: { VehicleLicenseNo, VehicleName }
             } = groupedData[key][0];
             let dashboardModel = {
                 DriverId,
                 CreatedDate,
+                PacketTime,
                 DriverMobile,
                 DriverName,
                 VehicleLicenseNo,

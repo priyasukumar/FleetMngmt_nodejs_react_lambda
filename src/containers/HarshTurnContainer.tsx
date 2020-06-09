@@ -7,7 +7,6 @@ import { getWithSubModel } from './DashboardContainer';
 import { IHarshTurnContainerProps, IHarshTurnComponentProps, IHarshTurnActionProps } from '../models/harshTurn';
 import HarshTurnComponent from '../components/dashboard/HarshTurnComponent';
 import { IDatePickerProps } from '../models/datePicker';
-import { loadDashboard } from '../actions/DashboardActions';
 import { useState, useEffect } from 'react';
 import { isoToLocal } from '../utils/date';
 import { loadHarshTurn } from '../actions/HarshTurnActions';
@@ -16,7 +15,7 @@ import { getBarData } from '../utils/driver';
 const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
     const groupedDataByDriverId = groupBy(props.harshTurn, 'DriverVehicleId') as IGroupedDashboard;
-    const harshTurn = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshTurning > 0);
+    const harshTurn = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshTurning > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshTurning > 0));
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Turn Count'];
 
     const driverCondition = {

@@ -17,7 +17,7 @@ import { getBarData } from '../utils/driver';
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
     const groupedDataByDriverId = groupBy(props.harshBrake, 'DriverVehicleId') as IGroupedDashboard;
-    const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBreaking > 0).filter(c => c.SubModel.filter(d => d.HarshBreaking > 0));
+    const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBreaking > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshBreaking > 0));
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Brake Count'];
 
     const driverCondition = {
