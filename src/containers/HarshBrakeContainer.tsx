@@ -12,31 +12,12 @@ import { useState, useEffect } from 'react';
 import { isoToLocal, getDateRange } from '../utils/date';
 import { loadOverSpeed } from '../actions/OverSpeedActions';
 import { loadHarshBrake } from '../actions/HarshBrakeActions';
-
-export const getBarData = (groupedData: IGroupedDashboard, fromDate: Date | null, toDate: Date | null, dateFormat: string): IBarData[] => {
-    let barData = [] as IBarData[];
-    if (fromDate && toDate) {
-        const range = getDateRange(fromDate, toDate, 'date');
-        range.map(d => {
-            const date = isoToLocal(d.toISOString(), dateFormat);
-            const dashboard = groupedData[date];
-            const harshBrakeCount = dashboard ? dashboard.reduce((c, p) => c + p.HarshBreaking, 0) : 0;
-            let barModel = {
-                name: date,
-                value: harshBrakeCount
-            } as IBarData;
-
-            barData.push(barModel);
-        });
-    }
-
-    return barData;
-};
+import { getBarData } from '../utils/driver';
 
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
     const groupedDataByDriverId = groupBy(props.harshBrake, 'DriverVehicleId') as IGroupedDashboard;
-    const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBreaking > 0);
+    const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBreaking > 0).filter(c => c.SubModel.filter(d => d.HarshBreaking > 0));
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Brake Count'];
 
     const driverCondition = {
@@ -82,11 +63,10 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
-    const dashboardClone = [] as IDashboard[];
-    const dashboardClone1 = Object.assign(dashboardClone, props.harshBrake);
-    dashboardClone1.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
-    const groupedDataByPacketTime = groupBy(dashboardClone1, 'PacketTime') as IGroupedDashboard;
-    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat);
+    const dashboardClone = JSON.parse(JSON.stringify(props.harshBrake)) as IDashboard[];
+    dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
+    const groupedDataByPacketTime = groupBy(dashboardClone, 'PacketTime') as IGroupedDashboard;
+    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, 'HarshBreaking');
 
     const harshBrakeComponentProps = {
         barData: barData,
@@ -96,8 +76,8 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
 
     useEffect(
         () => {
-            if (fromDate && toDate && !props.harshBrake) {
-                props.loadData(fromDate, toDate); 
+            if (fromDate && toDate) {
+                props.loadData(fromDate, toDate);
             }
         },
         [props.loadData]);

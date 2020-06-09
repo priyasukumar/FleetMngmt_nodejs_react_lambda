@@ -135,7 +135,7 @@ const Row = (rowProps: IRowProps) => {
 };
 
 const SRow = (rowProps: IRowProps) => {
-  const { data } = rowProps;
+  const data = rowProps.data as IDriverServiceTimeModel;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
@@ -155,6 +155,8 @@ const SRow = (rowProps: IRowProps) => {
         <StyledTableCell align="left">{data.DriverMobile}</StyledTableCell>
         <StyledTableCell align="left">{data.VehicleName}</StyledTableCell>
         <StyledTableCell align="left">{data.VehicleLicenseNo}</StyledTableCell>
+        <StyledTableCell align="left">{data.DrivingTimeHours}</StyledTableCell>
+        <StyledTableCell align="left">{data.RestTimeHours}</StyledTableCell>
       </StyledTableRow>
       <StyledTableRow>
         <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>

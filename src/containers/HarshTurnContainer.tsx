@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IDashboardContainerProps, IGroupedDashboard, IBarData, IDriverCondition, ICollapsibleTableProps, IDashboardActionProps } from '../models/dashboard';
+import { IGroupedDashboard, IDriverCondition, ICollapsibleTableProps, IDashboard } from '../models/dashboard';
 import { groupBy } from '../utils/database';
 import { getWithSubModel } from './DashboardContainer';
 import { IHarshTurnContainerProps, IHarshTurnComponentProps, IHarshTurnActionProps } from '../models/harshTurn';
@@ -11,19 +11,12 @@ import { loadDashboard } from '../actions/DashboardActions';
 import { useState, useEffect } from 'react';
 import { isoToLocal } from '../utils/date';
 import { loadHarshTurn } from '../actions/HarshTurnActions';
+import { getBarData } from '../utils/driver';
 
 const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
     const groupedDataByDriverId = groupBy(props.harshTurn, 'DriverVehicleId') as IGroupedDashboard;
     const harshTurn = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshTurning > 0);
-    const barData = props.harshTurn.map(c => {
-        const data = {
-            name: isoToLocal(c.PacketTime, dateFormat),
-            value: harshTurn.length
-        } as IBarData;
-        return data;
-    });
-
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Turn Count'];
 
     const driverCondition = {
@@ -69,6 +62,11 @@ const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionPr
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
+    const dashboardClone = JSON.parse(JSON.stringify(props.harshTurn)) as IDashboard[];
+    dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
+    const groupedDataByPacketTime = groupBy(dashboardClone, 'PacketTime') as IGroupedDashboard;
+    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, 'HarshBreaking');
+    
     const harshTurnComponentProps = {
         barData: barData,
         tableData: collapsibleTableProps,

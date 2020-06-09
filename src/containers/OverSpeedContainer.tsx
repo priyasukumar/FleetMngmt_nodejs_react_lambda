@@ -2,40 +2,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import OverSpeedComponent from '../components/dashboard/OverSpeedComponent';
-import { IDashboardContainerProps, IBarData, IDashboard, IGroupedDashboard, ICollapsibleTableProps, IDriverCondition, IDashboardActionProps } from '../models/dashboard';
+import { IGroupedDashboard, ICollapsibleTableProps, IDriverCondition, IDashboardModel } from '../models/dashboard';
 import { useState, useEffect } from 'react';
 import { IOverSpeedComponentProps, IOverSpeedContainerProps, IOverSpeedActionProps } from '../models/overSpeed';
 import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderComponent';
 import { groupBy } from '../utils/database';
 import { getWithSubModel } from './DashboardContainer';
 import { IDatePickerProps } from '../models/datePicker';
-import { loadDashboard } from '../actions/DashboardActions';
 import { isoToLocal } from '../utils/date';
 import { loadOverSpeed } from '../actions/OverSpeedActions';
+import { getBarData } from '../utils/driver';
 
 const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
     const [speedLimit, onSpeedLimitChange] = useState(80);
-    const initialBarState: IDashboard[] = [];
-    const [barData1, onBarDataChange] = useState(initialBarState);
-
-    const groupedDataByDriverId = groupBy(props.overSpeed, 'DriverVehicleId') as IGroupedDashboard;
-    const overSpeed = getWithSubModel(groupedDataByDriverId, speedLimit).filter(c => c.OverSpeed > 0);
-    let count = 0;
-
-    const barData = props.overSpeed.map(c => {
-        if (c.VehicleSpeed >= speedLimit) {
-            count += 1;
-        }
-
-        const data = {
-            name: isoToLocal(c.PacketTime, dateFormat),
-            value: count
-        } as IBarData;
-
-        count = 0;
-        return data;
-    });
 
     const discreteSliderProps = {
         title: 'Speed Limit',
@@ -44,6 +24,8 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         speedLimit: speedLimit,
         onSliderChange: (limit: number) => onSpeedLimitChange(limit),
     } as IDiscreteSliderProps;
+    const groupedDataByDriverId = groupBy(props.overSpeed, 'DriverVehicleId') as IGroupedDashboard;
+    const overSpeed = getWithSubModel(groupedDataByDriverId, speedLimit).filter(c => c.OverSpeed > 0);
 
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Over Speed Count'];
 
@@ -52,13 +34,6 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         includeHarshTurn: false,
         includeOverSpeed: true
     } as IDriverCondition;
-
-    const collapsibleTableProps = {
-        data: overSpeed,
-        headers: headers,
-        driverCondition,
-        barData
-    } as ICollapsibleTableProps;
 
     const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
@@ -90,6 +65,18 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         handleFromDateChange: (date: Date) => handleFromDateChange(date),
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
+
+    const dashboardClone = JSON.parse(JSON.stringify(props.overSpeed)) as IDashboardModel[];
+    dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
+    const groupedDataByPacketTime = groupBy(dashboardClone, 'PacketTime') as IGroupedDashboard;
+    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, 'OverSpeed');
+
+    const collapsibleTableProps = {
+        data: overSpeed,
+        headers: headers,
+        driverCondition,
+        barData
+    } as ICollapsibleTableProps;
 
     const overSpeedComponentProps = {
         barData: barData,

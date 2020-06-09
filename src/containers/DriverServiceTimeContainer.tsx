@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react';
 import { IDriverServiceTimeActionProps, IDriverServiceTimeContainerProps, IDriverServiceTimeComponentProps, IGroupedDriverServiceTime, IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../models/driverServiceTime';
 import DriverServiceComponent from '../components/dashboard/DriverServiceComponent';
 import { loadDriversServiceTime } from '../actions/DriverServiceTimeAction';
-import { groupBy } from '../utils/database';
+import { groupBy, toFixed } from '../utils/database';
 import { ICollapsibleTableProps } from '../models/dashboard';
 import { IDatePickerProps } from '../models/datePicker';
 
 const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & IDriverServiceTimeActionProps) => {
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No'];
+    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Driving Time Hours', 'Rest Time Hours'];
     const groupedDataByDriverId = groupBy(props.driversServiceTime, 'DriverVehicleId') as IGroupedDriverServiceTime;
     const driverServiceTime = getWithSubModel(groupedDataByDriverId);
 
@@ -68,7 +68,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     );
 };
 
-export const getWithSubModel = (groupedData: IGroupedDriverServiceTime, speedLimit = 60): IDriverServiceTimeModel[] => {
+export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriverServiceTimeModel[] => {
     let driverServiceTime = [] as IDriverServiceTimeModel[];
 
     for (let key in groupedData) {
@@ -76,7 +76,9 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime, speedLim
             const {
                 DCS_DriverMaster: { DriverId, DriverMobile, DriverName },
                 CreatedDate,
-                DCS_VehicleMaster: { VehicleLicenseNo, VehicleName }
+                DCS_VehicleMaster: { VehicleLicenseNo, VehicleName },
+                DrivingTimeHours,
+                RestTimeHours
             } = groupedData[key][0];
             let driverServiceTimeModel = {
                 DriverId,
@@ -85,10 +87,14 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime, speedLim
                 DriverName,
                 VehicleLicenseNo,
                 VehicleName,
+                DrivingTimeHours: 0,
+                RestTimeHours: 0,
                 SubModel: [] as IDriverServiceTimeSubModel[]
             } as IDriverServiceTimeModel;
 
             groupedData[key].map((c, index) => {
+                driverServiceTimeModel.RestTimeHours += toFixed(c.RestTimeHours);
+                driverServiceTimeModel.DrivingTimeHours += toFixed(c.DrivingTimeHours);
                 driverServiceTimeModel.SubModel[index] = {
                     RestingStartTime: '',
                     RestingEndTime: '',

@@ -11,7 +11,7 @@ const OverSpeedComponent = (props: IOverSpeedComponentProps) => {
   return (
     <>
       <DiscreteSlider {...discreteSlider} />
-      <Bar plot={barData} title="No. of Persons" />
+      <Bar plot={barData} title="Over Speed" />
       <DatePicker {...datePicker} />
       <CollapsibleTable {...tableData} />
     </>

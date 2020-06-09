@@ -9,7 +9,7 @@ const HarshBrakeComponent = (props: IHarshBrakeComponentProps) => {
 
     return (
         <>
-            <Bar plot={barData} title="No. of Persons" />
+            <Bar plot={barData} title="Harsh Brake" />
             <DatePicker {...datePicker} />
             <CollapsibleTable {...tableData} />
         </>

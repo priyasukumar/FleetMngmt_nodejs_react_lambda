@@ -9,7 +9,7 @@ const HarshTurnComponent = (props: IHarshTurnComponentProps) => {
 
   return (
     <>
-      <Bar plot={barData} title="No. of Persons" />
+      <Bar plot={barData} title="Harsh Turn" />
       <DatePicker {...datePicker} />
       <CollapsibleTable {...tableData} />
     </>

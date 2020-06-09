@@ -6,7 +6,6 @@ import { IBarData } from '../models/dashboard';
 
 interface IBarComponentProps {
     plot: IBarData[];
-    frequency?: string;
     title: string;
 }
 
@@ -69,7 +68,7 @@ const BarComponent = (props: IBarComponentProps) => {
                 .attr('y', 10)
                 .attr('fill', 'currentColor')
                 .attr('text-anchor', 'start')
-                .text(`${title}`));
+                .text(`${title} Count`));
 
         svg.append('g')
             .call(xAxis);
@@ -86,7 +85,7 @@ const BarComponent = (props: IBarComponentProps) => {
 
     return (
         <Container maxWidth="sm">
-            <h1 style={{ textAlign: 'center' }}>Harsh Brake</h1>
+            <h1 style={{ textAlign: 'center' }}>{title}</h1>
             <svg style={styles.container} ref={barContainer} />
         </Container>
     );

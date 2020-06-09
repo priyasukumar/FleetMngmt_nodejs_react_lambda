@@ -9,3 +9,7 @@ export const groupBy = (array: any, key: any) => {
         return result;
     }, {});
 };
+
+export const toFixed = (input: number) => {
+    return Math.round((input + Number.EPSILON) * 100) / 100;
+};
