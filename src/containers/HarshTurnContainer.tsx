@@ -1,21 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IGroupedDashboard, IDriverCondition, ICollapsibleTableProps, IDashboard } from '../models/dashboard';
+import { IGroupedDashboard, IDriverCondition, ICollapsibleTableProps } from '../models/dashboard';
 import { groupBy } from '../utils/database';
 import { getWithSubModel } from './DashboardContainer';
 import { IHarshTurnContainerProps, IHarshTurnComponentProps, IHarshTurnActionProps } from '../models/harshTurn';
 import HarshTurnComponent from '../components/dashboard/HarshTurnComponent';
 import { IDatePickerProps } from '../models/datePicker';
 import { useState, useEffect } from 'react';
-import { isoToLocal } from '../utils/date';
 import { loadHarshTurn } from '../actions/HarshTurnActions';
-import { getBarData, sortBy } from '../utils/driver';
+import { sortBy } from '../utils/driver';
 import { Driver } from '../constants/enum';
 import { IBarComponentProps } from '../core/BarComponent';
 
 const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionProps) => {
-    const dateFormat = 'DD/MM/YYYY';
     const groupedDataByDriverId = groupBy(props.harshTurn, 'DriverVehicleId') as IGroupedDashboard;
     const harshTurn = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshTurning > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshTurning > 0));
     const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Turn Count'];
@@ -35,7 +33,7 @@ const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionPr
     const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 1);
+    initialToDate.setDate(initialToDate.getDate() - 7);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
@@ -63,19 +61,19 @@ const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionPr
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
-    const dashboardClone = JSON.parse(JSON.stringify(props.harshTurn)) as IDashboard[];
-    dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
-    const groupedDataByPacketTime = groupBy(dashboardClone, Driver.PacketTime) as IGroupedDashboard;
-    const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, Driver.HarshBrake);
+    // const dashboardClone = JSON.parse(JSON.stringify(props.harshTurn)) as IDashboard[];
+    // dashboardClone.forEach(c => c.PacketTime = isoToLocal(c.PacketTime, dateFormat));
+    // const groupedDataByPacketTime = groupBy(dashboardClone, Driver.PacketTime) as IGroupedDashboard;
+    // const barData = getBarData(groupedDataByPacketTime, fromDate, toDate, dateFormat, Driver.HarshBrake);
     
-    const leastAppliedHarshTurn = {
+    const mostAppliedHarshTurn = {
         title: 'Top Most Applied',
         yaxisTitle: 'Harsh Turn Count',
         plot: sortBy(harshTurn, Driver.HarshTurn, 'desc'),
         barColor: '#1f77b4'
     } as IBarComponentProps;
 
-    const mostAppliedHarshTurn = {
+    const leastAppliedHarshTurn = {
         title: 'Top Least Applied',
         yaxisTitle: 'Harsh Turn Count',
         plot: sortBy(harshTurn, Driver.HarshTurn),

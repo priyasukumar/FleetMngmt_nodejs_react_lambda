@@ -7,3 +7,8 @@ export interface ILink {
     submenu?: ILink[];
     icon: OverridableComponent<SvgIconTypeMap>;
 }
+
+export interface IHeaderProps {
+    handleDrawerOpen(): void;
+    open: boolean;
+}

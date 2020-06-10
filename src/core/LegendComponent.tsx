@@ -3,26 +3,13 @@ import * as d3 from 'd3';
 import { PieArcDatum } from 'd3-shape';
 import { useEffect, useRef } from 'react';
 import { IPieData } from '../models/dashboard';
-
-interface ILegendComponentProps {
-    data: IPieData[];
-}
+import { ILegendComponentProps } from '../models/graph';
 
 const LegendComponent = (props: ILegendComponentProps) => {
     const legendContainer = useRef(null);
     const { data } = props;
 
-    const styles = {
-        container: {
-            display: 'grid',
-            justifyItems: 'center'
-        }
-    };
-
     const Legend = () => {
-        const width = 300;
-        const height = Math.min(width, 450);
-
         let svg = d3
             .select<any, PieArcDatum<IPieData>>(legendContainer.current)
             .append('svg');
@@ -37,18 +24,17 @@ const LegendComponent = (props: ILegendComponentProps) => {
             .enter()
             .append('rect')
             .attr('x', 100)
-            .attr('y', (d, i) => (100 + i * (size + 5))) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr('y', (d, i) => (100 + i * (size + 5)))
             .attr('width', size)
             .attr('height', size)
             .style('fill', (d) => color(d));
 
-        // Add one dot in the legend for each name.
         svg.selectAll('mylabels')
             .data(data.map(c => c.name))
             .enter()
             .append('text')
             .attr('x', () => 100 + size * 1.2)
-            .attr('y', (d, i) => 100 + i * (size + 5) + (size / 2)) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr('y', (d, i) => 100 + i * (size + 5) + (size / 2))
             .style('fill', (d) => 'black')
             .text((d) => `${d}`)
             .attr('text-anchor', 'left')

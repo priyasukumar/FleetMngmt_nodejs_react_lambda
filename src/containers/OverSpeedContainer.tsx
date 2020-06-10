@@ -40,7 +40,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
     const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 1);
+    initialToDate.setDate(initialToDate.getDate() - 7);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
@@ -80,15 +80,15 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         barData
     } as ICollapsibleTableProps;
 
-    const leastCrossedOverSpeed = {
-        title: 'Top Least Crossed',
+    const mostCrossedOverSpeed = {
+        title: 'Top Most Crossed',
         yaxisTitle: 'Over Speed Count',
         plot: sortBy(overSpeed, Driver.OverSpeed , 'desc'),
         barColor: '#e6601d'
     } as IBarComponentProps;
 
-    const mostCrossedOverSpeed = {
-        title: 'Top Most Crossed',
+    const leastCrossedOverSpeed = {
+        title: 'Top Least Crossed',
         yaxisTitle: 'Over Speed Count',
         plot: sortBy(overSpeed, Driver.OverSpeed),
         barColor: '#e6601d'

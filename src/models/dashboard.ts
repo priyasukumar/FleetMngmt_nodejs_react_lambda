@@ -85,15 +85,6 @@ export interface IPieData extends PieArcDatum<IPieData> {
     value: number;
 }
 
-// export interface ICollapsibleTableProps {
-//     tableProps: ITableProps[];
-// }
-
-// export interface ITableProps {
-//     headers: string;
-//     data: IDashboardModel;
-// }
-
 export interface ICollapsibleTableProps {
     headers: string[];
     data: IDashboardModel[] | IDriverServiceTimeModel[];

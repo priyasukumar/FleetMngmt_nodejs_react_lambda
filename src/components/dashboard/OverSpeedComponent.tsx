@@ -15,10 +15,10 @@ const OverSpeedComponent = (props: IOverSpeedComponentProps) => {
       <DiscreteSlider {...discreteSlider} />
       <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
         <Grid item={true} xs={4}>
-          <Bar {...leastCrossedDrivers} />
+          <Bar {...mostCrossedrivers} />
         </Grid>
         <Grid item={true} xs={4}>
-          <Bar {...mostCrossedrivers} />
+          <Bar {...leastCrossedDrivers} />
         </Grid>
       </Grid>
       <DatePicker {...datePicker} />

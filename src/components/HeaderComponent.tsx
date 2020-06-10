@@ -1,19 +1,14 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import { IHeaderProps } from '../models/app';
 
 const drawerWidth = 240;
-
-export interface IHeaderProps {
-    handleDrawerOpen(): void;
-    open: boolean;
-}
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -46,9 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const HeaderComponent = (props: IHeaderProps) => {
-    const { handleDrawerOpen, open } = props;
     const classes = useStyles();
-
+    const { handleDrawerOpen, open } = props;
+    
     return (
         <AppBar position="fixed" className={clsx(classes.appBar, { [classes.appBarShift]: open })}>
             <Toolbar>
@@ -62,9 +57,7 @@ const HeaderComponent = (props: IHeaderProps) => {
                     })}>
                     <MenuIcon />
                 </IconButton>
-                <Typography variant="h2" noWrap={true}>
-                    FMS
-           </Typography>
+                <Typography variant="h2" noWrap={true}>FMS</Typography>
             </Toolbar>
         </AppBar >
     );

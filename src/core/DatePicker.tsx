@@ -7,8 +7,8 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { IDatePickerProps } from '../models/datePicker';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 import { getDateRangeDiff } from '../utils/date';
-import { MuiThemeProvider, makeStyles, createMuiTheme } from '@material-ui/core';
 
 const useCustomThemeStyles = createMuiTheme({
     palette: {
@@ -31,8 +31,8 @@ const DatePicker = (props: IDatePickerProps) => {
             setError('From date should not be in future');
             return;
         }
-        if (diff > 3) {
-            setError('Date range should be less than 3 days');
+        if (diff > 10) {
+            setError('Date range should be less than 7 days');
             return;
         }
         setError(null);
@@ -45,8 +45,8 @@ const DatePicker = (props: IDatePickerProps) => {
             return;
         }
         const diff = getDateRangeDiff(datePickerFromDate, toDate, 'days');
-        if (diff > 3) {
-            setError('Date range should be less than 3 days');
+        if (diff > 10) {
+            setError('Date range should be less than 7 days');
             return;
         }
         setError(null);

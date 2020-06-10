@@ -22,7 +22,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 1);
+    initialToDate.setDate(initialToDate.getDate() - 7);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
@@ -76,11 +76,9 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
             const {
                 DCS_DriverMaster: { DriverId, DriverMobile, DriverName },
                 CreatedDate,
-                DCS_VehicleMaster: { VehicleLicenseNo, VehicleName },
-                DrivingTimeHours,
-                RestTimeHours
+                DCS_VehicleMaster: { VehicleLicenseNo, VehicleName }
             } = groupedData[key][0];
-            let driverServiceTimeModel = {
+            const driverServiceTimeModel = {
                 DriverId,
                 CreatedDate,
                 DriverMobile,

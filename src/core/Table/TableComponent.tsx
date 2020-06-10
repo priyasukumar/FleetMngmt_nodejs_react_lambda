@@ -16,8 +16,8 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel } from '../../models/dashboard';
 import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
-import Bar from '../../core/BarComponent';
 import { isoToLocal } from '../../utils/date';
+import { TablePagination } from '@material-ui/core';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 const useRowStyles = makeStyles({
@@ -68,7 +68,6 @@ const Row = (rowProps: IRowProps) => {
   const { data, driverCondition } = rowProps;
   let dashboardModel = data as IDashboardModel;
   const [open, setOpen] = React.useState(false);
-  const classes = useRowStyles();
 
   return (
     <>
@@ -133,7 +132,6 @@ const Row = (rowProps: IRowProps) => {
                   ))}
                 </TableBody>
               </Table>
-              {/* <Bar data={barData} title="No. of Persons" /> */}
             </Box>
           </Collapse>
         </StyledTableCell>
@@ -206,42 +204,67 @@ const SRow = (rowProps: IRowProps) => {
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const { driverCondition, headers, barData } = props;
   const classes = useRowStyles();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <Header headers={headers} />
-        <TableBody>
-          {
-            (isDashboard(props.data[0])) &&
-            (props.data as Array<IDashboardModel>).map((driver: IDashboardModel, index: number): JSX.Element => {
-              const rowProps = {
-                data: driver as IDashboardModel,
-                driverCondition,
-                barData
-              } as IRowProps;
-              return (<Row key={driver.DriverId} {...rowProps} />);
-            })
-          }
-          {
-            (!isDashboard(props.data[0])) &&
-            (props.data as Array<IDriverServiceTimeModel>).map((driverService, index) => {
-              const rowProps = {
-                data: driverService,
-                driverCondition
-              } as IRowProps;
-              return (<SRow key={driverService.DriverId} {...rowProps} />);
-            })
-          }
-          {
-            props.data.length === 0 &&
-            <StyledTableRow className={classes.root}>
-              <StyledTableCell component="th" scope="row" style={{ textAlign: 'center' }} colSpan={10}>No Data Available</StyledTableCell>
-            </StyledTableRow>
-          }
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <Header headers={headers} />
+          <TableBody>
+            {
+              (isDashboard(props.data[0])) &&
+              (props.data as Array<IDashboardModel>).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((driver: IDashboardModel, index: number): JSX.Element => {
+                const rowProps = {
+                  data: driver as IDashboardModel,
+                  driverCondition,
+                  barData
+                } as IRowProps;
+                return (<Row key={driver.DriverId} {...rowProps} />);
+              })
+            }
+            {
+              (!isDashboard(props.data[0])) &&
+              (props.data as Array<IDriverServiceTimeModel>).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((driverService, index) => {
+                const rowProps = {
+                  data: driverService,
+                  driverCondition
+                } as IRowProps;
+                return (<SRow key={driverService.DriverId} {...rowProps} />);
+              })
+            }
+            {
+              props.data.length === 0 &&
+              <StyledTableRow className={classes.root}>
+                <StyledTableCell component="th" scope="row" style={{ textAlign: 'center' }} colSpan={10}>No Data Available</StyledTableCell>
+              </StyledTableRow>
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {props.data.length > 0 &&
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, 100]}
+          component="div"
+          count={props.data.length}
+          labelRowsPerPage="Records per page"
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      }
+    </>
   );
 };
 

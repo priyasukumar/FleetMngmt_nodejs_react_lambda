@@ -1,6 +1,6 @@
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
-import DateRange, { unitOfTime } from 'moment';
+import { unitOfTime } from 'moment';
 
 const moment = extendMoment(Moment);
 

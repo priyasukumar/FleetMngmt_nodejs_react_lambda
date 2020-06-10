@@ -16,27 +16,8 @@ const apiMiddleware = ({ dispatch }: { dispatch: any }) => (next: any) => (actio
     const dataOrParams = [Http.Get, Http.Delete].includes(method) ? 'params' : 'data';
     let apiUrl = `${API_URL}${url}`;
 
-    // axios default configs
-
-    // axios.defaults.headers['Access-Control-Allow-Origin'] = '*';
-    // axios.defaults.headers['Access-Control-Allow-Credentials'] = true;
-    // axios.defaults.headers.common['Content-Type'] = 'application/json';
-    // response.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-
-    axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers';
-    axios.defaults.headers.common['content-type'] = 'application/json';
-    axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
     const axiosRequestConfig = {
         url: apiUrl, method, [dataOrParams]: data,
-        headers: {
-            common: {
-                'Accept': 'application/json',
-                'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE'
-            }
-
-        }
     } as AxiosRequestConfig;
     dispatch(apiStart());
 

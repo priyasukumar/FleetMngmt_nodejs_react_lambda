@@ -1,22 +1,15 @@
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import { ILink } from '../models/app';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { useState, useEffect } from 'react';
+
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { useState, useEffect } from 'react';
+
+import { ILink } from '../models/app';
 
 const LinksComponent = ({ links }: { links: ILink[] }) => {
-    const useStyles = makeStyles((theme: Theme) =>
-        createStyles({
-            drawerContainer: {
-                overflow: 'auto',
-            }
-        }),
-    );
-
     const [path, setPath] = useState('');
     const location = useLocation();
 
@@ -24,11 +17,9 @@ const LinksComponent = ({ links }: { links: ILink[] }) => {
         setPath(location.pathname);
     }, [location, setPath]);
 
-    const activeRoute = (route: string) => {
+    const activeRoute = (route: string): boolean => {
         return route === path;
     };
-
-    const classes = useStyles();
 
     const buildMenu = (menu: ILink[]) => {
         return menu

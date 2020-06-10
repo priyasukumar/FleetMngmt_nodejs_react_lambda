@@ -5,6 +5,7 @@ import { IDashboardComponentProps } from '../../models/dashboard';
 import Legend from '../../core/LegendComponent';
 import CollapsibleTable from '../../core/Table/TableComponent';
 import DatePicker from '../../core/DatePicker';
+import { Suspense } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,16 +26,20 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
 
     return (
         <div className={classes.root}>
-            <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
-                <Grid item={true} xs={4}>
-                    <PieChart plot={graphData} title="Over All" />
-                </Grid>
-                <Grid item={true} xs={4}>
-                    <Legend data={graphData} />
-                </Grid>
-            </Grid>
-            <DatePicker {...datePicker} />
-            <CollapsibleTable {...tableData} />
+            <Suspense fallback={<div>Loading...</div>}>
+                <section>
+                    <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
+                        <Grid item={true} xs={4}>
+                            <PieChart plot={graphData} title="Over All" />
+                        </Grid>
+                        <Grid item={true} xs={4}>
+                            <Legend data={graphData} />
+                        </Grid>
+                    </Grid>
+                    <DatePicker {...datePicker} />
+                    <CollapsibleTable {...tableData} />
+                </section>
+            </Suspense>
         </div>
     );
 };

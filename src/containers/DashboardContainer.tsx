@@ -31,6 +31,8 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         if (c.HarshTurning > 0) {
             harshTurning += 1;
         }
+
+        return c;
     });
 
     overSpeedPercentage = overSpeed / total;
@@ -52,7 +54,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 1);
+    initialToDate.setDate(initialToDate.getDate() - 7);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);

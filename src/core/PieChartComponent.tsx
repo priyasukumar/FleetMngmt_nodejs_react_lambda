@@ -3,11 +3,7 @@ import * as d3 from 'd3';
 import { PieArcDatum } from 'd3-shape';
 import { useEffect, useRef } from 'react';
 import { IPieData } from '../models/dashboard';
-
-interface IPieChartComponentProps {
-    plot: IPieData[];
-    title: string;
-}
+import { IPieChartComponentProps } from '../models/graph';
 
 const PieChartComponent = (props: IPieChartComponentProps) => {
     const pieContainer = useRef(null);
@@ -50,6 +46,7 @@ const PieChartComponent = (props: IPieChartComponentProps) => {
             .join('path')
             .attr('fill', (d: PieArcDatum<IPieData>) => color(d.data.name))
             .attr('d', arc)
+            /* Yet to implement hover functionality
             .call((text) => {
                 const appendText = text.append('title');
                 text.each(c => {
@@ -57,7 +54,7 @@ const PieChartComponent = (props: IPieChartComponentProps) => {
                         appendText.text((d: PieArcDatum<IPieData>) => `${d.data.name}: ${d.data.value}`);
                     }
                 });
-            });
+            })*/;
 
         svg.select('g').remove();
 
