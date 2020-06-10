@@ -33,7 +33,7 @@ export const sortBy = (drivers: any, property: string, by?: string) => {
     topBestDrivers.map((c: any) => {
         const barModel = {
             name: c.DriverName,
-            value: c.HarshBreaking,
+            value: c[property],
         } as IBarData;
 
         bestDrivers.push(barModel);
