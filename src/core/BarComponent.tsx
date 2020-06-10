@@ -59,12 +59,16 @@ const BarComponent = (props: IBarComponentProps) => {
         const xAxis = (g: any) => g
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickFormat((d, i) => plot[i].name).tickSizeOuter(0))
-            .style('font-size', '13px');
+            .style('font-size', '15px')
+            .style('font-family', '"Roboto", "Helvetica", "Arial", sans-serif')
+            .style('font-weight', 'bold');
 
         const yAxis = (g: any) => g
             .attr('transform', `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).ticks(null))
-            .style('font-size', '13px')
+            .style('font-size', '15px')
+            .style('font-family', '"Roboto", "Helvetica", "Arial", sans-serif')
+            .style('font-weight', 'bold')
             .call((h: any) => h.select('.domain').remove())
             .call((i: any) => i.append('text')
                 .attr('x', -margin.left)
