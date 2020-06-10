@@ -10,15 +10,14 @@ const LegendComponent = (props: ILegendComponentProps) => {
     const { data } = props;
 
     const Legend = () => {
-        let svg = d3
-            .select<any, PieArcDatum<IPieData>>(legendContainer.current)
-            .append('svg');
+        const svg = d3
+            .select<any, PieArcDatum<IPieData>>(legendContainer.current);
 
         const color = d3.scaleOrdinal<string>()
             .domain(data.map(d => d.name))
             .range(data.map(d => d.color));
 
-        const size = 10;
+        const size = 25;
         svg.selectAll('mydots')
             .data(data.map(c => c.name))
             .enter()
@@ -44,7 +43,7 @@ const LegendComponent = (props: ILegendComponentProps) => {
     useEffect(() => Legend(), []);
 
     return (
-        <div ref={legendContainer} style={{ height: 200, width: 300 }} />
+        <svg ref={legendContainer} style={{ height: 200, width: 300 }} />
     );
 };
 

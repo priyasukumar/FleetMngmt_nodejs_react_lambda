@@ -53,18 +53,18 @@ const BarComponent = (props: IBarComponentProps) => {
             .attr('x', xValue)
             .attr('y', d => y(d.value))
             .attr('height', d => y(0) - y(d.value))
-            .attr('font-size', '7px')
+            .style('font-size', '7px')
             .attr('width', x.bandwidth());
 
         const xAxis = (g: any) => g
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickFormat((d, i) => plot[i].name).tickSizeOuter(0))
-            .attr('font-size', '13px');
+            .style('font-size', '13px');
 
         const yAxis = (g: any) => g
             .attr('transform', `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).ticks(null))
-            .attr('font-size', '13px')
+            .style('font-size', '13px')
             .call((h: any) => h.select('.domain').remove())
             .call((i: any) => i.append('text')
                 .attr('x', -margin.left)

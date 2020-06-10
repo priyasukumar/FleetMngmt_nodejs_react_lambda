@@ -16,6 +16,8 @@ export const getBarData = (groupedData: any, fromDate: Date | null, toDate: Date
             } as IBarData;
 
             barData.push(barModel);
+
+            return d;
         });
     }
 
@@ -37,6 +39,8 @@ export const sortBy = (drivers: any, property: string, by?: string) => {
         } as IBarData;
 
         bestDrivers.push(barModel);
+
+        return c;
     });
 
     return bestDrivers;
