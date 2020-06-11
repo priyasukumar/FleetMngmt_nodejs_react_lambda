@@ -3,13 +3,7 @@ import * as d3 from 'd3';
 import { ScaleBand } from 'd3';
 import { Container } from '@material-ui/core';
 import { IBarData } from '../models/dashboard';
-
-export interface IBarComponentProps {
-    plot: IBarData[];
-    barColor: string;
-    title: string;
-    yaxisTitle: string;
-}
+import { IBarComponentProps } from '../models/graph';
 
 const BarComponent = (props: IBarComponentProps) => {
     const barContainer = useRef(null);

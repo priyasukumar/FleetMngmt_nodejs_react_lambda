@@ -1,7 +1,7 @@
-import { IBarData, IDashboard, IDashboardModel, ICollapsibleTableProps } from './dashboard';
+import { IDashboard, ICollapsibleTableProps } from './dashboard';
 import { IDiscreteSliderProps } from '../components/shared/DiscreteSliderComponent';
 import { IDatePickerProps } from './datePicker';
-import { IBarComponentProps } from '../core/BarComponent';
+import { IBarComponentProps } from './graph';
 
 export interface IOverSpeedContainerProps {
     overSpeed: IDashboard[];

@@ -10,8 +10,8 @@ import { IDatePickerProps } from '../models/datePicker';
 import { useState, useEffect } from 'react';
 import { loadHarshBrake } from '../actions/HarshBrakeActions';
 import { sortBy } from '../utils/driver';
-import { IBarComponentProps } from '../core/BarComponent';
 import { Driver } from '../constants/enum';
+import { IBarComponentProps } from '../models/graph';
 
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
     const groupedDataByDriverId = groupBy(props.harshBrake, 'DriverVehicleId') as IGroupedDashboard;

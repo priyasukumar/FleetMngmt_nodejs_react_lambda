@@ -1,3 +1,12 @@
+import React, { lazy, Suspense } from 'react';
+import { Route, HashRouter } from 'react-router-dom';
+
+import './App.css';
+import { ILink } from './models/app';
+import Header from './components/HeaderComponent';
+import Footer from './components/FooterComponent';
+import Links from './components/LinkComponent';
+
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import { createStyles, Theme, makeStyles, useTheme } from '@material-ui/core/styles';
@@ -10,16 +19,9 @@ import EmojiTransportation from '@material-ui/icons/EmojiTransportation';
 import AirlineSeatLegroomExtra from '@material-ui/icons/AirlineSeatLegroomExtra';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import React, { lazy, Suspense } from 'react';
-import { Route, HashRouter } from 'react-router-dom';
-import './App.css';
-import { ILink } from './models/app';
 import { Container, IconButton, Divider } from '@material-ui/core';
 import clsx from 'clsx';
 
-const Header = lazy(() => import('./components/HeaderComponent'));
-const Footer = lazy(() => import('./components/FooterComponent'));
-const Links = lazy(() => import('./components/LinkComponent'));
 const Dashboard = lazy(() => import('./containers/DashboardContainer'));
 const DriverServiceTime = lazy(() => import('./containers/DriverServiceTimeContainer'));
 const HarshTurn = lazy(() => import('./containers/HarshTurnContainer'));
@@ -94,54 +96,52 @@ const App = () => {
 
   return (
     <div className={classes.root}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <CssBaseline />
-        <Header handleDrawerOpen={handleDrawerOpen} open={open} />
+      <CssBaseline />
+      <Header handleDrawerOpen={handleDrawerOpen} open={open} />
 
-        <Drawer
-          variant="permanent"
-          className={clsx(classes.drawer, {
+      <Drawer
+        variant="permanent"
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open,
+        })}
+        classes={{
+          paper: clsx({
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
-          }}
-        >
-          <div className={classes.toolbar}>
-            <img src="../../ZF_Wabco.png" alt="ZF WABCO" height="71" width="170" />
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </div>
-          <Divider />
+          }),
+        }}
+      >
+        <div className={classes.toolbar}>
+          <img src="../../ZF_Wabco.png" alt="ZF WABCO" height="71" width="170" />
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </div>
+        <Divider />
+        <HashRouter>
+          <List>
+            <Links links={menuLinks} />
+          </List>
+        </HashRouter>
+      </Drawer>
+
+      <Container maxWidth="xl">
+        <main className={classes.content}>
+          <Toolbar />
           <HashRouter>
-            <List>
-              <Links links={menuLinks} />
-            </List>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Route path="/" component={Dashboard} exact={true} />
+              <Route path="/overspeed" component={OverSpeed} />
+              <Route path="/harshturn" component={HarshTurn} />
+              <Route path="/harshbrake" component={HarshBrake} />
+              <Route path="/driverservice" component={DriverServiceTime} />
+            </Suspense>
           </HashRouter>
-        </Drawer>
+        </main>
+      </Container>
 
-        <Container maxWidth="xl">
-          <main className={classes.content}>
-            <Toolbar />
-            <HashRouter>
-              <Suspense fallback={<div>Loading...</div>}>
-                <Route path="/" component={Dashboard} exact={true} />
-                <Route path="/overspeed" component={OverSpeed} />
-                <Route path="/harshturn" component={HarshTurn} />
-                <Route path="/harshbrake" component={HarshBrake} />
-                <Route path="/driverservice" component={DriverServiceTime} />
-              </Suspense>
-            </HashRouter>
-          </main>
-        </Container>
-
-        <Footer />
-      </Suspense>
+      <Footer />
     </div >
   );
 };

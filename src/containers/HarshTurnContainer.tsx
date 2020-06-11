@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 import { loadHarshTurn } from '../actions/HarshTurnActions';
 import { sortBy } from '../utils/driver';
 import { Driver } from '../constants/enum';
-import { IBarComponentProps } from '../core/BarComponent';
+import { IBarComponentProps } from '../models/graph';
 
 const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionProps) => {
     const groupedDataByDriverId = groupBy(props.harshTurn, 'DriverVehicleId') as IGroupedDashboard;

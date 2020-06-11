@@ -13,7 +13,7 @@ import { isoToLocal } from '../utils/date';
 import { loadOverSpeed } from '../actions/OverSpeedActions';
 import { getBarData, sortBy } from '../utils/driver';
 import { Driver } from '../constants/enum';
-import { IBarComponentProps } from '../core/BarComponent';
+import { IBarComponentProps } from '../models/graph';
 
 const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionProps) => {
     const dateFormat = 'DD/MM/YYYY';
