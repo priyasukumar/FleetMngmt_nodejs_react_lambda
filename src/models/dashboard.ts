@@ -14,6 +14,7 @@ export interface IDashboardComponentProps {
     graphData: IPieData[];
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
+    alertData:IAlertData[];
 }
 
 export interface IHarshBrakeProps {
@@ -82,6 +83,10 @@ export interface IBarData extends ScaleBand<IBarData> {
 export interface IPieData extends PieArcDatum<IPieData> {
     name: string;
     color: string;
+    value: number;
+}
+export interface IAlertData{
+    name: string;
     value: number;
 }
 

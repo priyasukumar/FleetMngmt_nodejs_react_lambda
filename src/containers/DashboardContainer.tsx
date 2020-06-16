@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IAlertData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
@@ -22,7 +22,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     let overSpeed = 0, harshBreaking = 0, harshTurning = 0, overSpeedPercentage = 0, harshBreakPercentage = 0, harshTurnPercentage = 0, total = 0;
     total = drivers?.length;
     drivers.map(c => {
-        if (c.OverSpeed > 0) {
+        if (c.OverSpeed > 0 ) {
             overSpeed += 1;
         }
         if (c.HarshBreaking > 0) {
@@ -44,6 +44,15 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         { name: 'Harsh Turn', value: harshTurnPercentage, color: '#1f77b4' },
     ] as IPieData[];
 
+    const alertData = [
+     
+        { name: 'HARSH BRAKE', value: harshBreaking},
+        { name: 'HARSH TURN', value: harshTurning},
+        { name: 'OVERSPEED', value: overSpeed},
+        { name: 'FUEL OVER CONSUMPTION', value: overSpeed },
+
+
+    ] as IAlertData[];
     const collapsibleTableProps = {
         data: drivers,
         headers,
@@ -85,7 +94,8 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     const dashboardComponentProps = {
         graphData: graphData,
         tableData: collapsibleTableProps,
-        datePicker: datePickerProps
+        datePicker: datePickerProps,
+        alertData: alertData
     } as IDashboardComponentProps;
 
     useEffect(
