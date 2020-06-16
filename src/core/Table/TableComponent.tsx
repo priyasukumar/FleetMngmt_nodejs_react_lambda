@@ -17,7 +17,7 @@ import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDash
 import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
 import { isoToLocal } from '../../utils/date';
-import { TablePagination } from '@material-ui/core';
+import { TablePagination, TableSortLabel } from '@material-ui/core';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 const useRowStyles = makeStyles({
@@ -51,13 +51,28 @@ const StyledTableCell = withStyles((theme: Theme) =>
 )(TableCell);
 
 const Header = (props: IHeaderProps) => {
-  const { headers } = props;
+  const { headers, order, orderBy, onRequestSort } = props;
+
+  const createSortHandler = (property: any) => (event: unknown) => {
+    onRequestSort(event, property);
+  };
+
+  function sortingOrder(columnName: string){
+    if(orderBy === columnName)
+      return order;
+    else
+      return 'asc'
+  };
+
   return (
     <TableHead>
       <TableRow>
         <StyledTableCell />
         {
-          headers.map((header, index) => <StyledTableCell key={index} align="left">{header}</StyledTableCell>)
+          headers.map((header, index) => <StyledTableCell key={index} align="left"><TableSortLabel active={orderBy === header.columnName}
+          direction= {sortingOrder(header.columnName) == 'asc'? 'asc':'desc'} //{orderBy === header.columnName ? orderBy : 'asc'}
+          onClick={createSortHandler(header.columnName)}>{header.columnValue}
+              </TableSortLabel></StyledTableCell>)
         }
       </TableRow>
     </TableHead>
@@ -206,6 +221,8 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const classes = useRowStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('DriverId');
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -216,15 +233,49 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
     setPage(0);
   };
 
+  const handleRequestSort = (event: unknown, property: any) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  function getComparator(order: string, orderBy: string) {
+    return order === 'desc'
+      ? (a: any, b: any) => descendingComparator(a, b, orderBy)
+      : (a: any, b: any) => -descendingComparator(a, b, orderBy);
+  }
+  
+  function descendingComparator(a: any, b: any, orderBy: string) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function stableSort(array: any[], comparator: any) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a: any, b: any) => {
+      const order = comparator(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+  }
+
   return (
     <>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
-          <Header headers={headers} />
+          <Header headers={headers} onRequestSort={handleRequestSort} orderBy={orderBy} order={order} />
           <TableBody>
-            {
+          {
               (isDashboard(props.data[0])) &&
-              (props.data as Array<IDashboardModel>).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((driver: IDashboardModel, index: number): JSX.Element => {
+              (stableSort(props.data as Array<IDashboardModel>, getComparator(order, orderBy)))
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((driver: IDashboardModel, index: number): JSX.Element => {
                 const rowProps = {
                   data: driver as IDashboardModel,
                   driverCondition,
@@ -235,14 +286,16 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
             }
             {
               (!isDashboard(props.data[0])) &&
-              (props.data as Array<IDriverServiceTimeModel>).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((driverService, index) => {
+              (stableSort(props.data as  Array<IDriverServiceTimeModel>, getComparator(order, orderBy)))
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((driverService: IDriverServiceTimeModel, index: number) => {
                 const rowProps = {
                   data: driverService,
                   driverCondition
                 } as IRowProps;
                 return (<SRow key={driverService.DriverId} {...rowProps} />);
               })
-            }
+            }       
             {
               props.data.length === 0 &&
               <StyledTableRow className={classes.root}>

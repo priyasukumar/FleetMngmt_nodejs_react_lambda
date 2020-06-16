@@ -14,6 +14,7 @@ export interface IDashboardComponentProps {
     graphData: IPieData[];
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
+
 }
 
 export interface IHarshBrakeProps {
@@ -86,10 +87,15 @@ export interface IPieData extends PieArcDatum<IPieData> {
 }
 
 export interface ICollapsibleTableProps {
-    headers: string[];
+    headers: IHeaderModel[];
     data: IDashboardModel[] | IDriverServiceTimeModel[];
     driverCondition: IDriverCondition;
     barData: IBarData[];
+}
+
+export interface IHeaderModel {
+    columnName: string;
+    columnValue: string;
 }
 
 export interface IRowProps {
@@ -99,7 +105,10 @@ export interface IRowProps {
 }
 
 export interface IHeaderProps {
-    headers: string[];
+    headers: IHeaderModel[];
+    order: string;
+    orderBy: string;
+    onRequestSort: any;
 }
 
 export interface IGroupedDashboard {

@@ -10,7 +10,16 @@ import { IDatePickerProps } from '../models/datePicker';
 import { Driver } from '../constants/enum';
 
 const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionProps) => {
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Over Speed Count', 'Harsh Break Count', 'Harsh Turn Count'];
+    const headers = [
+        { columnName: 'DriverId', columnValue: 'Driver Id' },
+        { columnName: 'DriverName', columnValue: 'Driver Name' },
+        { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
+        { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
+        { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
+        { columnName: 'OverSpeed', columnValue: 'Over Speed Count' },
+        { columnName: 'HarshBreaking', columnValue: 'Harsh Break Count' },
+        { columnName: 'HarshTurning', columnValue: 'Harsh Turn Count' },
+      ];
     const groupedDataByDriverId = groupBy(props.dashboard, 'DriverVehicleId') as IGroupedDashboard;
     const driverCondition = {
         includeHarshBrake: true,

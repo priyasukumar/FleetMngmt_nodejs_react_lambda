@@ -28,8 +28,14 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
     } as IDiscreteSliderProps;
     const groupedDataByDriverId = groupBy(props.overSpeed, 'DriverVehicleId') as IGroupedDashboard;
     const overSpeed = getWithSubModel(groupedDataByDriverId, speedLimit).filter(c => c.OverSpeed > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.VehicleSpeed >= speedLimit));
-
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Over Speed Count'];
+    const headers = [
+        { columnName: 'DriverId', columnValue: 'Driver Id' },
+        { columnName: 'DriverName', columnValue: 'Driver Name' },
+        { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
+        { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
+        { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
+        { columnName: 'OverSpeed', columnValue: 'Over Speed Count' },
+      ];
 
     const driverCondition = {
         includeHarshBrake: false,
