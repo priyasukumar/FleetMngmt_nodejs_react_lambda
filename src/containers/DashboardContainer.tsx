@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IAlertData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IAlertData,IServiceReminder, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
@@ -49,10 +49,18 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         { name: 'HARSH BRAKE', value: harshBreaking},
         { name: 'HARSH TURN', value: harshTurning},
         { name: 'OVERSPEED', value: overSpeed},
-        { name: 'FUEL OVER CONSUMPTION', value: overSpeed },
-
-
+     
     ] as IAlertData[];
+
+    const serviceReminder = [
+     
+        { name: 'OVER DUE', value: 5,color:'red'},
+        { name: 'DUE SOON', value: 9,color:'orange'},
+        { name: 'DUE LATER', value: 6,color:'green'}
+       
+
+    ] as IServiceReminder[];
+   
     const collapsibleTableProps = {
         data: drivers,
         headers,
@@ -95,7 +103,8 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         graphData: graphData,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps,
-        alertData: alertData
+        alertData: alertData,
+        serviceReminder: serviceReminder
     } as IDashboardComponentProps;
 
     useEffect(

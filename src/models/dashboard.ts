@@ -15,6 +15,7 @@ export interface IDashboardComponentProps {
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
     alertData:IAlertData[];
+    serviceReminder:IServiceReminder[];
 }
 
 export interface IHarshBrakeProps {
@@ -88,6 +89,12 @@ export interface IPieData extends PieArcDatum<IPieData> {
 export interface IAlertData{
     name: string;
     value: number;
+}
+
+export interface IServiceReminder{
+    name: string;
+    value: number;
+    color:string;
 }
 
 export interface ICollapsibleTableProps {
