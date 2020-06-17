@@ -10,13 +10,20 @@ import { IDatePickerProps } from '../models/datePicker';
 import { useState, useEffect } from 'react';
 import { loadHarshBrake } from '../actions/HarshBrakeActions';
 import { sortBy } from '../utils/driver';
-import { Driver } from '../constants/enum';
 import { IBarComponentProps } from '../models/graph';
+import { Driver } from '../constants/enum';
 
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
     const groupedDataByDriverId = groupBy(props.harshBrake, 'DriverVehicleId') as IGroupedDashboard;
     const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBreaking > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshBreaking > 0));
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Brake Count'];
+    const headers = [
+        { columnName: 'DriverId', columnValue: 'Driver Id' },
+        { columnName: 'DriverName', columnValue: 'Driver Name' },
+        { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
+        { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
+        { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
+        { columnName: 'HarshBreaking', columnValue: 'Harsh Break Count' },
+      ];
 
     const driverCondition = {
         includeHarshBrake: true,

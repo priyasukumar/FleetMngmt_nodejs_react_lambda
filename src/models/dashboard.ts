@@ -98,10 +98,15 @@ export interface IServiceReminder{
 }
 
 export interface ICollapsibleTableProps {
-    headers: string[];
+    headers: IHeaderModel[];
     data: IDashboardModel[] | IDriverServiceTimeModel[];
     driverCondition: IDriverCondition;
     barData: IBarData[];
+}
+
+export interface IHeaderModel {
+    columnName: string;
+    columnValue: string;
 }
 
 export interface IRowProps {
@@ -111,7 +116,10 @@ export interface IRowProps {
 }
 
 export interface IHeaderProps {
-    headers: string[];
+    headers: IHeaderModel[];
+    order: string;
+    orderBy: string;
+    onRequestSort: any;
 }
 
 export interface IGroupedDashboard {

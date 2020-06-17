@@ -16,7 +16,14 @@ import { IBarComponentProps } from '../models/graph';
 const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionProps) => {
     const groupedDataByDriverId = groupBy(props.harshTurn, 'DriverVehicleId') as IGroupedDashboard;
     const harshTurn = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshTurning > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshTurning > 0));
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Harsh Turn Count'];
+    const headers = [
+        { columnName: 'DriverId', columnValue: 'Driver Id' },
+        { columnName: 'DriverName', columnValue: 'Driver Name' },
+        { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
+        { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
+        { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
+        { columnName: 'HarshTurning', columnValue: 'Harsh Turn Count' },
+      ];
 
     const driverCondition = {
         includeHarshBrake: false,

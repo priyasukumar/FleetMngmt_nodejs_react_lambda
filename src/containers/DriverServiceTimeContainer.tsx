@@ -10,7 +10,15 @@ import { ICollapsibleTableProps } from '../models/dashboard';
 import { IDatePickerProps } from '../models/datePicker';
 
 const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & IDriverServiceTimeActionProps) => {
-    const headers = ['Driver Id', 'Driver Name', 'Driver Mobile', 'Vehicle Name', 'Vehicle License No', 'Driving Time Hours', 'Rest Time Hours'];
+    const headers = [
+        { columnName: 'DriverId', columnValue: 'Driver Id' },
+        { columnName: 'DriverName', columnValue: 'Driver Name' },
+        { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
+        { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
+        { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
+        { columnName: 'VehicleSpeed', columnValue: 'Driving Time Hours' },
+        { columnName: 'RestTimeHours', columnValue: 'Rest Time Hours' },
+      ];
     const groupedDataByDriverId = groupBy(props.driversServiceTime, 'DriverVehicleId') as IGroupedDriverServiceTime;
     const driverServiceTime = getWithSubModel(groupedDataByDriverId);
 
