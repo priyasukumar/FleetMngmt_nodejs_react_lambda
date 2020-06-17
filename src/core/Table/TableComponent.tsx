@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel } from '../../models/dashboard';
+import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel, IDashboardDateFilterModel } from '../../models/dashboard';
 import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
 import { isoToLocal } from '../../utils/date';
@@ -21,8 +21,10 @@ import { TablePagination, TableSortLabel } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
+import { groupByDate } from '../../utils/database';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
+
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -229,7 +231,23 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('DriverId');
+  const DateFilterPattern = 'DD-MM-YYYY';
 
+  data.forEach((arr :any,i :number)=>{
+    let uniqueDateArray :Array<string> = [];
+    arr.SubModel.forEach((obj:any,i:number)=>{
+      arr.DateFilterModel = groupByDate(arr.SubModel,isoToLocal(obj.PacketTime,DateFilterPattern))
+      uniqueDateArray.push(isoToLocal(obj.PacketTime,DateFilterPattern));
+      // console.log(arr.DateFilterModel);
+      uniqueDateArray = (uniqueDateArray.filter((v, i, a) => a.indexOf(v) === i)).sort();
+      // console.log(arr.DateFilterModel)
+      // console.log(uniqueDateArray);  
+      return
+    })
+    return
+  })
+
+  console.log(data);
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
