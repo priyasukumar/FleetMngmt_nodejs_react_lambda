@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -18,6 +18,9 @@ import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../model
 import { isDashboard } from '../../containers/DashboardContainer';
 import { isoToLocal } from '../../utils/date';
 import { TablePagination, TableSortLabel } from '@material-ui/core';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
+import TextField from '@material-ui/core/TextField';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 const useRowStyles = makeStyles({
@@ -26,6 +29,9 @@ const useRowStyles = makeStyles({
       borderBottom: 'unset',
     },
   },
+  search: {
+    marginBottom: '1%',
+  }
 });
 
 const StyledTableRow = withStyles((theme: Theme) =>
@@ -217,7 +223,7 @@ const SRow = (rowProps: IRowProps) => {
 };
 
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
-  const { driverCondition, headers, barData } = props;
+  const { driverCondition, headers, barData, data } = props;
   const classes = useRowStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -237,6 +243,19 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+  };
+
+  const [filteredData, setFilteredData] = React.useState(data);
+  useEffect(() => { setFilteredData(data)}, [data])
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+   
+    const data = props.data as IDashboardModel[]
+    const searchText = event.target.value
+    const filteredData = data.filter(e => e.DriverName.toLowerCase().includes(searchText.toLowerCase()) || e.VehicleName.toLowerCase().includes(searchText.toLowerCase()))
+  
+    setFilteredData(filteredData)
   };
 
   function getComparator(order: string, orderBy: string) {
@@ -267,13 +286,27 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
 
   return (
     <>
+      <div>
+        <TextField
+          className={classes.search}
+          placeholder="Search"
+          onChange={handleSearch}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </div>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
           <Header headers={headers} onRequestSort={handleRequestSort} orderBy={orderBy} order={order} />
           <TableBody>
           {
-              (isDashboard(props.data[0])) &&
-              (stableSort(props.data as Array<IDashboardModel>, getComparator(order, orderBy)))
+              (isDashboard(filteredData[0])) &&
+              (stableSort(filteredData as Array<IDashboardModel>, getComparator(order, orderBy)))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((driver: IDashboardModel, index: number): JSX.Element => {
                 const rowProps = {
@@ -285,8 +318,8 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
               })
             }
             {
-              (!isDashboard(props.data[0])) &&
-              (stableSort(props.data as  Array<IDriverServiceTimeModel>, getComparator(order, orderBy)))
+              (!isDashboard(filteredData[0])) &&
+              (stableSort(filteredData as  Array<IDriverServiceTimeModel>, getComparator(order, orderBy)))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((driverService: IDriverServiceTimeModel, index: number) => {
                 const rowProps = {
@@ -297,7 +330,7 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
               })
             }       
             {
-              props.data.length === 0 &&
+              filteredData.length === 0 &&
               <StyledTableRow className={classes.root}>
                 <StyledTableCell component="th" scope="row" style={{ textAlign: 'center' }} colSpan={10}>No Data Available</StyledTableCell>
               </StyledTableRow>
@@ -305,11 +338,11 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {props.data.length > 0 &&
+      {filteredData.length > 0 &&
         <TablePagination
           rowsPerPageOptions={[5, 10, 25, 100]}
           component="div"
-          count={props.data.length}
+          count={filteredData.length}
           labelRowsPerPage="Records per page"
           rowsPerPage={rowsPerPage}
           page={page}
