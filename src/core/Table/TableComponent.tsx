@@ -87,11 +87,74 @@ const Header = (props: IHeaderProps) => {
   );
 };
 
+const CollapsibleDateFilterTable = (props:any)=>{
+    const {dashboardModel,date,driverCondition} = props;
+    const [open, setOpen] = React.useState(false);
+  return(
+    <>
+    <StyledTableRow>
+      <TableCell  align="left">
+      <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+          </IconButton>
+      </TableCell>
+      <TableCell>{date}</TableCell>
+    </StyledTableRow>
+    <StyledTableRow>
+      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+        <Collapse in={open} timeout="auto" unmountOnExit={true}>
+        <Box margin={1}>
+          <Table size="small" aria-label="purchases">
+            <TableHead>
+              <StyledTableRow>
+                {
+                  driverCondition.includeHarshBrake && <StyledTableCell align="center">Harsh Breaking</StyledTableCell>
+                }
+                {
+                  driverCondition.includeHarshTurn && <StyledTableCell align="center">Harsh Turning</StyledTableCell>
+                }
+                {
+                  driverCondition.includeOverSpeed && <StyledTableCell align="center">Vehicle Speed</StyledTableCell>
+                }
+                <StyledTableCell align="center">Packet Time</StyledTableCell>
+              </StyledTableRow>
+            </TableHead>
+            <TableBody>
+              {
+                dashboardModel.DateFilterModel[date].map((row:any,i:any)=>(
+                  <StyledTableRow key={i}>
+                      {
+                        driverCondition.includeHarshBrake && <StyledTableCell align="center">{row.HarshBreaking}</StyledTableCell>
+                      }
+                      {
+                        driverCondition.includeHarshTurn && <StyledTableCell align="center">{row.HarshTurning}</StyledTableCell>
+                      }
+                      {
+                        driverCondition.includeOverSpeed && <StyledTableCell align="center">{row.VehicleSpeed}</StyledTableCell>
+                      }
+                      <StyledTableCell align="center">{row.PacketTime}</StyledTableCell>
+                  </StyledTableRow>
+                ))
+              }
+            </TableBody>
+          </Table>
+        </Box>
+        </Collapse>
+      </StyledTableCell>
+    </StyledTableRow>
+    </>
+  )
+}
+
 const Row = (rowProps: IRowProps) => {
   const { data, driverCondition } = rowProps;
   let dashboardModel = data as IDashboardModel;
   const [open, setOpen] = React.useState(false);
-
+  let uniqueDateArray = [];
+  for (let key in dashboardModel.DateFilterModel){
+    uniqueDateArray.push(key)
+  }
+  uniqueDateArray.sort()
   return (
     <>
       <StyledTableRow>
@@ -116,51 +179,26 @@ const Row = (rowProps: IRowProps) => {
           driverCondition.includeHarshTurn && <StyledTableCell align="center">{dashboardModel.HarshTurning}</StyledTableCell>
         }
       </StyledTableRow >
-      <StyledTableRow >
-        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+      <StyledTableRow>
+      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom={true} component="div">
-                History
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <StyledTableRow >
-                    {
-                      driverCondition.includeHarshBrake && <StyledTableCell align="center">Harsh Breaking</StyledTableCell>
-                    }
-                    {
-                      driverCondition.includeHarshTurn && <StyledTableCell align="center">Harsh Turning</StyledTableCell>
-                    }
-                    {
-                      driverCondition.includeOverSpeed && <StyledTableCell align="center">Vehicle Speed</StyledTableCell>
-                    }
-                    <StyledTableCell align="center">Packet Time</StyledTableCell>
-                  </StyledTableRow >
-                </TableHead>
-                <TableBody>
-                  {(dashboardModel.SubModel as Array<IDashboardSubModel>).map((subRow, index) => (
-                    <StyledTableRow key={index}>
-                      {
-                        driverCondition.includeHarshBrake && <StyledTableCell align="center">{subRow.HarshBreaking}</StyledTableCell>
-                      }
-                      {
-                        driverCondition.includeHarshTurn && <StyledTableCell align="center">{subRow.HarshTurning}</StyledTableCell>
-                      }
-                      {
-                        driverCondition.includeOverSpeed && <StyledTableCell align="center">{subRow.VehicleSpeed}</StyledTableCell>
-                      }
-                      <StyledTableCell align="center">{isoToLocal(subRow.PacketTime, dateFormat)}</StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            {
+              uniqueDateArray.map((key,i)=>{
+                const data = {
+                  dashboardModel,
+                  date : key,
+                  driverCondition
+                }
+                return <CollapsibleDateFilterTable key={dashboardModel.DriverId} {...data}/> 
+            })
+            }
             </Box>
           </Collapse>
-        </StyledTableCell>
-      </StyledTableRow >
+      </StyledTableCell>
+      </StyledTableRow>
     </>
-  );
+  )
 };
 
 const SRow = (rowProps: IRowProps) => {
@@ -231,18 +269,23 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('DriverId');
-  const DateFilterPattern = 'DD-MM-YYYY';
 
+  /* In DateFilterModel, filter the driver data by date.
+  Sort by time on each date and Sort the driver data by date */
   data.forEach((arr :any,i :number)=>{
     arr.SubModel.forEach((obj:any,i:number)=>{
-      arr.DateFilterModel = groupByDate(arr.SubModel,isoToLocal(obj.PacketTime,DateFilterPattern))
+      arr.DateFilterModel = groupByDate(arr.SubModel)
       for (let key in arr.DateFilterModel){
         arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
       }
+      let ordered :any ={}
+      Object.keys(arr.DateFilterModel).sort().forEach(function(key) {
+        ordered[key] = arr.DateFilterModel[key];
+      });
+      arr.DateFilterModel = {...ordered }
     })
   })
 
-  console.log(data);
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -368,3 +411,48 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
 };
 
 export default CollapsibleTable;
+
+/* 
+<StyledTableRow >
+        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+          <Collapse in={open} timeout="auto" unmountOnExit={true}>
+            <Box margin={1}>
+              <Typography variant="h6" gutterBottom={true} component="div">
+                History
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <StyledTableRow >
+                    {
+                      driverCondition.includeHarshBrake && <StyledTableCell align="center">Harsh Breaking</StyledTableCell>
+                    }
+                    {
+                      driverCondition.includeHarshTurn && <StyledTableCell align="center">Harsh Turning</StyledTableCell>
+                    }
+                    {
+                      driverCondition.includeOverSpeed && <StyledTableCell align="center">Vehicle Speed</StyledTableCell>
+                    }
+                    <StyledTableCell align="center">Packet Time</StyledTableCell>
+                  </StyledTableRow >
+                </TableHead>
+                <TableBody>
+                  {(dashboardModel.SubModel as Array<IDashboardSubModel>).map((subRow, index) => (
+                    <StyledTableRow key={index}>
+                      {
+                        driverCondition.includeHarshBrake && <StyledTableCell align="center">{subRow.HarshBreaking}</StyledTableCell>
+                      }
+                      {
+                        driverCondition.includeHarshTurn && <StyledTableCell align="center">{subRow.HarshTurning}</StyledTableCell>
+                      }
+                      {
+                        driverCondition.includeOverSpeed && <StyledTableCell align="center">{subRow.VehicleSpeed}</StyledTableCell>
+                      }
+                      <StyledTableCell align="center">{isoToLocal(subRow.PacketTime, dateFormat)}</StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </StyledTableCell>
+      </StyledTableRow > */
