@@ -273,13 +273,13 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
   data.forEach((arr :any,i :number)=>{
-    arr.SubModel.forEach((obj:any,i:number)=>{
       arr.DateFilterModel = groupByDate(arr.SubModel)
       for (let key in arr.DateFilterModel){
         arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
       }
-    })
   })
+
+  console.log(data);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
