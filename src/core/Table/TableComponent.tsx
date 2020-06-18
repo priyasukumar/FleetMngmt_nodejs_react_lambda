@@ -154,7 +154,8 @@ const Row = (rowProps: IRowProps) => {
   for (let key in dashboardModel.DateFilterModel){
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort()
+  uniqueDateArray.sort((d1, d2) => new Date(d1).getTime() - new Date(d2).getTime());
+
   return (
     <>
       <StyledTableRow>
@@ -273,12 +274,10 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
   data.forEach((arr :any,i :number)=>{
-    arr.SubModel.forEach((obj:any,i:number)=>{
       arr.DateFilterModel = groupByDate(arr.SubModel)
       for (let key in arr.DateFilterModel){
         arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
       }
-    })
   })
 
   const handleChangePage = (event: unknown, newPage: number) => {
