@@ -50,6 +50,7 @@ export interface IDashboardModel {
     CreatedDate: string;
     VehicleSpeed: number;
     SubModel: IDashboardSubModel[];
+    DateFilterModel?: IDashboardDateFilterModel;
 }
 
 export interface IDashboardSubModel {
@@ -57,6 +58,18 @@ export interface IDashboardSubModel {
     HarshTurning: number;
     PacketTime: string;
     VehicleSpeed: number;
+    Date?: string;
+}
+
+export interface IDashboardDateFilterSubModel {
+    HarshBreaking: number;
+    HarshTurning: number;
+    PacketTime: string;
+    VehicleSpeed: number;
+}
+
+export interface IDashboardDateFilterModel {
+    [key: string] : IDashboardDateFilterSubModel []
 }
 
 export interface IDriver {

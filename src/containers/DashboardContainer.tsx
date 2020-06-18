@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition, IDashboardDateFilterModel } from '../models/dashboard';
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
@@ -112,7 +112,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
 export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80): IDashboardModel[] => {
     let dashboard = [] as IDashboardModel[];
-
+    let dashboardElemCount = 0;
     for (let key in groupedData) {
         if (key) {
             let count = 0;
@@ -133,7 +133,8 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                 OverSpeed: 0,
                 HarshBreaking: 0,
                 HarshTurning: 0,
-                SubModel: [] as IDashboardSubModel[]
+                SubModel: [] as IDashboardSubModel[],
+                DateFilterModel: {} as IDashboardDateFilterModel
             } as IDashboardModel;
 
             groupedData[key].reduce((c, p, index) => {
@@ -141,26 +142,30 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                     HarshBreaking: 0,
                     HarshTurning: 0,
                     PacketTime: '',
-                    VehicleSpeed: 0
+                    VehicleSpeed: 0,
+                    Date: '',
                 } as IDashboardSubModel;
-                dashboardModel.SubModel[index].VehicleSpeed = p.VehicleSpeed;
+		        dashboardModel.SubModel[index].VehicleSpeed = p.VehicleSpeed;
                 dashboardModel.SubModel[index].PacketTime = p.PacketTime;
                 dashboardModel.SubModel[index].HarshBreaking = p.HarshBreaking;
-                dashboardModel.HarshBreaking = dashboardModel.HarshBreaking + c.HarshBreaking + p.HarshBreaking;
+                dashboardModel.HarshBreaking = dashboardModel.HarshBreaking + p.HarshBreaking;
                 dashboardModel.SubModel[index].HarshTurning = p.HarshTurning;
-                dashboardModel.HarshTurning = dashboardModel.HarshBreaking + c.HarshTurning + p.HarshTurning;
+                dashboardModel.HarshTurning = dashboardModel.HarshBreaking + p.HarshTurning;
+                dashboardModel.SubModel[index].Date = p.PacketTime.slice(0,10).split("-").reverse().join("-");
                 if (p.VehicleSpeed >= speedLimit) {
                     count += 1;
                 }
                 dashboardModel.OverSpeed = count;
-
+                
                 return c;
             }, {
                 HarshBreaking: 0,
                 HarshTurning: 0
             } as IDashboardModel);
-
+            
             dashboard.push(dashboardModel);
+            dashboard[dashboardElemCount].DateFilterModel = {};
+            dashboardElemCount += 1;
             count = 0;
         }
     }
