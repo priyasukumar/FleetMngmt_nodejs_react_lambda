@@ -234,20 +234,15 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const DateFilterPattern = 'DD-MM-YYYY';
 
   data.forEach((arr :any,i :number)=>{
-    let uniqueDateArray :Array<string> = [];
     arr.SubModel.forEach((obj:any,i:number)=>{
       arr.DateFilterModel = groupByDate(arr.SubModel,isoToLocal(obj.PacketTime,DateFilterPattern))
-      uniqueDateArray.push(isoToLocal(obj.PacketTime,DateFilterPattern));
-      // console.log(arr.DateFilterModel);
-      uniqueDateArray = (uniqueDateArray.filter((v, i, a) => a.indexOf(v) === i)).sort();
-      // console.log(arr.DateFilterModel)
-      // console.log(uniqueDateArray);  
-      return
+      for (let key in arr.DateFilterModel){
+        arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
+      }
     })
-    return
   })
 
-  console.log(data[0]);
+  console.log(data);
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
