@@ -108,7 +108,7 @@ const CollapsibleDateFilterTable = (props:any)=>{
             <TableHead>
               <StyledTableRow>
                 {
-                  driverCondition.includeHarshBrake && <StyledTableCell align="center">Harsh Breaking</StyledTableCell>
+                  driverCondition.includeHarshBrake && <StyledTableCell align="center">Harsh Braking</StyledTableCell>
                 }
                 {
                   driverCondition.includeHarshTurn && <StyledTableCell align="center">Harsh Turning</StyledTableCell>
@@ -124,7 +124,7 @@ const CollapsibleDateFilterTable = (props:any)=>{
                 dashboardModel.DateFilterModel[date].map((row:any,i:any)=>(
                   <StyledTableRow key={i}>
                       {
-                        driverCondition.includeHarshBrake && <StyledTableCell align="center">{row.HarshBreaking}</StyledTableCell>
+                        driverCondition.includeHarshBrake && <StyledTableCell align="center">{row.HarshBraking}</StyledTableCell>
                       }
                       {
                         driverCondition.includeHarshTurn && <StyledTableCell align="center">{row.HarshTurning}</StyledTableCell>
@@ -174,7 +174,7 @@ const Row = (rowProps: IRowProps) => {
           driverCondition.includeOverSpeed && <StyledTableCell align="center">{dashboardModel.OverSpeed}</StyledTableCell>
         }
         {
-          driverCondition.includeHarshBrake && <StyledTableCell align="center">{dashboardModel.HarshBreaking}</StyledTableCell>
+          driverCondition.includeHarshBrake && <StyledTableCell align="center">{dashboardModel.HarshBraking}</StyledTableCell>
         }
         {
           driverCondition.includeHarshTurn && <StyledTableCell align="center">{dashboardModel.HarshTurning}</StyledTableCell>
@@ -279,7 +279,7 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
         arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
       }
   })
-
+  console.log(data)
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };

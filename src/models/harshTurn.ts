@@ -27,7 +27,7 @@ export interface IHarshTurnModel {
     VehicleName: string;
     VehicleLicenseNo: string;
     OverSpeed: number;
-    HarshBreaking: number;
+    HarshBraking: number;
     HarshTurning: number;
     CreatedDate: string;
     VehicleSpeed: number;    
