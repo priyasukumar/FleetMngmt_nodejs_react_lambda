@@ -279,8 +279,6 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
       }
   })
 
-  console.log(data);
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
