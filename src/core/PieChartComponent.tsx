@@ -17,8 +17,8 @@ const PieChartComponent = (props: IPieChartComponentProps) => {
     };
 
     const PieChart = () => {
-        const width = 954;
-        const height = Math.min(width, 500);
+        const width = 800;
+        const height = Math.min(width, 600);
 
         const svg = d3
             .select<any, PieArcDatum<IPieData>>(pieContainer.current)
@@ -60,7 +60,7 @@ const PieChartComponent = (props: IPieChartComponentProps) => {
 
         svg.append('g')
             .attr('font-family', 'sans-serif')
-            .attr('font-size', 20)
+            .attr('font-size', 30)
             .attr('text-anchor', 'middle')
             .selectAll('text')
             .data(arcs)
@@ -70,10 +70,10 @@ const PieChartComponent = (props: IPieChartComponentProps) => {
                 const appendText = text.append('tspan')
                     .attr('y', '-0.4em')
                     .attr('font-weight', 'bold')
-                    .attr('font-size', '20px');
+                    .attr('font-size', '30px');
                 text.each(c => {
                     if (c.value > 0) {
-                        appendText.text((d: PieArcDatum<IPieData>) => d3.format('.0%')(d.data.value));
+                        appendText.text((d: PieArcDatum<IPieData>) => d3.format(',.2r')(d.data.value));
                     }
                 });
             })
@@ -92,7 +92,7 @@ const PieChartComponent = (props: IPieChartComponentProps) => {
 
     return (
         <>
-            <h1 style={{ textAlign: 'center' }}>{title}</h1>
+            <h3 style={{ textAlign: 'center' ,color:'#0097a7'}}>{title}</h3>
             <svg style={styles.container} ref={pieContainer} />
         </>
     );

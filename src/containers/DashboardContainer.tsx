@@ -32,13 +32,13 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     total = drivers?.length;
     drivers.map(c => {
         if (c.OverSpeed > 0 ) {
-            overSpeed += 1;
+            overSpeed += c.OverSpeed;
         }
         if (c.HarshBreaking > 0) {
-            harshBreaking += 1;
+            harshBreaking += c.HarshBreaking;
         }
         if (c.HarshTurning > 0) {
-            harshTurning += 1;
+            harshTurning += c.HarshTurning;
         }
 
         return c;
@@ -48,9 +48,9 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     harshBreakPercentage = harshBreaking / total;
     harshTurnPercentage = harshTurning / total;
     const graphData = [
-        { name: 'Over Speed', value: overSpeedPercentage, color: '#ff7f0e' },
-        { name: 'Harsh Break', value: harshBreakPercentage, color: '#aec7e8' },
-        { name: 'Harsh Turn', value: harshTurnPercentage, color: '#1f77b4' },
+        { name: 'Over Speed', value: overSpeed, color: '#ff7f0e' },
+        { name: 'Harsh Break', value: harshBreaking, color: '#aec7e8' },
+        { name: 'Harsh Turn', value: harshTurning, color: '#1f77b4' },
     ] as IPieData[];
 
     const alertData = [
@@ -80,7 +80,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 7);
+    initialToDate.setDate(initialToDate.getDate() - 14);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
