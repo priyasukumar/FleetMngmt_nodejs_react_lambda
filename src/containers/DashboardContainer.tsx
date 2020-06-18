@@ -148,9 +148,9 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
 		        dashboardModel.SubModel[index].VehicleSpeed = p.VehicleSpeed;
                 dashboardModel.SubModel[index].PacketTime = p.PacketTime;
                 dashboardModel.SubModel[index].HarshBreaking = p.HarshBreaking;
-                dashboardModel.HarshBreaking = dashboardModel.HarshBreaking + c.HarshBreaking + p.HarshBreaking;
+                dashboardModel.HarshBreaking = dashboardModel.HarshBreaking + p.HarshBreaking;
                 dashboardModel.SubModel[index].HarshTurning = p.HarshTurning;
-                dashboardModel.HarshTurning = dashboardModel.HarshBreaking + c.HarshTurning + p.HarshTurning;
+                dashboardModel.HarshTurning = dashboardModel.HarshBreaking + p.HarshTurning;
                 dashboardModel.SubModel[index].Date = p.PacketTime.slice(0,10).split("-").reverse().join("-");
                 if (p.VehicleSpeed >= speedLimit) {
                     count += 1;
