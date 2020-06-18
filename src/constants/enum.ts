@@ -6,7 +6,7 @@ export enum Http {
 }
 
 export enum Driver {
-    HarshBrake = 'HarshBreaking',
+    HarshBrake = 'HarshBraking',
     HarshTurn = 'HarshTurning',
     OverSpeed = 'OverSpeed',
     DriverId = 'DriverId',

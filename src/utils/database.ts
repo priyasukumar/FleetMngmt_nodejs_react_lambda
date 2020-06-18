@@ -20,7 +20,7 @@ export const groupByDate = (array: any) => {
     }
     return array.reduce((result: any, currentValue: any) => {
         (result[currentValue.Date] = result[currentValue.Date] || []).push({
-            HarshBreaking: currentValue.HarshBreaking,
+            HarshBraking: currentValue.HarshBraking,
             HarshTurning: currentValue.HarshTurning,
             PacketTime: (currentValue.PacketTime).slice(11,19),
             VehicleSpeed: currentValue.VehicleSpeed
