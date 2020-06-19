@@ -52,7 +52,7 @@ export const scores = (drivers: any, property: string, by?: string) => {
     
     drivers.map((c: any) => {
         const barModel = {
-            name:c.DriverId,
+            name:c.DriverName,
             value: c[property],
         } as IBarData;
 

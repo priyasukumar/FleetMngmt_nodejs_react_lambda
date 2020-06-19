@@ -29,7 +29,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     } as IDriverCondition;
     const drivers = getWithSubModel(groupedDataByDriverId);
 
-    let overSpeed = 0, harshBreaking = 0, harshTurning = 0, maxscore = 0, bestdriver="" ;
+    let overSpeed = 0, harshBreaking = 0, harshTurning = 0, servicenow = 0,servicelater=0 ,servicesoon=0;
         drivers.map(c => {
         if (c.OverSpeed > 0 ) {
             overSpeed += c.OverSpeed;
@@ -61,7 +61,18 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         }
         c.Score=(100-(
             c.Score%100))/10;
-       
+       if(c.Score>=9)
+       {
+           servicelater+=1;
+       }
+       else if(c.Score>=8)
+       {
+           servicesoon+=1;
+       }
+       else if(c.Score>=7)
+       {
+           servicenow+=1;
+       }
         if(c.Score>scoreData.value)
         {
             
@@ -83,9 +94,9 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
     const serviceReminder = [
      
-        { name: 'OVER DUE', value: 5,color:'red'},
-        { name: 'DUE SOON', value: 9,color:'orange'},
-        { name: 'DUE LATER', value: 6,color:'green'}
+        { name: 'IMMEDIATELY', value: servicenow,color:'red'},
+        { name: 'SOON', value: servicesoon,color:'orange'},
+        { name: 'LATER', value: servicelater,color:'green'}
        
 
     ] as IServiceReminder[];
