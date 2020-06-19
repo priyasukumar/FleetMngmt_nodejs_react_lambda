@@ -185,13 +185,13 @@ const Row = (rowProps: IRowProps) => {
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
             {
-              uniqueDateArray.map((key,i)=>{
+              uniqueDateArray.map((date,i)=>{
                 const data = {
                   dashboardModel,
-                  date : key,
+                  date,
                   driverCondition
                 }
-                return <CollapsibleDateFilterTable key={dashboardModel.DriverId} {...data}/> 
+                return <CollapsibleDateFilterTable key={date} {...data}/> 
             })
             }
             </Box>
