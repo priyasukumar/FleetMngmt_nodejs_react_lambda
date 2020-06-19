@@ -2,11 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IScoreData,IServiceReminder, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
-=======
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition, IDashboardDateFilterModel } from '../models/dashboard';
->>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IScoreData,IServiceReminder, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition,IDashboardDateFilterModel } from '../models/dashboard';
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
@@ -33,24 +29,13 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     } as IDriverCondition;
     const drivers = getWithSubModel(groupedDataByDriverId);
 
-<<<<<<< HEAD
-    let overSpeed = 0, harshBreaking = 0, harshTurning = 0, servicenow = 0,servicelater=0 ,servicesoon=0;
+    let overSpeed = 0, harshBraking = 0, harshTurning = 0, servicenow = 0,servicelater=0 ,servicesoon=0;
         drivers.map(c => {
         if (c.OverSpeed > 0 ) {
             overSpeed += c.OverSpeed;
         }
-        if (c.HarshBreaking > 0) {
-            harshBreaking += c.HarshBreaking;
-=======
-    let overSpeed = 0, harshBraking = 0, harshTurning = 0, overSpeedPercentage = 0, harshBrakePercentage = 0, harshTurnPercentage = 0, total = 0;
-    total = drivers?.length;
-    drivers.map(c => {
-        if (c.OverSpeed > 0) {
-            overSpeed += 1;
-        }
         if (c.HarshBraking > 0) {
-            harshBraking += 1;
->>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
+            harshBraking += c.HarshBraking;
         }
         if (c.HarshTurning > 0) {
             harshTurning += c.HarshTurning;
@@ -68,15 +53,15 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         if (c.OverSpeed > 0 ) {
             c.Score += (c.OverSpeed/overSpeed)*100;
         }
-        if (c.HarshBreaking > 0) {
-            c.Score += (c.HarshBreaking/harshBreaking)*100;
+        if (c.HarshBraking > 0) {
+            c.Score += (c.HarshBraking/harshBraking)*100;
         }
         if (c.HarshTurning > 0) {
             c.Score += (c.HarshTurning/harshTurning)*100;
         }
         c.Score=(100-(
             c.Score%100))/10;
-       if(c.Score>=9)
+       if(c.Score>=8.5)
        {
            servicelater+=1;
        }
@@ -84,7 +69,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
        {
            servicesoon+=1;
        }
-       else if(c.Score>=7)
+       else if(c.Score>=7.5)
        {
            servicenow+=1;
        }
@@ -101,7 +86,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
    
     const graphData = [
         { name: 'Over Speed', value: overSpeed, color: '#ff7f0e' },
-        { name: 'Harsh Break', value: harshBreaking, color: '#aec7e8' },
+        { name: 'Harsh Brake', value: harshBraking, color: '#aec7e8' },
         { name: 'Harsh Turn', value: harshTurning, color: '#1f77b4' },
     ] as IPieData[];
 
@@ -126,7 +111,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 14);
+    initialToDate.setDate(initialToDate.getDate() - 7);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
@@ -208,13 +193,10 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                 OverSpeed: 0,
                 HarshBraking: 0,
                 HarshTurning: 0,
-<<<<<<< HEAD
                 Score:0,
-                SubModel: [] as IDashboardSubModel[]
-=======
+                
                 SubModel: [] as IDashboardSubModel[],
                 DateFilterModel: {} as IDashboardDateFilterModel
->>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
             } as IDashboardModel;
 
             groupedData[key].reduce((c, p, index) => {
@@ -236,11 +218,7 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                     count += 1;
                 }
                 dashboardModel.OverSpeed = count;
-<<<<<<< HEAD
                 dashboardModel.Score=0;
-=======
-                
->>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
                 return c;
             }, {
                 HarshBraking: 0,
