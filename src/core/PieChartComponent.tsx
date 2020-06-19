@@ -17,7 +17,7 @@ const PieChartComponent = (props: IPieChartComponentProps) => {
     };
 
     const PieChart = () => {
-        const width = 800;
+        const width = 1000;
         const height = Math.min(width, 600);
 
         const svg = d3

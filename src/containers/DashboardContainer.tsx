@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IAlertData,IServiceReminder, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IScoreData,IServiceReminder, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
@@ -28,9 +28,8 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     } as IDriverCondition;
     const drivers = getWithSubModel(groupedDataByDriverId);
 
-    let overSpeed = 0, harshBreaking = 0, harshTurning = 0, overSpeedPercentage = 0, harshBreakPercentage = 0, harshTurnPercentage = 0, total = 0;
-    total = drivers?.length;
-    drivers.map(c => {
+    let overSpeed = 0, harshBreaking = 0, harshTurning = 0, maxscore = 0, bestdriver="" ;
+        drivers.map(c => {
         if (c.OverSpeed > 0 ) {
             overSpeed += c.OverSpeed;
         }
@@ -43,23 +42,42 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
         return c;
     });
+    let scoreData = {
+        name:'',
+        value:0
+        
+        } as IScoreData;
+    
+    drivers.map(c => {
+        if (c.OverSpeed > 0 ) {
+            c.Score += (c.OverSpeed/overSpeed)*100;
+        }
+        if (c.HarshBreaking > 0) {
+            c.Score += (c.HarshBreaking/harshBreaking)*100;
+        }
+        if (c.HarshTurning > 0) {
+            c.Score += (c.HarshTurning/harshTurning)*100;
+        }
+        c.Score=(100-(
+            c.Score%100))/10;
+       
+        if(c.Score>scoreData.value)
+        {
+            scoreData.value=c.Score;
+            scoreData.name=c.DriverName;
+            
+        }
+        return c;
+    });
 
-    overSpeedPercentage = overSpeed / total;
-    harshBreakPercentage = harshBreaking / total;
-    harshTurnPercentage = harshTurning / total;
+   
     const graphData = [
         { name: 'Over Speed', value: overSpeed, color: '#ff7f0e' },
         { name: 'Harsh Break', value: harshBreaking, color: '#aec7e8' },
         { name: 'Harsh Turn', value: harshTurning, color: '#1f77b4' },
     ] as IPieData[];
 
-    const alertData = [
-     
-        { name: 'HARSH BRAKE', value: harshBreaking},
-        { name: 'HARSH TURN', value: harshTurning},
-        { name: 'OVERSPEED', value: overSpeed},
-     
-    ] as IAlertData[];
+   
 
     const serviceReminder = [
      
@@ -112,7 +130,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         graphData: graphData,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps,
-        alertData: alertData,
+        scoreData: scoreData,
         serviceReminder: serviceReminder
     } as IDashboardComponentProps;
 
@@ -152,6 +170,7 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                 OverSpeed: 0,
                 HarshBreaking: 0,
                 HarshTurning: 0,
+                Score:0,
                 SubModel: [] as IDashboardSubModel[]
             } as IDashboardModel;
 
@@ -172,7 +191,7 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                     count += 1;
                 }
                 dashboardModel.OverSpeed = count;
-
+                dashboardModel.Score=dashboardModel.HarshBreaking+dashboardModel.HarshTurning+dashboardModel.OverSpeed
                 return c;
             }, {
                 HarshBreaking: 0,

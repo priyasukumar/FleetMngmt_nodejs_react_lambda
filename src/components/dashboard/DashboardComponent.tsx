@@ -19,6 +19,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { borders } from '@material-ui/system';
+import Divider from '@material-ui/core/Divider';
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
@@ -50,7 +51,7 @@ const useStyles = makeStyles(() =>
 
 const DashboardComponent = (props: IDashboardComponentProps) => {
     const classes = useStyles();
-    const { graphData, tableData, datePicker,alertData,serviceReminder } = props;
+    const { graphData, tableData, datePicker,scoreData,serviceReminder } = props;
 
     return (
         <div className={classes.root}>
@@ -58,12 +59,13 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
              <Grid container={true} direction="row"  alignItems="center" spacing={2}>
                         <Grid item={true} xs={4}>
                           
-                         <ScoreCard  bgcolor="white" color="#0097a7"></ScoreCard>
+                         <ScoreCard name={scoreData.name} score={scoreData.value} bgcolor="white" color="#0097a7"></ScoreCard>
                         
                         </Grid>
-                        <Grid item={true} xs={1}>
-                       
-                        </Grid>
+                        
+                            
+                        <Divider orientation="vertical" flexItem />
+                        
                         <Grid item={true} xs={4}>
                             <PieChart plot={graphData} title="ALERTS RECEIVED ON PAST 7 DAYS" />
                         </Grid>
@@ -71,8 +73,8 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
                             <Legend data={graphData} />
                         </Grid>
                 </Grid>
-      
-                
+                    <br/>
+                <Divider />
                 
                 <section title="reminders">
                    
@@ -128,7 +130,7 @@ return (
     </Card>
 );
 };
-export const ScoreCard=(props:any)=>{
+export const ScoreCard=({name,score,...props}:any)=>{
     const classes = useStyles(props);
     const sty={
         height:300,
@@ -146,7 +148,7 @@ export const ScoreCard=(props:any)=>{
             title="Contemplative Reptile"
 
             />
-    <Typography component="legend">D1</Typography>
+    <Typography component="legend">{name}{score}</Typography>
       
            <Rating name="half-rating-read" defaultValue={9} precision={0.5} max={10} 
                 getLabelText={(value:any) => `${value} Heart${value !== 1 ? 's' : ''}`} readOnly />

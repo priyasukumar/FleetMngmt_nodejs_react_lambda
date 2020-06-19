@@ -14,7 +14,7 @@ export interface IDashboardComponentProps {
     graphData: IPieData[];
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
-    alertData:IAlertData[];
+    scoreData:IScoreData;
     serviceReminder:IServiceReminder[];
 }
 
@@ -50,6 +50,7 @@ export interface IDashboardModel {
     PacketTime: string;
     CreatedDate: string;
     VehicleSpeed: number;
+    Score:number;
     SubModel: IDashboardSubModel[];
 }
 
@@ -86,7 +87,7 @@ export interface IPieData extends PieArcDatum<IPieData> {
     color: string;
     value: number;
 }
-export interface IAlertData{
+export interface IScoreData{
     name: string;
     value: number;
 }
