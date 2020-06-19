@@ -51,7 +51,7 @@ const useStyles = makeStyles(() =>
 
 const DashboardComponent = (props: IDashboardComponentProps) => {
     const classes = useStyles();
-    const { graphData, tableData, datePicker,scoreData,serviceReminder } = props;
+    const { graphData, tableData, datePicker,scoreData,serviceReminder ,driverScoreBoard} = props;
 
     return (
         <div className={classes.root}>
@@ -76,37 +76,41 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
                     <br/>
                 <Divider />
                 
-                <section title="reminders">
-                   
-                    
-                    
-                    <Box width="60%" borderColor="transparent" borderRadius="1%" border={1} m={1} bgcolor="transparent" justifyContent="center"> 
-                   
-                    <h3 style={{ textAlign: 'center' ,color:'#0097a7'}}> 
-                    VEHICLE SERVICE REMINDERS
-                    
-                   
-                    </h3>
+                
                     
                         <Grid container={true} direction="row" alignItems="flex-start" >
+                        <Grid item={true} xs={6}>
+                                
+                           
+                            </Grid>
+                        
+                            <Grid item={true} xs={6}>
+                                
+                                <h3 style={{ textAlign: 'left' ,color:'#0097a7'}}> 
+                                VEHICLE SERVICE REMINDERS
+                                
+                            
+                                </h3>
+                            </Grid>
+                            <Grid item={true} xs={6}>
+                            <Bar {...driverScoreBoard} />
+                          </Grid> 
                             {serviceReminder.map (service=>(
-                            <Grid item={true} xs={3}>
+                            <Grid item={true} xs={2}>
                               
                                 <CardComponent name={service.name} value={service.value} bgcolor='white' color={service.color} elevation={0}></CardComponent>
                     
                             </Grid> 
                             
                             ))}
-                            <Grid item={true} xs={3}>
-                            {/* <Bar {alertData} /> */}
-                          </Grid> 
+                           
                               
                         </Grid>
-                    </Box>
+                    
                     
                     <DatePicker {...datePicker} />
                     <CollapsibleTable {...tableData} />
-                </section>
+               
             </Suspense>
         </div>
     );
@@ -138,6 +142,7 @@ export const ScoreCard=({name,score,...props}:any)=>{
       
 
     };
+ 
     return (
         <Card elevation={24} style={sty} >
        <CardContent className={classes.title}>
@@ -148,10 +153,17 @@ export const ScoreCard=({name,score,...props}:any)=>{
             title="Contemplative Reptile"
 
             />
-    <Typography component="legend">{name}{score}</Typography>
-      
-           <Rating name="half-rating-read" defaultValue={9} precision={0.5} max={10} 
-                getLabelText={(value:any) => `${value} Heart${value !== 1 ? 's' : ''}`} readOnly />
+    <Typography component="legend">{name}</Typography>
+     
+        <Rating
+            name="hover-feedback"
+            value={score}
+            precision={0.5}
+            max={10}
+            readOnly
+           
+            />
+
 
         
               </CardContent>

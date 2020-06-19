@@ -8,7 +8,8 @@ import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
 import { IDatePickerProps } from '../models/datePicker';
 import { Driver } from '../constants/enum';
-
+import { scores} from '../utils/driver';
+import { IBarComponentProps } from '../models/graph';
 const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionProps) => {
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
@@ -63,7 +64,8 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
        
         if(c.Score>scoreData.value)
         {
-            scoreData.value=c.Score;
+            
+            scoreData.value=(Number)(c.Score.toFixed(1));
             scoreData.name=c.DriverName;
             
         }
@@ -126,14 +128,24 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
+    const driverScoreBoard = {
+        title: 'DRIVERS SCORE BOARD',
+        yaxisTitle: 'Scores',
+        plot:  scores(drivers, 'Score','desc'),
+        barColor: '#1f77b4'
+    } as IBarComponentProps;
+
     const dashboardComponentProps = {
         graphData: graphData,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps,
         scoreData: scoreData,
+        driverScoreBoard:driverScoreBoard,
         serviceReminder: serviceReminder
     } as IDashboardComponentProps;
 
+   
+   
     useEffect(
         () => {
             if (fromDate && toDate) {
@@ -191,7 +203,7 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                     count += 1;
                 }
                 dashboardModel.OverSpeed = count;
-                dashboardModel.Score=dashboardModel.HarshBreaking+dashboardModel.HarshTurning+dashboardModel.OverSpeed
+                dashboardModel.Score=0;
                 return c;
             }, {
                 HarshBreaking: 0,

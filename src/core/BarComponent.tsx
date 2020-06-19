@@ -18,7 +18,7 @@ const BarComponent = (props: IBarComponentProps) => {
     const Bar = () => {
         const width = 600;
         const height = 400;
-        const margin = ({ top: 30, right: 0, bottom: 30, left: 40 });
+        const margin = ({ top: 0, right: 0, bottom: 30, left: 40 });
 
         const svg = d3
             .select<any, ScaleBand<IBarData>>(barContainer.current)
@@ -86,7 +86,7 @@ const BarComponent = (props: IBarComponentProps) => {
 
     return (
         <Container maxWidth="sm">
-            <h2 style={{ textAlign: 'center' }}>{title}</h2>
+            <h3 style={{ textAlign: 'left' ,color:'#0097a7', paddingTop:0,margin:0}}>  {title}</h3>
             <svg style={styles.container} ref={barContainer} />
         </Container>
     );

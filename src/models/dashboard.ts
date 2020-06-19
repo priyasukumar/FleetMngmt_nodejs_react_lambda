@@ -1,6 +1,7 @@
 import { ScaleBand, PieArcDatum } from 'd3';
 import { IDriverServiceTimeModel } from './driverServiceTime';
 import { IDatePickerProps } from './datePicker';
+import {IBarComponentProps} from './graph'
 
 export interface IDashboardContainerProps {
     dashboard: IDashboard[];
@@ -15,6 +16,7 @@ export interface IDashboardComponentProps {
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
     scoreData:IScoreData;
+    driverScoreBoard: IBarComponentProps,
     serviceReminder:IServiceReminder[];
 }
 

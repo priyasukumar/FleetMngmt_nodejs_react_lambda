@@ -22,7 +22,7 @@ const LegendComponent = (props: ILegendComponentProps) => {
             .data(data.map(c => c.name))
             .enter()
             .append('rect')
-            .attr('x', 100)
+            .attr('x', 50)
             .attr('y', (d, i) => (100 + i * (size + 5)))
             .attr('width', size)
             .attr('height', size)
