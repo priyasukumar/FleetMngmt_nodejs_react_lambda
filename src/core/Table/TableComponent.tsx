@@ -224,6 +224,7 @@ const SRow = (rowProps: IRowProps) => {
         <StyledTableCell align="left">{data.VehicleName}</StyledTableCell>
         <StyledTableCell align="left">{data.VehicleLicenseNo}</StyledTableCell>
         <StyledTableCell align="left">{data.DrivingTimeHours}</StyledTableCell>
+        <StyledTableCell align="left">{data.WorkTimeHours}</StyledTableCell>
         <StyledTableCell align="left">{data.RestTimeHours}</StyledTableCell>
       </StyledTableRow>
       <StyledTableRow>

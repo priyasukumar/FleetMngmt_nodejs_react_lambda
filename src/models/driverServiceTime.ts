@@ -30,6 +30,7 @@ export interface IDriverServiceTime {
     DCS_DriverMaster: IDriver;
     DCS_VehicleMaster: IVehicle;
     DrivingTimeHours: number;
+    WorkTimeHours: number;
     RestTimeHours: number;
 }
 
@@ -41,6 +42,7 @@ export interface IDriverServiceTimeModel {
     VehicleLicenseNo: string;
     SubModel: IDriverServiceTimeSubModel[];
     DrivingTimeHours: number;
+    WorkTimeHours: number;
     RestTimeHours: number;
 }
 
