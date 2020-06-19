@@ -1,4 +1,4 @@
-import { UPDATE_HARSHBRAKE } from '../constants/Actions';
+import { UPDATE_HARSHTURN } from '../constants/Actions';
 import { IHarshTurnContainerProps } from '../models/harshTurn';
 
 const initialState = {
@@ -7,7 +7,7 @@ const initialState = {
 
 const HarshTurnReducer = (state = initialState, action: any) => {
     switch (action.type) {
-        case UPDATE_HARSHBRAKE:
+        case UPDATE_HARSHTURN:
             return {
                 ...state,
                 ...action.payload

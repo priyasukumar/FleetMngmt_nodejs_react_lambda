@@ -2,7 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
+<<<<<<< HEAD
 import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IScoreData,IServiceReminder, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition } from '../models/dashboard';
+=======
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition, IDashboardDateFilterModel } from '../models/dashboard';
+>>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
@@ -18,7 +22,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
         { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
         { columnName: 'OverSpeed', columnValue: 'Over Speed Count' },
-        { columnName: 'HarshBreaking', columnValue: 'Harsh Break Count' },
+        { columnName: 'HarshBraking', columnValue: 'Harsh Brake Count' },
         { columnName: 'HarshTurning', columnValue: 'Harsh Turn Count' },
       ];
     const groupedDataByDriverId = groupBy(props.dashboard, 'DriverVehicleId') as IGroupedDashboard;
@@ -29,6 +33,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     } as IDriverCondition;
     const drivers = getWithSubModel(groupedDataByDriverId);
 
+<<<<<<< HEAD
     let overSpeed = 0, harshBreaking = 0, harshTurning = 0, servicenow = 0,servicelater=0 ,servicesoon=0;
         drivers.map(c => {
         if (c.OverSpeed > 0 ) {
@@ -36,6 +41,16 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         }
         if (c.HarshBreaking > 0) {
             harshBreaking += c.HarshBreaking;
+=======
+    let overSpeed = 0, harshBraking = 0, harshTurning = 0, overSpeedPercentage = 0, harshBrakePercentage = 0, harshTurnPercentage = 0, total = 0;
+    total = drivers?.length;
+    drivers.map(c => {
+        if (c.OverSpeed > 0) {
+            overSpeed += 1;
+        }
+        if (c.HarshBraking > 0) {
+            harshBraking += 1;
+>>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
         }
         if (c.HarshTurning > 0) {
             harshTurning += c.HarshTurning;
@@ -172,7 +187,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
 export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80): IDashboardModel[] => {
     let dashboard = [] as IDashboardModel[];
-
+    let dashboardElemCount = 0;
     for (let key in groupedData) {
         if (key) {
             let count = 0;
@@ -191,37 +206,50 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                 VehicleLicenseNo,
                 VehicleName,
                 OverSpeed: 0,
-                HarshBreaking: 0,
+                HarshBraking: 0,
                 HarshTurning: 0,
+<<<<<<< HEAD
                 Score:0,
                 SubModel: [] as IDashboardSubModel[]
+=======
+                SubModel: [] as IDashboardSubModel[],
+                DateFilterModel: {} as IDashboardDateFilterModel
+>>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
             } as IDashboardModel;
 
             groupedData[key].reduce((c, p, index) => {
                 dashboardModel.SubModel[index] = {
-                    HarshBreaking: 0,
+                    HarshBraking: 0,
                     HarshTurning: 0,
                     PacketTime: '',
-                    VehicleSpeed: 0
+                    VehicleSpeed: 0,
+                    Date: '',
                 } as IDashboardSubModel;
-                dashboardModel.SubModel[index].VehicleSpeed = p.VehicleSpeed;
+		        dashboardModel.SubModel[index].VehicleSpeed = p.VehicleSpeed;
                 dashboardModel.SubModel[index].PacketTime = p.PacketTime;
-                dashboardModel.SubModel[index].HarshBreaking = p.HarshBreaking;
-                dashboardModel.HarshBreaking = dashboardModel.HarshBreaking + c.HarshBreaking + p.HarshBreaking;
+                dashboardModel.SubModel[index].HarshBraking = p.HarshBreaking;
+                dashboardModel.HarshBraking = dashboardModel.HarshBraking + p.HarshBreaking;
                 dashboardModel.SubModel[index].HarshTurning = p.HarshTurning;
-                dashboardModel.HarshTurning = dashboardModel.HarshBreaking + c.HarshTurning + p.HarshTurning;
+                dashboardModel.HarshTurning = dashboardModel.HarshTurning + p.HarshTurning;
+                dashboardModel.SubModel[index].Date = p.PacketTime.slice(0,10).split("-").reverse().join("-");
                 if (p.VehicleSpeed >= speedLimit) {
                     count += 1;
                 }
                 dashboardModel.OverSpeed = count;
+<<<<<<< HEAD
                 dashboardModel.Score=0;
+=======
+                
+>>>>>>> 0ca116e701f1ee73082497a981ef3b2cc0e3545f
                 return c;
             }, {
-                HarshBreaking: 0,
+                HarshBraking: 0,
                 HarshTurning: 0
             } as IDashboardModel);
-
+            
             dashboard.push(dashboardModel);
+            dashboard[dashboardElemCount].DateFilterModel = {};
+            dashboardElemCount += 1;
             count = 0;
         }
     }

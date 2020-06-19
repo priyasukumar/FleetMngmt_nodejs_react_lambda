@@ -16,7 +16,8 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
         { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
         { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
-        { columnName: 'VehicleSpeed', columnValue: 'Driving Time Hours' },
+        { columnName: 'DrivingTimeHours', columnValue: 'Driving Time Hours' },
+        { columnName: 'WorkTimeHours', columnValue: 'Work Time Hours' },
         { columnName: 'RestTimeHours', columnValue: 'Rest Time Hours' },
       ];
     const groupedDataByDriverId = groupBy(props.driversServiceTime, 'DriverVehicleId') as IGroupedDriverServiceTime;
@@ -94,6 +95,7 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
                 VehicleLicenseNo,
                 VehicleName,
                 DrivingTimeHours: 0,
+                WorkTimeHours: 0,
                 RestTimeHours: 0,
                 SubModel: [] as IDriverServiceTimeSubModel[]
             } as IDriverServiceTimeModel;
@@ -101,6 +103,7 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
             groupedData[key].map((c, index) => {
                 driverServiceTimeModel.RestTimeHours += c.RestTimeHours;
                 driverServiceTimeModel.DrivingTimeHours += c.DrivingTimeHours;
+                driverServiceTimeModel.WorkTimeHours += c.WorkTimeHours;
                 driverServiceTimeModel.SubModel[index] = {
                     RestingStartTime: '',
                     RestingEndTime: '',

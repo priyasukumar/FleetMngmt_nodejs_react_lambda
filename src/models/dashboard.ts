@@ -21,7 +21,7 @@ export interface IDashboardComponentProps {
 }
 
 export interface IHarshBrakeProps {
-    HarshBreaking: IPieData[];
+    HarshBraking: IPieData[];
     VehicleSpeed: number;
     DriverVehicleId: number;
 }
@@ -47,20 +47,33 @@ export interface IDashboardModel {
     VehicleName: string;
     VehicleLicenseNo: string;
     OverSpeed: number;
-    HarshBreaking: number;
+    HarshBraking: number;
     HarshTurning: number;
     PacketTime: string;
     CreatedDate: string;
     VehicleSpeed: number;
     Score:number;
     SubModel: IDashboardSubModel[];
+    DateFilterModel?: IDashboardDateFilterModel;
 }
 
 export interface IDashboardSubModel {
-    HarshBreaking: number;
+    HarshBraking: number;
     HarshTurning: number;
     PacketTime: string;
     VehicleSpeed: number;
+    Date?: string;
+}
+
+export interface IDashboardDateFilterSubModel {
+    HarshBraking: number;
+    HarshTurning: number;
+    PacketTime: string;
+    VehicleSpeed: number;
+}
+
+export interface IDashboardDateFilterModel {
+    [key: string] : IDashboardDateFilterSubModel []
 }
 
 export interface IDriver {
