@@ -271,22 +271,24 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('DriverId');
+  const packetTimeFormat = 'HH:mm:ss';
 
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
+  console.log(data);
    data.forEach((arr :any,i :number)=>{
      if(!arr.PacketTime){
        return
      }
      arr.DateFilterModel = groupBy(arr.SubModel,"Date");
-     for (let key in arr.DateFilterModel){
-      arr.DateFilterModel[key].forEach((el:any,i:any)=>{ 
-      el.PacketTime = isoToLocal(el.PacketTime,'HH:mm:ss') 
-      })
-     arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
+     const DateFilterModelClone = JSON.parse(JSON.stringify(arr.DateFilterModel));
+     for (let key in DateFilterModelClone){
+      DateFilterModelClone[key].forEach((el:any) => el.PacketTime = isoToLocal(el.PacketTime,packetTimeFormat));
+      DateFilterModelClone[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
     }
+    arr.DateFilterModel = DateFilterModelClone
   })
-
+  
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };

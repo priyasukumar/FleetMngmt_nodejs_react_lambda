@@ -4,7 +4,7 @@ export const groupBy = (array: any, key: any) => {
     }
     return array.reduce((result: any, currentValue: any) => {
         (result[currentValue[key]] = result[currentValue[key]] || []).push(
-            {...currentValue}
+            currentValue
         );
         return result;
     }, {});
