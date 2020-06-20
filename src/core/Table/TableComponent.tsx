@@ -275,16 +275,15 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
 
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
-  console.log(data);
-   data.forEach((arr :any,i :number)=>{
-     if(!arr.PacketTime){
-       return
-     }
-     arr.DateFilterModel = groupBy(arr.SubModel,"Date");
-     const DateFilterModelClone = JSON.parse(JSON.stringify(arr.DateFilterModel));
-     for (let key in DateFilterModelClone){
-      DateFilterModelClone[key].forEach((el:any) => el.PacketTime = isoToLocal(el.PacketTime,packetTimeFormat));
-      DateFilterModelClone[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
+  data.forEach((arr :any,i :number)=>{
+    if(!arr.PacketTime){
+      return
+    }
+    arr.DateFilterModel = groupBy(arr.SubModel,"Date");
+    const DateFilterModelClone = JSON.parse(JSON.stringify(arr.DateFilterModel));
+    for (let key in DateFilterModelClone){
+      DateFilterModelClone[key].sort((d1:any, d2:any) => new Date(d1.PacketTime).getTime() - new Date(d2.PacketTime).getTime());
+      DateFilterModelClone[key].map((el:any) => el.PacketTime = isoToLocal(el.PacketTime,packetTimeFormat));
     }
     arr.DateFilterModel = DateFilterModelClone
   })
