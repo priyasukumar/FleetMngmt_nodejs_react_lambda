@@ -21,7 +21,7 @@ import { TablePagination, TableSortLabel } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
-import { groupByDate } from '../../utils/database';
+import { groupBy } from '../../utils/database';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 
@@ -274,15 +274,17 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
 
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
-  
    data.forEach((arr :any,i :number)=>{
      if(!arr.PacketTime){
        return
      }
-      arr.DateFilterModel = groupByDate(arr.SubModel)
-      for (let key in arr.DateFilterModel){
-        arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
-      }
+     arr.DateFilterModel = groupBy(arr.SubModel,"Date");
+     for (let key in arr.DateFilterModel){
+      arr.DateFilterModel[key].forEach((el:any,i:any)=>{ 
+      el.PacketTime = isoToLocal(el.PacketTime,'HH:mm:ss') 
+      })
+     arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
+    }
   })
 
   const handleChangePage = (event: unknown, newPage: number) => {
