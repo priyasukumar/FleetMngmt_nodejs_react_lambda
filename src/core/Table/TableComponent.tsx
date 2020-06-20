@@ -283,8 +283,8 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
      arr.DateFilterModel = groupBy(arr.SubModel,"Date");
      const DateFilterModelClone = JSON.parse(JSON.stringify(arr.DateFilterModel));
      for (let key in DateFilterModelClone){
-      DateFilterModelClone[key].forEach((el:any) => el.PacketTime = isoToLocal(el.PacketTime,packetTimeFormat));
       DateFilterModelClone[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
+      DateFilterModelClone[key].forEach((el:any) => el.PacketTime = isoToLocal(el.PacketTime,packetTimeFormat));
     }
     arr.DateFilterModel = DateFilterModelClone
   })
