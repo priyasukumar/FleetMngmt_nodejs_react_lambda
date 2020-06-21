@@ -275,7 +275,6 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
 
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
-  console.log(data);
    data.forEach((arr :any,i :number)=>{
      if(!arr.PacketTime){
        return
