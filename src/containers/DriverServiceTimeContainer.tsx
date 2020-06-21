@@ -31,7 +31,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 7);
+    initialToDate.setDate(initialToDate.getDate() - 15);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
