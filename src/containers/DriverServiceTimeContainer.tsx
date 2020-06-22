@@ -16,7 +16,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
         { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
         { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
-        { columnName: 'VehicleSpeed', columnValue: 'Driving Time Hours' },
+        { columnName: 'DrivingTimeHours', columnValue: 'Driving Time Hours' },
         { columnName: 'WorkTimeHours', columnValue: 'Work Time Hours' },
         { columnName: 'RestTimeHours', columnValue: 'Rest Time Hours' },
       ];
