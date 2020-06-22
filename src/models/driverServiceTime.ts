@@ -1,5 +1,6 @@
 import { IDriver, IVehicle, ICollapsibleTableProps } from './dashboard';
 import { IDatePickerProps } from './datePicker';
+import { IBarComponentProps } from './graph';
 
 export interface IDriverServiceTimeActionProps {
     loadDriversServiceTime: (fromDate: Date, toDate: Date) => void;
@@ -10,6 +11,8 @@ export interface IDriverServiceTimeContainerProps {
 }
 
 export interface IDriverServiceTimeComponentProps {
+    mostDrivingDrivers:IBarComponentProps;
+    leastDrivingDrivers:IBarComponentProps;
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
 }
