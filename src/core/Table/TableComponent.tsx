@@ -21,7 +21,7 @@ import { TablePagination, TableSortLabel } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
-import { groupByDate } from '../../utils/database';
+import { groupBy } from '../../utils/database';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 
@@ -185,13 +185,13 @@ const Row = (rowProps: IRowProps) => {
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
             {
-              uniqueDateArray.map((key,i)=>{
+              uniqueDateArray.map((date,i)=>{
                 const data = {
                   dashboardModel,
-                  date : key,
+                  date,
                   driverCondition
                 }
-                return <CollapsibleDateFilterTable key={dashboardModel.DriverId} {...data}/> 
+                return <CollapsibleDateFilterTable key={date} {...data}/> 
             })
             }
             </Box>
@@ -271,20 +271,23 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('DriverId');
+  const packetTimeFormat = 'HH:mm:ss';
 
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
-  
    data.forEach((arr :any,i :number)=>{
      if(!arr.PacketTime){
        return
      }
-      arr.DateFilterModel = groupByDate(arr.SubModel)
-      for (let key in arr.DateFilterModel){
-        arr.DateFilterModel[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
-      }
+     arr.DateFilterModel = groupBy(arr.SubModel,"Date");
+     const DateFilterModelClone = JSON.parse(JSON.stringify(arr.DateFilterModel));
+     for (let key in DateFilterModelClone){
+      DateFilterModelClone[key].sort((a:any, b:any) => parseFloat(a.PacketTime) - parseFloat(b.PacketTime));
+      DateFilterModelClone[key].forEach((el:any) => el.PacketTime = isoToLocal(el.PacketTime,packetTimeFormat));
+    }
+    arr.DateFilterModel = DateFilterModelClone
   })
-
+  
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };

@@ -10,6 +10,8 @@ import { IDatePickerProps } from '../models/datePicker';
 import { Driver } from '../constants/enum';
 import { scores} from '../utils/driver';
 import { IBarComponentProps } from '../models/graph';
+import { isoToLocal } from '../utils/date';
+
 const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionProps) => {
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
@@ -172,6 +174,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
 export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80): IDashboardModel[] => {
     let dashboard = [] as IDashboardModel[];
+    const dateFormat = 'DD-MM-YYYY';
     let dashboardElemCount = 0;
     for (let key in groupedData) {
         if (key) {
@@ -213,7 +216,7 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                 dashboardModel.HarshBraking = dashboardModel.HarshBraking + p.HarshBreaking;
                 dashboardModel.SubModel[index].HarshTurning = p.HarshTurning;
                 dashboardModel.HarshTurning = dashboardModel.HarshTurning + p.HarshTurning;
-                dashboardModel.SubModel[index].Date = p.PacketTime.slice(0,10).split("-").reverse().join("-");
+                dashboardModel.SubModel[index].Date = isoToLocal(p.PacketTime,dateFormat);
                 if (p.VehicleSpeed >= speedLimit) {
                     count += 1;
                 }
