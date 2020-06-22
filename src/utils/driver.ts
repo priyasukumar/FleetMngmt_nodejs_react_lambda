@@ -45,3 +45,21 @@ export const sortBy = (drivers: any, property: string, by?: string) => {
 
     return bestDrivers;
 };
+
+export const scores = (drivers: any, property: string, by?: string) => {
+    const driversClone = JSON.parse(JSON.stringify(drivers));
+    let bestDrivers = [] as IBarData[];
+    
+    drivers.map((c: any) => {
+        const barModel = {
+            name:c.DriverName,
+            value: c[property],
+        } as IBarData;
+
+        bestDrivers.push(barModel);
+
+        return c;
+    });
+
+    return bestDrivers;
+};

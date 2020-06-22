@@ -18,7 +18,7 @@ const BarComponent = (props: IBarComponentProps) => {
     const Bar = () => {
         const width = 600;
         const height = 400;
-        const margin = ({ top: 30, right: 0, bottom: 30, left: 40 });
+        const margin = ({ top: 0, right: 0, bottom: 80, left: 40 });
 
         const svg = d3
             .select<any, ScaleBand<IBarData>>(barContainer.current)
@@ -55,7 +55,13 @@ const BarComponent = (props: IBarComponentProps) => {
             .call(d3.axisBottom(x).tickFormat((d, i) => plot[i].name).tickSizeOuter(0))
             .style('font-size', '15px')
             .style('font-family', '"Roboto", "Helvetica", "Arial", sans-serif')
-            .style('font-weight', 'bold');
+            .style('font-weight', 'bold')
+            .selectAll("text")	
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)" 
+                    );
 
         const yAxis = (g: any) => g
             .attr('transform', `translate(${margin.left},0)`)
@@ -86,7 +92,7 @@ const BarComponent = (props: IBarComponentProps) => {
 
     return (
         <Container maxWidth="sm">
-            <h2 style={{ textAlign: 'center' }}>{title}</h2>
+            <h3 style={{ textAlign: 'left' ,color:'#0097a7', paddingTop:10,margin:0}}>  {title}</h3>
             <svg style={styles.container} ref={barContainer} />
         </Container>
     );

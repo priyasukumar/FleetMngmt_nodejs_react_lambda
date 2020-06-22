@@ -2,12 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
-import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition, IDashboardDateFilterModel } from '../models/dashboard';
+import { IDashboardActionProps, ICollapsibleTableProps, IGroupedDashboard, IPieData,IScoreData,IServiceReminder, IDashboardModel, IDashboardContainerProps, IDashboardComponentProps, IDashboardSubModel, IDriverCondition,IDashboardDateFilterModel } from '../models/dashboard';
 import DashboardComponent from '../components/dashboard/DashboardComponent';
 import { loadDashboard } from '../actions/DashboardActions';
 import { groupBy } from '../utils/database';
 import { IDatePickerProps } from '../models/datePicker';
 import { Driver } from '../constants/enum';
+import { scores} from '../utils/driver';
+import { IBarComponentProps } from '../models/graph';
 import { isoToLocal } from '../utils/date';
 
 const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionProps) => {
@@ -29,31 +31,78 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     } as IDriverCondition;
     const drivers = getWithSubModel(groupedDataByDriverId);
 
-    let overSpeed = 0, harshBraking = 0, harshTurning = 0, overSpeedPercentage = 0, harshBrakePercentage = 0, harshTurnPercentage = 0, total = 0;
-    total = drivers?.length;
-    drivers.map(c => {
-        if (c.OverSpeed > 0) {
-            overSpeed += 1;
+    let overSpeed = 0, harshBraking = 0, harshTurning = 0, servicenow = 0,servicelater=0 ,servicesoon=0;
+        drivers.map(c => {
+        if (c.OverSpeed > 0 ) {
+            overSpeed += c.OverSpeed;
         }
         if (c.HarshBraking > 0) {
-            harshBraking += 1;
+            harshBraking += c.HarshBraking;
         }
         if (c.HarshTurning > 0) {
-            harshTurning += 1;
+            harshTurning += c.HarshTurning;
         }
 
         return c;
     });
+    let scoreData = {
+        name:'',
+        value:0
+        
+        } as IScoreData;
+    
+    drivers.map(c => {
+        if (c.OverSpeed > 0 ) {
+            c.Score += (c.OverSpeed/overSpeed)*100;
+        }
+        if (c.HarshBraking > 0) {
+            c.Score += (c.HarshBraking/harshBraking)*100;
+        }
+        if (c.HarshTurning > 0) {
+            c.Score += (c.HarshTurning/harshTurning)*100;
+        }
+        c.Score=(100-(
+            c.Score%100))/10;
+       if(c.Score>=8.5)
+       {
+           servicelater+=1;
+       }
+       else if(c.Score>=8)
+       {
+           servicesoon+=1;
+       }
+       else if(c.Score>=7.5)
+       {
+           servicenow+=1;
+       }
+        if(c.Score>scoreData.value)
+        {
+            
+            scoreData.value=(Number)(c.Score.toFixed(1));
+            scoreData.name=c.DriverName;
+            
+        }
+        return c;
+    });
 
-    overSpeedPercentage = overSpeed / total;
-    harshBrakePercentage = harshBraking / total;
-    harshTurnPercentage = harshTurning / total;
+   
     const graphData = [
-        { name: 'Over Speed', value: overSpeedPercentage, color: '#ff7f0e' },
-        { name: 'Harsh Brake', value: harshBrakePercentage, color: '#aec7e8' },
-        { name: 'Harsh Turn', value: harshTurnPercentage, color: '#1f77b4' },
+        { name: 'Over Speed', value: overSpeed, color: '#ff7f0e' },
+        { name: 'Harsh Brake', value: harshBraking, color: '#aec7e8' },
+        { name: 'Harsh Turn', value: harshTurning, color: '#1f77b4' },
     ] as IPieData[];
 
+   
+
+    const serviceReminder = [
+     
+        { name: 'IMMEDIATELY', value: servicenow,color:'red'},
+        { name: 'SOON', value: servicesoon,color:'orange'},
+        { name: 'LATER', value: servicelater,color:'green'}
+       
+
+    ] as IServiceReminder[];
+   
     const collapsibleTableProps = {
         data: drivers,
         headers,
@@ -92,12 +141,24 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
+    const driverScoreBoard = {
+        title: 'DRIVERS SCORE BOARD',
+        yaxisTitle: 'Scores',
+        plot:  scores(drivers, 'Score','desc'),
+        barColor: '#1f77b4'
+    } as IBarComponentProps;
+
     const dashboardComponentProps = {
         graphData: graphData,
         tableData: collapsibleTableProps,
-        datePicker: datePickerProps
+        datePicker: datePickerProps,
+        scoreData: scoreData,
+        driverScoreBoard:driverScoreBoard,
+        serviceReminder: serviceReminder
     } as IDashboardComponentProps;
 
+   
+   
     useEffect(
         () => {
             if (fromDate && toDate) {
@@ -135,6 +196,8 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                 OverSpeed: 0,
                 HarshBraking: 0,
                 HarshTurning: 0,
+                Score:0,
+                
                 SubModel: [] as IDashboardSubModel[],
                 DateFilterModel: {} as IDashboardDateFilterModel
             } as IDashboardModel;
@@ -158,7 +221,7 @@ export const getWithSubModel = (groupedData: IGroupedDashboard, speedLimit = 80)
                     count += 1;
                 }
                 dashboardModel.OverSpeed = count;
-                
+                dashboardModel.Score=0;
                 return c;
             }, {
                 HarshBraking: 0,

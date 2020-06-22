@@ -1,6 +1,7 @@
 import { ScaleBand, PieArcDatum } from 'd3';
 import { IDriverServiceTimeModel } from './driverServiceTime';
 import { IDatePickerProps } from './datePicker';
+import {IBarComponentProps} from './graph'
 
 export interface IDashboardContainerProps {
     dashboard: IDashboard[];
@@ -14,7 +15,9 @@ export interface IDashboardComponentProps {
     graphData: IPieData[];
     tableData: ICollapsibleTableProps;
     datePicker: IDatePickerProps;
-
+    scoreData:IScoreData;
+    driverScoreBoard: IBarComponentProps,
+    serviceReminder:IServiceReminder[];
 }
 
 export interface IHarshBrakeProps {
@@ -49,6 +52,7 @@ export interface IDashboardModel {
     PacketTime: string;
     CreatedDate: string;
     VehicleSpeed: number;
+    Score:number;
     SubModel: IDashboardSubModel[];
     DateFilterModel?: IDashboardDateFilterModel;
 }
@@ -97,6 +101,16 @@ export interface IPieData extends PieArcDatum<IPieData> {
     name: string;
     color: string;
     value: number;
+}
+export interface IScoreData{
+    name: string;
+    value: number;
+}
+
+export interface IServiceReminder{
+    name: string;
+    value: number;
+    color:string;
 }
 
 export interface ICollapsibleTableProps {
