@@ -10,5 +10,6 @@ export enum Driver {
     HarshTurn = 'HarshTurning',
     OverSpeed = 'OverSpeed',
     DriverId = 'DriverId',
-    PacketTime = 'PacketTime'
+    PacketTime = 'PacketTime',
+    DrivingTime = 'DrivingTimeHours',
 }

@@ -8,6 +8,9 @@ import { loadDriversServiceTime } from '../actions/DriverServiceTimeAction';
 import { groupBy, toFixed } from '../utils/database';
 import { ICollapsibleTableProps } from '../models/dashboard';
 import { IDatePickerProps } from '../models/datePicker';
+import { sortBy } from '../utils/driver';
+import { Driver } from '../constants/enum';
+import { IBarComponentProps } from '../models/graph';
 
 const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & IDriverServiceTimeActionProps) => {
     const headers = [
@@ -31,7 +34,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     const datePickerFormat = 'dd/MM/yyyy';
     const currentDate = new Date();
     const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 7);
+    initialToDate.setDate(initialToDate.getDate() - 10);
     const minDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
@@ -59,7 +62,23 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         handleToDateChange: (date: Date) => handleToDateChange(date)
     } as IDatePickerProps;
 
+    const mostDrivingTime = {
+        title: 'Top Driving Time',
+        yaxisTitle: 'Driving Time',
+        plot: sortBy(driverServiceTime, Driver.DrivingTime, 'desc'),
+        barColor: '#1f77b4'
+    } as IBarComponentProps;
+
+    const leastDrivingTime = {
+        title: 'Least Driving Time',
+        yaxisTitle: 'Driving Time',
+        plot: sortBy(driverServiceTime, Driver.DrivingTime),
+        barColor: '#1f77b4'
+    } as IBarComponentProps;
+
     const driverServiceTimeComponentProps = {
+        mostDrivingDrivers: mostDrivingTime,
+        leastDrivingDrivers: leastDrivingTime,
         tableData: collapsibleTableProps,
         datePicker: datePickerProps
     } as IDriverServiceTimeComponentProps;
