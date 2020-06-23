@@ -1,11 +1,13 @@
 import * as React from 'react';
 import PieChart from '../../core/PieChartComponent';
 import Bar from '../../core/BarComponent';
+import SimplePopover from '../../core/PopOverComponent'
+
 import { Grid,Paper,Box ,Theme} from '@material-ui/core';
 import {makeStyles,  createStyles} from '@material-ui/styles'
 import { IDashboardComponentProps } from '../../models/dashboard';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardActionArea from '@material-ui/core/CardActionArea';
+import CardAction from '@material-ui/core/CardActionArea';
 
 import Legend from '../../core/LegendComponent';
 import CollapsibleTable from '../../core/Table/TableComponent';
@@ -79,7 +81,7 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
                         <Grid item={true} xs={2}>
                             
                             <CardComponent name={service.name} value={service.value} bgcolor='white' color={service.color} elevation={0}></CardComponent>
-                
+                            
                         </Grid> 
                         
                     ))}
@@ -116,6 +118,7 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
 
 export const CardComponent=({name,value,elevation,...props}:any)=>{
     const classes = useStyles(props);
+    let textcolor:string=props.color;
 return (
     <Card elevation={elevation}>
         <CardContent className={classes.title}>
@@ -126,8 +129,11 @@ return (
         <CardContent className={classes.content}>
             
            {value}
-        
+            <Divider/>
         </CardContent>
+        <CardAction className={classes.content} >
+            <SimplePopover color={textcolor}/>
+        </CardAction>
         
     </Card>
 );
