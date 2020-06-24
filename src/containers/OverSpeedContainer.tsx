@@ -28,6 +28,8 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
     } as IDiscreteSliderProps;
     const groupedDataByDriverId = groupBy(props.overSpeed, 'DriverVehicleId') as IGroupedDashboard;
     const overSpeed = getWithSubModel(groupedDataByDriverId, speedLimit).filter(c => c.OverSpeed > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.VehicleSpeed >= speedLimit));
+    const overSpeedWithLeastData = getWithSubModel(groupedDataByDriverId, speedLimit);
+    
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
         { columnName: 'DriverName', columnValue: 'Driver Name' },
@@ -93,7 +95,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         title: 'Top Least Crossed',
         xaxisTitle: 'Driver Name',
         yaxisTitle: 'Over Speed Count',
-        plot: sortBy(overSpeed, Driver.OverSpeed),
+        plot: sortBy(overSpeedWithLeastData, Driver.OverSpeed),
         barColor: '#e6601d'
     } as IBarComponentProps;
 

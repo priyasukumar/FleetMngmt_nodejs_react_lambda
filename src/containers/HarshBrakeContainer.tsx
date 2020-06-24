@@ -16,6 +16,7 @@ import { Driver } from '../constants/enum';
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
     const groupedDataByDriverId = groupBy(props.harshBrake, 'DriverVehicleId') as IGroupedDashboard;
     const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBraking > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshBraking > 0));
+    const harshBrakeWithLeastData = getWithSubModel(groupedDataByDriverId)
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
         { columnName: 'DriverName', columnValue: 'Driver Name' },
@@ -80,7 +81,7 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
         title: 'Top Least Applied',
         xaxisTitle: 'Driver Name',
         yaxisTitle: 'Top Harsh Brake Count',
-        plot: sortBy(harshBrake, Driver.HarshBrake),
+        plot: sortBy(harshBrakeWithLeastData, Driver.HarshBrake),
         barColor: '#aec7e8'
     } as IBarComponentProps;
 

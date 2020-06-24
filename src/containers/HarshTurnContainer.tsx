@@ -16,6 +16,7 @@ import { IBarComponentProps } from '../models/graph';
 const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionProps) => {
     const groupedDataByDriverId = groupBy(props.harshTurn, 'DriverVehicleId') as IGroupedDashboard;
     const harshTurn = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshTurning > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshTurning > 0));
+    const harshTurnWithLeastData = getWithSubModel(groupedDataByDriverId);
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
         { columnName: 'DriverName', columnValue: 'Driver Name' },
@@ -80,7 +81,7 @@ const HarshTurnContainer = (props: IHarshTurnContainerProps & IHarshTurnActionPr
         title: 'Top Least Applied',
         xaxisTitle: 'Driver Name',
         yaxisTitle: 'Harsh Turn Count',
-        plot: sortBy(harshTurn, Driver.HarshTurn),
+        plot: sortBy(harshTurnWithLeastData, Driver.HarshTurn),
         barColor: '#1f77b4'
     } as IBarComponentProps;
 
