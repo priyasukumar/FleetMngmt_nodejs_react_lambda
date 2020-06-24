@@ -39,16 +39,11 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
     const [toDate, setToDate] = useState<Date | null>(currentDate);
-    const handleFromDateChange = (date: Date | null) => {
-        if (date && toDate) {
-            setFromDate(date);
-            props.loadDriversServiceTime(date, toDate);
-        }
-    };
-    const handleToDateChange = (date: Date | null) => {
-        if (date && fromDate) {
-            setToDate(date);
-            props.loadDriversServiceTime(fromDate, date);
+    const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
+        if (toDate && fromDate) {
+            setToDate(toDate);
+            setFromDate(fromDate);
+            props.loadDriversServiceTime(fromDate, toDate);
         }
     };
 
@@ -58,12 +53,12 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         datePickerMaxDate: currentDate,
         datePickerFromDate: fromDate ? fromDate : initialToDate,
         datePickerToDate: toDate ? toDate : currentDate,
-        handleFromDateChange: (date: Date) => handleFromDateChange(date),
-        handleToDateChange: (date: Date) => handleToDateChange(date)
+        handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
 
     const mostDrivingTime = {
         title: 'Top Driving Time',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Driving Time',
         plot: sortBy(driverServiceTime, Driver.DrivingTime, 'desc'),
         barColor: '#1f77b4'
@@ -71,6 +66,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
 
     const leastDrivingTime = {
         title: 'Least Driving Time',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Driving Time',
         plot: sortBy(driverServiceTime, Driver.DrivingTime),
         barColor: '#1f77b4'

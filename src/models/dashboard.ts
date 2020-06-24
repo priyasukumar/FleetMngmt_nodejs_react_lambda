@@ -111,6 +111,8 @@ export interface IServiceReminder{
     name: string;
     value: number;
     color:string;
+    vehicles:string[];
+    title:string;
 }
 
 export interface ICollapsibleTableProps {

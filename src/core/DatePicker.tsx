@@ -23,34 +23,57 @@ const useCustomThemeStyles = createMuiTheme({
 
 const DatePicker = (props: IDatePickerProps) => {
     const { datePickerFromDate, datePickerToDate, datePickerMinDate, datePickerMaxDate, datePickerDateFormat } = props;
-    const [errorMessage, setError] = useState<string | null>(null);
+    const [fromDateErrorMessage, setFromDateError] = useState<string | null>(null);
+    const [toDateErrorMessage, setToDateError] = useState<string | null>(null);
+
+    const [fromDateFromState, setFromDate] = useState<Date>(datePickerFromDate);
+    const [toDateFromState, setToDate] = useState<Date>(datePickerToDate);
 
     const handleFromDateChange = (fromDate: Date) => {
-        const diff = getDateRangeDiff(fromDate, datePickerToDate, 'days');
-        if (fromDate > datePickerToDate) {
-            setError('From date should not be in future');
+        if (!(fromDate instanceof Date) || fromDate.toString() === "Invalid Date") {
+            setFromDateError("Invalid Date Format");
+            return;
+        }
+
+        setFromDate(fromDate)
+
+        const diff = getDateRangeDiff(fromDate, toDateFromState, 'days');
+        if (fromDate > toDateFromState) {
+            setFromDateError('From date should not be in future');
             return;
         }
         if (diff > 10) {
-            setError('Date range should be less than 7 days');
+            setFromDateError('Date range should be less than 10 days');
             return;
         }
-        setError(null);
-        props.handleFromDateChange(fromDate);
+        
+        setFromDateError(null);
+        setToDateError(null);
+        
+        props.handleDateChange(fromDate, toDateFromState);
     };
 
     const handleToDateChange = (toDate: Date) => {
-        if (toDate < datePickerFromDate) {
-            setError('To date cannot be lesser then From date');
+        if (!(toDate instanceof Date) || toDate.toString() === "Invalid Date") {
+            setToDateError("Invalid Date Format");
             return;
         }
-        const diff = getDateRangeDiff(datePickerFromDate, toDate, 'days');
+
+        setToDate(toDate)
+
+        if (toDate < fromDateFromState) {
+            setToDateError('To date cannot be lesser then From date');
+            return;
+        }
+        const diff = getDateRangeDiff(fromDateFromState, toDate, 'days');
         if (diff > 10) {
-            setError('Date range should be less than 7 days');
+            setToDateError('Date range should be less than 10 days');
             return;
         }
-        setError(null);
-        props.handleToDateChange(toDate);
+
+        setToDateError(null);
+        setFromDateError(null);
+        props.handleDateChange(fromDateFromState, toDate);
     };
 
     return (
@@ -62,12 +85,12 @@ const DatePicker = (props: IDatePickerProps) => {
                         minDate={datePickerMinDate}
                         maxDate={datePickerMaxDate}
                         format={datePickerDateFormat}
-                        helperText={errorMessage ? errorMessage : null}
-                        error={errorMessage != null}
+                        helperText={fromDateErrorMessage ? fromDateErrorMessage : null}
+                        error={fromDateErrorMessage != null}
                         margin="normal"
                         id="date-picker-inline"
                         label="From Date"
-                        value={datePickerFromDate}
+                        value={fromDateFromState}
                         autoOk={true}
                         onChange={(value: any) => handleFromDateChange(value)}
                         KeyboardButtonProps={{
@@ -78,13 +101,13 @@ const DatePicker = (props: IDatePickerProps) => {
                         variant="inline"
                         minDate={datePickerMinDate}
                         maxDate={datePickerMaxDate}
-                        helperText={errorMessage ? errorMessage : null}
-                        error={errorMessage != null}
+                        helperText={toDateErrorMessage ? toDateErrorMessage : null}
+                        error={toDateErrorMessage != null}
                         margin="normal"
                         id="date-picker-dialog"
                         label="To Date"
                         format={datePickerDateFormat}
-                        value={datePickerToDate}
+                        value={toDateFromState}
                         autoOk={true}
                         onChange={(value: any) => handleToDateChange(value)}
                         KeyboardButtonProps={{

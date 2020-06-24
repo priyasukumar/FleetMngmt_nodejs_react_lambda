@@ -32,6 +32,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     const drivers = getWithSubModel(groupedDataByDriverId);
 
     let overSpeed = 0, harshBraking = 0, harshTurning = 0, servicenow = 0,servicelater=0 ,servicesoon=0;
+    let servicenowvehicle:string[]=[],servicelatervehicle:string[]=[],servicesoonvehicle:string[]=[];
         drivers.map(c => {
         if (c.OverSpeed > 0 ) {
             overSpeed += c.OverSpeed;
@@ -66,14 +67,17 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
        if(c.Score>=8.5)
        {
            servicelater+=1;
+           servicelatervehicle.push(c.VehicleName);
        }
        else if(c.Score>=8)
        {
            servicesoon+=1;
+           servicesoonvehicle.push(c.VehicleName);
        }
        else if(c.Score>=7.5)
        {
            servicenow+=1;
+           servicenowvehicle.push(c.VehicleName);
        }
         if(c.Score>scoreData.value)
         {
@@ -96,9 +100,9 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
     const serviceReminder = [
      
-        { name: 'IMMEDIATELY', value: servicenow,color:'red'},
-        { name: 'SOON', value: servicesoon,color:'orange'},
-        { name: 'LATER', value: servicelater,color:'green'}
+        { name: 'IMMEDIATELY', value: servicenow,color:'red',vehicles:servicenowvehicle,title:"Safety core below 7.5,; should be serviced with in 3 days"},
+        { name: 'SOON', value: servicesoon,color:'orange',vehicles:servicesoonvehicle,title:"safety score  below 8 ,;should be serviced with in 15 days"},
+        { name: 'LATER', value: servicelater,color:'green',vehicles:servicelatervehicle,title:"safety score above 8.5 ,;can be serviced after a month"}
        
 
     ] as IServiceReminder[];
@@ -118,16 +122,11 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
     const [toDate, setToDate] = useState<Date | null>(currentDate);
-    const handleFromDateChange = (date: Date | null) => {
-        if (date && toDate) {
-            setFromDate(date);
-            props.loadData(date, toDate);
-        }
-    };
-    const handleToDateChange = (date: Date | null) => {
-        if (date && fromDate) {
-            setToDate(date);
-            props.loadData(fromDate, date);
+    const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
+        if (toDate && fromDate) {
+            setToDate(toDate);
+            setFromDate(fromDate);
+            props.loadData(fromDate, toDate);
         }
     };
 
@@ -137,12 +136,12 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
         datePickerMaxDate: currentDate,
         datePickerFromDate: fromDate ? fromDate : initialToDate,
         datePickerToDate: toDate ? toDate : currentDate,
-        handleFromDateChange: (date: Date) => handleFromDateChange(date),
-        handleToDateChange: (date: Date) => handleToDateChange(date)
+        handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
 
     const driverScoreBoard = {
         title: 'DRIVERS SCORE BOARD',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Scores',
         plot:  scores(drivers, 'Score','desc'),
         barColor: '#1f77b4'
