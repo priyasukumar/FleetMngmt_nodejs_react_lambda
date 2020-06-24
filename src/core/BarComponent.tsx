@@ -7,7 +7,7 @@ import { IBarComponentProps } from '../models/graph';
 
 const BarComponent = (props: IBarComponentProps) => {
     const barContainer = useRef(null);
-    const { plot, title, yaxisTitle, barColor } = props;
+    const { plot, title, xaxisTitle, yaxisTitle, barColor } = props;
     const styles = {
         container: {
             display: 'grid',
@@ -17,8 +17,8 @@ const BarComponent = (props: IBarComponentProps) => {
 
     const Bar = () => {
         const width = 600;
-        const height = 400;
-        const margin = ({ top: 0, right: 0, bottom: 80, left: 40 });
+        const height = 450;
+        const margin = ({ top: 0, right: 90, bottom: 80, left: 40 });
 
         const svg = d3
             .select<any, ScaleBand<IBarData>>(barContainer.current)
@@ -75,7 +75,13 @@ const BarComponent = (props: IBarComponentProps) => {
                 .attr('y', 10)
                 .attr('fill', 'currentColor')
                 .attr('text-anchor', 'start')
-                .text(yaxisTitle));
+                .text(yaxisTitle))
+            .call((i: any) => i.append('text')
+                .attr('x','78%')
+                .attr('y', '90%')
+                .attr('fill', 'currentColor')
+                .attr('text-anchor', 'start')
+                .text(xaxisTitle));
 
         svg.append('g')
             .call(xAxis);

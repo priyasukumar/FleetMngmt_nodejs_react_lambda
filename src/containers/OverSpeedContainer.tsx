@@ -83,6 +83,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
 
     const mostCrossedOverSpeed = {
         title: 'Top Most Crossed',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Over Speed Count',
         plot: sortBy(overSpeed, Driver.OverSpeed , 'desc'),
         barColor: '#e6601d'
@@ -90,6 +91,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
 
     const leastCrossedOverSpeed = {
         title: 'Top Least Crossed',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Over Speed Count',
         plot: sortBy(overSpeed, Driver.OverSpeed),
         barColor: '#e6601d'

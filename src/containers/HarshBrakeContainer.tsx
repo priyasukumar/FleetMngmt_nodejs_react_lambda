@@ -70,6 +70,7 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
 
     const mostAppliedHarshBrake = {
         title: 'Top Most Applied',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Harsh Brake Count',
         plot: sortBy(harshBrake, Driver.HarshBrake, 'desc'),
         barColor: '#aec7e8'
@@ -77,6 +78,7 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
 
     const leastAppliedHarshBrake = {
         title: 'Top Least Applied',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Top Harsh Brake Count',
         plot: sortBy(harshBrake, Driver.HarshBrake),
         barColor: '#aec7e8'

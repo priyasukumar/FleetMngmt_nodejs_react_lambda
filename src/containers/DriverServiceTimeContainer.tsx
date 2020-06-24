@@ -58,6 +58,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
 
     const mostDrivingTime = {
         title: 'Top Driving Time',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Driving Time',
         plot: sortBy(driverServiceTime, Driver.DrivingTime, 'desc'),
         barColor: '#1f77b4'
@@ -65,6 +66,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
 
     const leastDrivingTime = {
         title: 'Least Driving Time',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Driving Time',
         plot: sortBy(driverServiceTime, Driver.DrivingTime),
         barColor: '#1f77b4'

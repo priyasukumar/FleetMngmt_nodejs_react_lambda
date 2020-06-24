@@ -141,6 +141,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
     const driverScoreBoard = {
         title: 'DRIVERS SCORE BOARD',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Scores',
         plot:  scores(drivers, 'Score','desc'),
         barColor: '#1f77b4'

@@ -13,5 +13,6 @@ export interface IBarComponentProps {
     plot: IBarData[];
     barColor: string;
     title: string;
+    xaxisTitle: string;
     yaxisTitle: string;
 }
