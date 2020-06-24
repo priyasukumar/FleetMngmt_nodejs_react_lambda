@@ -80,7 +80,7 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
                     {serviceReminder.map (service=>(
                         <Grid item={true} xs={2}>
                             
-                            <CardComponent name={service.name} value={service.value} bgcolor='white' color={service.color} elevation={0}></CardComponent>
+                            <CardComponent name={service.name} value={service.value} vehicles={service.vehicles} title={service.title} bgcolor='white' color={service.color} elevation={0}></CardComponent>
                             
                         </Grid> 
                         
@@ -116,7 +116,7 @@ const DashboardComponent = (props: IDashboardComponentProps) => {
     );
 };
 
-export const CardComponent=({name,value,elevation,...props}:any)=>{
+export const CardComponent=({name,value,vehicles,title,elevation,...props}:any)=>{
     const classes = useStyles(props);
     let textcolor:string=props.color;
 return (
@@ -132,7 +132,7 @@ return (
             <Divider/>
         </CardContent>
         <CardAction className={classes.content} >
-            <SimplePopover color={textcolor}/>
+            <SimplePopover color={textcolor} vehicles={vehicles} title={title}/>
         </CardAction>
         
     </Card>

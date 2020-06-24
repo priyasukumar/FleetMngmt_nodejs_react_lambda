@@ -32,6 +32,7 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
     const drivers = getWithSubModel(groupedDataByDriverId);
 
     let overSpeed = 0, harshBraking = 0, harshTurning = 0, servicenow = 0,servicelater=0 ,servicesoon=0;
+    let servicenowvehicle:string[]=[],servicelatervehicle:string[]=[],servicesoonvehicle:string[]=[];
         drivers.map(c => {
         if (c.OverSpeed > 0 ) {
             overSpeed += c.OverSpeed;
@@ -66,14 +67,17 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
        if(c.Score>=8.5)
        {
            servicelater+=1;
+           servicelatervehicle.push(c.VehicleName);
        }
        else if(c.Score>=8)
        {
            servicesoon+=1;
+           servicesoonvehicle.push(c.VehicleName);
        }
        else if(c.Score>=7.5)
        {
            servicenow+=1;
+           servicenowvehicle.push(c.VehicleName);
        }
         if(c.Score>scoreData.value)
         {
@@ -96,9 +100,9 @@ const DashboardContainer = (props: IDashboardContainerProps & IDashboardActionPr
 
     const serviceReminder = [
      
-        { name: 'IMMEDIATELY', value: servicenow,color:'red'},
-        { name: 'SOON', value: servicesoon,color:'orange'},
-        { name: 'LATER', value: servicelater,color:'green'}
+        { name: 'IMMEDIATELY', value: servicenow,color:'red',vehicles:servicenowvehicle,title:"Safety core below 7.5,; should be serviced with in 3 days"},
+        { name: 'SOON', value: servicesoon,color:'orange',vehicles:servicesoonvehicle,title:"safety score  below 8 ,;should be serviced with in 15 days"},
+        { name: 'LATER', value: servicelater,color:'green',vehicles:servicelatervehicle,title:"safety score above 8.5 ,;can be serviced after a month"}
        
 
     ] as IServiceReminder[];

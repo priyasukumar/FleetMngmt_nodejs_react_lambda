@@ -1,23 +1,22 @@
 import React from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { withStyles } from "@material-ui/core/styles";
-
+import Divider from '@material-ui/core/Divider';
 
 const styles = {
   root: {
-    padding: 2,
-    color: (props:any) => props.color,
-    
+    padding: 30,
+    color: (props: any) => props.color,
+
   }
 }
 const WhiteTextTypography = withStyles(styles)(Typography);
-export default function SimplePopover({color}:any) {
-  
+export default function SimplePopover({ color, vehicles, title }: any) {
+
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -31,9 +30,9 @@ export default function SimplePopover({color}:any) {
 
   return (
     <div>
-      
-      <Button size="small" aria-describedby={id}  onClick={handleClick}>
-          Learn More
+
+      <Button size="small" aria-describedby={id} onClick={handleClick}>
+        Learn More
         </Button>
       <Popover
         id={id}
@@ -49,16 +48,25 @@ export default function SimplePopover({color}:any) {
           horizontal: 'center',
         }}
       >
-        <WhiteTextTypography color={color}> The Following vehicles 
-        <br/>
-        should be serviced soon.
-        <br/>
-        since their safe score is below 7.5
-        <ul >
-          <li> v1</li>
-          <li> v2</li>
-          <li> v3</li>
-        </ul>
+        <WhiteTextTypography color={color}> The Following vehicles has
+        <br />
+          {title.split(';').map(
+            (line: string) => <span>{line}<br /></span>
+
+          )}
+
+          <Divider />
+          <br />
+          {vehicles.length > 0 ?
+            <ul>
+              {vehicles.map((vehicle: string) =>
+                (
+                  <li>{vehicle}</li>
+                ))}
+            </ul> : "No vehicle is found in this category"
+          }
+
+
         </WhiteTextTypography>
       </Popover>
     </div>
