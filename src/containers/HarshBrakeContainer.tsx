@@ -45,16 +45,12 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
     minDate.setMonth(currentDate.getMonth() - 3);
     const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
     const [toDate, setToDate] = useState<Date | null>(currentDate);
-    const handleFromDateChange = (date: Date | null) => {
-        if (date && toDate) {
-            setFromDate(date);
-            props.loadData(date, toDate);
-        }
-    };
-    const handleToDateChange = (date: Date | null) => {
-        if (date && fromDate) {
-            setToDate(date);
-            props.loadData(fromDate, date);
+    
+    const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
+        if (toDate && fromDate) {
+            setToDate(toDate);
+            setFromDate(fromDate);
+            props.loadData(fromDate, toDate);
         }
     };
 
@@ -64,8 +60,7 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
         datePickerMaxDate: currentDate,
         datePickerFromDate: fromDate ? fromDate : initialToDate,
         datePickerToDate: toDate ? toDate : currentDate,
-        handleFromDateChange: (date: Date) => handleFromDateChange(date),
-        handleToDateChange: (date: Date) => handleToDateChange(date)
+        handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
 
     // const dashboardClone = JSON.parse(JSON.stringify(props.harshBrake)) as IDashboard[];
