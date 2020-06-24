@@ -68,6 +68,7 @@ const DatePicker = (props: IDatePickerProps) => {
                         id="date-picker-inline"
                         label="From Date"
                         value={datePickerFromDate}
+                        autoOk={true}
                         onChange={(value: any) => handleFromDateChange(value)}
                         KeyboardButtonProps={{
                             'aria-label': 'change date',
@@ -84,6 +85,7 @@ const DatePicker = (props: IDatePickerProps) => {
                         label="To Date"
                         format={datePickerDateFormat}
                         value={datePickerToDate}
+                        autoOk={true}
                         onChange={(value: any) => handleToDateChange(value)}
                         KeyboardButtonProps={{
                             'aria-label': 'change date',
