@@ -22,6 +22,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
 import { groupBy } from '../../utils/database';
+import { useSelector, useDispatch } from 'react-redux';
+import { UPDATE_PAGINATION_ROW_COUNT } from '../../constants/Actions';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 
@@ -154,7 +156,7 @@ const Row = (rowProps: IRowProps) => {
   for (let key in dashboardModel.DateFilterModel){
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort((d1, d2) => new Date(d1).getTime() - new Date(d2).getTime());
+  uniqueDateArray.sort((d1, d2) => parseFloat(d1) - parseFloat(d2));
 
   return (
     <>
@@ -215,14 +217,11 @@ const SRow = (rowProps: IRowProps) => {
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </StyledTableCell>
-
         <StyledTableCell component="th" scope="row">
           {data.DriverId}
         </StyledTableCell>
         <StyledTableCell align="left">{data.DriverName}</StyledTableCell>
         <StyledTableCell align="left">{data.DriverMobile}</StyledTableCell>
-        <StyledTableCell align="left">{data.VehicleName}</StyledTableCell>
-        <StyledTableCell align="left">{data.VehicleLicenseNo}</StyledTableCell>
         <StyledTableCell align="left">{data.DrivingTimeHours}</StyledTableCell>
         <StyledTableCell align="left">{data.WorkTimeHours}</StyledTableCell>
         <StyledTableCell align="left">{data.RestTimeHours}</StyledTableCell>
@@ -268,10 +267,12 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const { driverCondition, headers, barData, data } = props;
   const classes = useRowStyles();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const rowCount = useSelector((store:any)=>store.rowCount.rowCount);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rowCount);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('DriverId');
   const packetTimeFormat = 'HH:mm:ss';
+  const dispatch = useDispatch();
 
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
@@ -295,6 +296,10 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+    dispatch({
+      type: UPDATE_PAGINATION_ROW_COUNT,
+      payload: +event.target.value
+    })
   };
 
   const handleRequestSort = (event: unknown, property: any) => {

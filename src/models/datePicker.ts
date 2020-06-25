@@ -4,6 +4,7 @@ export interface IDatePickerProps {
     datePickerMinDate: Date;
     datePickerMaxDate: Date;
     datePickerDateFormat: string;
-    handleFromDateChange: (fromDate: Date | null) => void;
-    handleToDateChange: (toDate: Date | null) => void;
+    handleFromDateChange: (fromDate: Date | null, toDate: Date | null) => void;
+    handleToDateChange: (fromDate: Date | null, toDate: Date | null) => void;
+    handleDateChange: (fromDate: Date | null, toDate: Date | null) => void;
 }

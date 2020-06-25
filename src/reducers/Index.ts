@@ -6,6 +6,8 @@ import DriverServiceTimeReducer from './DriverServiceTimeReducer';
 import OverSpeedReducer from './OverSpeedReducer';
 import HarshBrakeReducer from './HarshBrakeReducer';
 import HarshTurnReducer from './HarshTurnReducer';
+import DateReducer from './DateReducer';
+import PaginationReducer from './PaginationReducer';
 
 export default combineReducers({
   dashboard: DashboardReducer,
@@ -15,4 +17,6 @@ export default combineReducers({
   driversServiceTime: DriverServiceTimeReducer,
   pendingTasks: PendingTasksReducer,
   toastr: ToastrReducer,
+  date: DateReducer,
+  rowCount: PaginationReducer
 });
