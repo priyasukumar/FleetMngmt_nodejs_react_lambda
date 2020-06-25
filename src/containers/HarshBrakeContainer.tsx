@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector} from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { IGroupedDashboard, IDriverCondition, ICollapsibleTableProps } from '../models/dashboard';
 import HarshBrakeComponent from '../components/dashboard/HarshBrakeComponent';
@@ -38,13 +38,14 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
     } as ICollapsibleTableProps;
 
     const datePickerFormat = 'dd/MM/yyyy';
-    const currentDate = new Date();
-    const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 10);
+    const dates = useSelector((store:any) => store.date) 
+    const currentDateFromState = dates.currentDate
+    const initialToDateFromState = dates.initialToDate;
     const minDate = new Date();
+    const currentDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
-    const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
-    const [toDate, setToDate] = useState<Date | null>(currentDate);
+    const [fromDate, setFromDate] = useState<Date | null>(initialToDateFromState);
+    const [toDate, setToDate] = useState<Date | null>(currentDateFromState);
     
     const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
         if (toDate && fromDate) {
@@ -58,8 +59,8 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
         datePickerDateFormat: datePickerFormat,
         datePickerMinDate: minDate,
         datePickerMaxDate: currentDate,
-        datePickerFromDate: fromDate ? fromDate : initialToDate,
-        datePickerToDate: toDate ? toDate : currentDate,
+        datePickerFromDate: fromDate ? fromDate : initialToDateFromState,
+        datePickerToDate: toDate ? toDate : currentDateFromState,
         handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
 
