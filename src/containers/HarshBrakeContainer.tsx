@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector} from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { IGroupedDashboard, IDriverCondition, ICollapsibleTableProps } from '../models/dashboard';
 import HarshBrakeComponent from '../components/dashboard/HarshBrakeComponent';
@@ -38,23 +38,20 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
     } as ICollapsibleTableProps;
 
     const datePickerFormat = 'dd/MM/yyyy';
-    const currentDate = new Date();
-    const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 10);
+    const dates = useSelector((store:any) => store.date) 
+    const currentDateFromState = dates.currentDate
+    const initialToDateFromState = dates.initialToDate;
     const minDate = new Date();
+    const currentDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
-    const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
-    const [toDate, setToDate] = useState<Date | null>(currentDate);
-    const handleFromDateChange = (date: Date | null) => {
-        if (date && toDate) {
-            setFromDate(date);
-            props.loadData(date, toDate);
-        }
-    };
-    const handleToDateChange = (date: Date | null) => {
-        if (date && fromDate) {
-            setToDate(date);
-            props.loadData(fromDate, date);
+    const [fromDate, setFromDate] = useState<Date | null>(initialToDateFromState);
+    const [toDate, setToDate] = useState<Date | null>(currentDateFromState);
+    
+    const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
+        if (toDate && fromDate) {
+            setToDate(toDate);
+            setFromDate(fromDate);
+            props.loadData(fromDate, toDate);
         }
     };
 
@@ -62,10 +59,9 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
         datePickerDateFormat: datePickerFormat,
         datePickerMinDate: minDate,
         datePickerMaxDate: currentDate,
-        datePickerFromDate: fromDate ? fromDate : initialToDate,
-        datePickerToDate: toDate ? toDate : currentDate,
-        handleFromDateChange: (date: Date) => handleFromDateChange(date),
-        handleToDateChange: (date: Date) => handleToDateChange(date)
+        datePickerFromDate: fromDate ? fromDate : initialToDateFromState,
+        datePickerToDate: toDate ? toDate : currentDateFromState,
+        handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
 
     // const dashboardClone = JSON.parse(JSON.stringify(props.harshBrake)) as IDashboard[];
@@ -75,6 +71,7 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
 
     const mostAppliedHarshBrake = {
         title: 'Top Most Applied',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Harsh Brake Count',
         plot: sortBy(harshBrake, Driver.HarshBrake, 'desc'),
         barColor: '#aec7e8'
@@ -82,6 +79,7 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
 
     const leastAppliedHarshBrake = {
         title: 'Top Least Applied',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Top Harsh Brake Count',
         plot: sortBy(harshBrake, Driver.HarshBrake),
         barColor: '#aec7e8'

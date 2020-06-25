@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import OverSpeedComponent from '../components/dashboard/OverSpeedComponent';
 import { IGroupedDashboard, ICollapsibleTableProps, IDriverCondition, IDashboardModel } from '../models/dashboard';
@@ -44,23 +44,20 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
     } as IDriverCondition;
 
     const datePickerFormat = 'dd/MM/yyyy';
-    const currentDate = new Date();
-    const initialToDate = new Date();
-    initialToDate.setDate(initialToDate.getDate() - 10);
+    const dates = useSelector((store:any) => store.date) 
+    const currentDateFromState = dates.currentDate
+    const initialToDateFromState = dates.initialToDate;
     const minDate = new Date();
+    const currentDate = new Date();
     minDate.setMonth(currentDate.getMonth() - 3);
-    const [fromDate, setFromDate] = useState<Date | null>(initialToDate);
-    const [toDate, setToDate] = useState<Date | null>(currentDate);
-    const handleFromDateChange = (date: Date | null) => {
-        if (date && toDate) {
-            setFromDate(date);
-            props.loadData(date, toDate);
-        }
-    };
-    const handleToDateChange = (date: Date | null) => {
-        if (date && fromDate) {
-            setToDate(date);
-            props.loadData(fromDate, date);
+    const [fromDate, setFromDate] = useState<Date | null>(initialToDateFromState);
+    const [toDate, setToDate] = useState<Date | null>(currentDateFromState);
+
+    const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
+        if (toDate && fromDate) {
+            setToDate(toDate);
+            setFromDate(fromDate);
+            props.loadData(fromDate, toDate);
         }
     };
 
@@ -68,10 +65,9 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
         datePickerDateFormat: datePickerFormat,
         datePickerMinDate: minDate,
         datePickerMaxDate: currentDate,
-        datePickerFromDate: fromDate ? fromDate : initialToDate,
-        datePickerToDate: toDate ? toDate : currentDate,
-        handleFromDateChange: (date: Date) => handleFromDateChange(date),
-        handleToDateChange: (date: Date) => handleToDateChange(date)
+        datePickerFromDate: fromDate ? fromDate : initialToDateFromState,
+        datePickerToDate: toDate ? toDate : currentDateFromState,
+        handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
 
     const dashboardClone = JSON.parse(JSON.stringify(overSpeed)) as IDashboardModel[];
@@ -88,6 +84,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
 
     const mostCrossedOverSpeed = {
         title: 'Top Most Crossed',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Over Speed Count',
         plot: sortBy(overSpeed, Driver.OverSpeed , 'desc'),
         barColor: '#e6601d'
@@ -95,6 +92,7 @@ const OverSpeedContainer = (props: IOverSpeedContainerProps & IOverSpeedActionPr
 
     const leastCrossedOverSpeed = {
         title: 'Top Least Crossed',
+        xaxisTitle: 'Driver Name',
         yaxisTitle: 'Over Speed Count',
         plot: sortBy(overSpeed, Driver.OverSpeed),
         barColor: '#e6601d'
