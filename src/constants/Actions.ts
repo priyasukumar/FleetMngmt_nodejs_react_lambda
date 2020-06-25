@@ -23,3 +23,9 @@ export const API_END = 'api/API_END';
 /* message */
 export const SHOW_SUCCESS_MESSAGE = 'toastr/SHOW_SUCCESS_MESSAGE';
 export const SHOW_FAILURE_MESSAGE = 'toastr/SHOW_FAILURE_MESSAGE';
+
+/* date */
+export const UPDATE_DATE = 'UPDATE_DATE';
+
+/* pagination row count */
+export const UPDATE_PAGINATION_ROW_COUNT = 'UPDATE_PAGINATION_ROW_COUNT';
