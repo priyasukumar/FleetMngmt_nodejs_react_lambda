@@ -3,7 +3,7 @@ import { Http } from '../constants/enum';
 import * as DateFns from 'date-fns';
 
 export const loadDashboard = (fromDate: Date, toDate: Date) => {
-    const dateFormat = 'yyyy-MM-d hh:mm:ss';
+    const dateFormat = 'yyyy-MM-dd';
     const formattedFromDate = DateFns.format(fromDate, dateFormat);
     const formattedToDate = DateFns.format(toDate, dateFormat);
     const driverInsightsUrl = `/drivinginsights?from=${formattedFromDate}&to=${formattedToDate}`;

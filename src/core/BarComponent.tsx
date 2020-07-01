@@ -18,11 +18,11 @@ const BarComponent = (props: IBarComponentProps) => {
     const Bar = () => {
         const width = 600;
         const height = 450;
-        const margin = ({ top: 0, right: 90, bottom: 80, left: 40 });
+        const margin = ({ top: 0, right: 90, bottom: 120, left: 40 });
 
         const svg = d3
             .select<any, ScaleBand<IBarData>>(barContainer.current)
-            .attr('viewBox', `0, 0, ${width}, ${height}`);
+            .attr('viewBox', `0, -30, ${width}, ${height}`);
 
         const range = d3.range(plot.length);
         const x = d3.scaleBand<number>()
@@ -72,13 +72,13 @@ const BarComponent = (props: IBarComponentProps) => {
             .call((h: any) => h.select('.domain').remove())
             .call((i: any) => i.append('text')
                 .attr('x', -margin.left)
-                .attr('y', 10)
+                .attr('y', -10)
                 .attr('fill', 'currentColor')
                 .attr('text-anchor', 'start')
                 .text(yaxisTitle))
             .call((i: any) => i.append('text')
-                .attr('x','78%')
-                .attr('y', '90%')
+                .attr('x','77%')
+                .attr('y', '80%')
                 .attr('fill', 'currentColor')
                 .attr('text-anchor', 'start')
                 .text(xaxisTitle));
