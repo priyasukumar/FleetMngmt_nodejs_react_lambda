@@ -24,6 +24,7 @@ import TextField from '@material-ui/core/TextField';
 import { groupBy } from '../../utils/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { UPDATE_PAGINATION_ROW_COUNT } from '../../constants/Actions';
+import MapComponent from '../../core/MapComponent';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 
@@ -183,9 +184,9 @@ const Row = (rowProps: IRowProps) => {
         }
       </StyledTableRow >
       <StyledTableRow>
-      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
-            <Box margin={1}>
+            {/* <Box margin={1}>
             {
               uniqueDateArray.map((date,i)=>{
                 const data = {
@@ -194,11 +195,16 @@ const Row = (rowProps: IRowProps) => {
                   driverCondition
                 }
                 return <CollapsibleDateFilterTable key={date} {...data}/> 
-            })
-            }
+              })
+              }
+            </Box> */}
+            <Box margin={1}>
+              <div>
+              <MapComponent />
+              </div>
             </Box>
           </Collapse>
-      </StyledTableCell>
+        </StyledTableCell>
       </StyledTableRow>
     </>
   )
