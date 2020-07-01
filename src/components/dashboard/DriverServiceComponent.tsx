@@ -11,10 +11,10 @@ const DriverServiceComponent = (props: IDriverServiceTimeComponentProps) => {
         <>
             <h1 style={{ textAlign: 'center' }}>Driver Service</h1>
             <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
-                <Grid item={true} xs={4}>
+                <Grid item={true} xs={5}>
                     <Bar {...mostDrivingDrivers} />
                 </Grid>
-                <Grid item={true} xs={4}>
+                <Grid item={true} xs={5}>
                     <Bar {...leastDrivingDrivers} />
                 </Grid>
             </Grid>
