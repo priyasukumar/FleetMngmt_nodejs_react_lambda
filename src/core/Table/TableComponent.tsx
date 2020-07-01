@@ -35,6 +35,9 @@ const useRowStyles = makeStyles({
   },
   search: {
     marginBottom: '1%',
+  },
+  collapsibleDates:{
+    width:"100%"
   }
 });
 
@@ -92,15 +95,16 @@ const Header = (props: IHeaderProps) => {
 const CollapsibleDateFilterTable = (props:any)=>{
     const {dashboardModel,date,driverCondition} = props;
     const [open, setOpen] = React.useState(false);
+    const classes = useRowStyles()
   return(
     <>
     <StyledTableRow>
-      <TableCell  align="left">
+      <TableCell size="small" style={{float:"left"}} align="left">
       <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
       </TableCell>
-      <TableCell>{date}</TableCell>
+      <TableCell size="small" className={classes.collapsibleDates} align="left">{date}</TableCell>
     </StyledTableRow>
     <StyledTableRow>
       <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
@@ -156,7 +160,7 @@ const Row = (rowProps: IRowProps) => {
   for (let key in dashboardModel.DateFilterModel){
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort((d1, d2) => parseFloat(d1) - parseFloat(d2));
+  uniqueDateArray.sort((d1, d2) => new Date(d1).getDate() - new Date(d2).getDate());
 
   return (
     <>
