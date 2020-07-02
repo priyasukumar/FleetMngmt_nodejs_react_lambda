@@ -27,3 +27,7 @@ code {
 #nprogress .peg {
     box-shadow: 0 0 10px #f4590a, 0 0 5px #f4590a !important;
 }
+
+.leaflet-control-container .leaflet-routing-alternatives-container {
+    display: none;
+}

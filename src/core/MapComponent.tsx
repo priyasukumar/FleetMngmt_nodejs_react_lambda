@@ -1,91 +1,88 @@
 import * as L from 'leaflet';
-import React, { createRef, useEffect } from 'react';
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-import "leaflet-routing-machine";
-import { withLeaflet } from "react-leaflet";
+import React, { createRef, useEffect, useRef } from 'react';
+import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import 'leaflet-routing-machine';
+import { withLeaflet } from 'react-leaflet';
 import Routing from './Maps/Routing';
 
-
-
 const MapComponent = () => {
-    const [isMapInit, setMapState] = React.useState(false);
-    const mapRef = createRef<Map>();
+  const mapContainer = useRef(null);
 
-    React.useEffect(() => {
-      debugger
-        const L = require("leaflet");
-    
-        delete L.Icon.Default.prototype._getIconUrl;
-    
-        L.Icon.Default.mergeOptions({
-          iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-          iconUrl: require("leaflet/dist/images/marker-icon.png"),
-          shadowUrl: require("leaflet/dist/images/marker-shadow.png")
-        });
-        setMapState(true);
-      }, []);
+  const markers = [
+    {
+      type: 'Feature',
+      properties: {
+        PARK_ID: 960,
+        NAME: 'Bearbrook Skateboard Park',
+        DESCRIPTIO: 'Flat asphalt surface, 5 components'
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [77.514134, 10.458026]
+      }
+    },
+    {
+      type: 'Feature',
+      properties: {
+        PARK_ID: 1219,
+        NAME: 'Bob MacQuarrie Skateboard Park (SK8 Extreme Park)',
+        DESCRIPTIO: 'Flat asphalt surface, 10 components, City run learn to skateboard programs, City run skateboard camps in summer'
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [77.971440, 10.376986]
+      }
+    }
+  ];
 
-    const markers = [
-        {
-          type: "Feature",
-          properties: {
-            PARK_ID: 960,
-            NAME: "Bearbrook Skateboard Park",
-            DESCRIPTIO: "Flat asphalt surface, 5 components"
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.514134, 10.458026]
-          }
-        },
-        {
-          type: "Feature",
-          properties: {
-            PARK_ID: 1219,
-            NAME: "Bob MacQuarrie Skateboard Park (SK8 Extreme Park)",
-            DESCRIPTIO: "Flat asphalt surface, 10 components, City run learn to skateboard programs, City run skateboard camps in summer"
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.971440, 10.376986]
-          }
+  const attribution = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>';
+
+  React.useEffect(() => {
+    const map: L.Map = L.map('map-container');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: attribution
+    }).addTo(map);
+    map.setView([17.4, 78.4], 12);
+    const waypoints = [
+      L.latLng(16.506, 80.648),
+      L.latLng(17.384, 78.4866),
+      L.latLng(12.971, 77.5945)
+    ];
+
+    const mapControl = L.Routing.control({
+      plan: L.Routing.plan(waypoints, {
+        createMarker: (i, wp) => {
+          return L.marker(wp.latLng, {
+            draggable: false
+          });
         }
-      ];
+      }),
+      lineOptions: {
+        styles: [
+          {
+            color: 'red',
+            opacity: 0.6,
+            weight: 4
+          }
+        ]
+      },
+      fitSelectedRoutes: false,
+      showAlternatives: false,
+      show: false
+    }).addTo(map);
 
-    let map: Map;
+    map.addControl(mapControl);    
 
-    const saveMap = (map: Map) => {
-      map = map;
-        setMapState(true);
-    };
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+      iconUrl: require('leaflet/dist/images/marker-icon.png'),
+      shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+    });
+  }, []);
 
-    //const divRef = React.useRef<Map>(null);
-  
-
-    return (
-        <Map center={[17.4, 78.4]} zoom={12} style={{ height: 500, width:500 }} ref={saveMap}>
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            {
-                markers.map(park => (
-                    <Marker
-                        key={park.properties.PARK_ID}
-                        position={[
-                            park.geometry.coordinates[1],
-                            park.geometry.coordinates[0]
-                        ]}
-                    // // onClick={() => {
-                    // //     setActivePark(park);
-                    // // }}
-                    />
-                ))
-            }
-            {isMapInit && <Routing {...map} />}
-        </Map>
-      );
-}
-
+  return (
+    <div id="map-container" style={{ height: 500, width: 500 }} />
+  );
+};
 
 export default MapComponent;
