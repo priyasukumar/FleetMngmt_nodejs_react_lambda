@@ -47,6 +47,11 @@ export interface IDriverServiceTimeModel {
     DrivingTimeHours: number;
     WorkTimeHours: number;
     RestTimeHours: number;
+    DateFilterModel?: IDriverServiceTimeDateFilterModel;
+}
+
+export interface IDriverServiceTimeDateFilterModel {
+    [key: string] : IDriverServiceTimeSubModel []
 }
 
 export interface IDriverServiceTimeSubModel {
@@ -54,4 +59,5 @@ export interface IDriverServiceTimeSubModel {
     RestingEndTime: string;
     VehicleStartTime: string;
     VehicleEndTime: string;
+    Date?: string;
 }
