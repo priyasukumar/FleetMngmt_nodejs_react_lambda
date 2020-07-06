@@ -16,7 +16,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel, IDashboardDateFilterModel } from '../../models/dashboard';
 import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
-import { isoToLocal } from '../../utils/date';
+import { isoToLocal, getSortedDates } from '../../utils/date';
 import { TablePagination, TableSortLabel, Grid } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
@@ -97,16 +97,17 @@ const Header = (props: IHeaderProps) => {
 const CollapsibleDateFilterTableForDriverService = (props:any)=>{
   const [open, setOpen] = React.useState(false);
   const {driverServiceModel, date} = props;
+  const classes = useRowStyles();
 
   return(
     <>
       <StyledTableRow>
-        <TableCell align="left">
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-          </IconButton>
+        <TableCell size="small" style={{float:"left"}} align="left">
+        <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+              {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+            </IconButton>
         </TableCell>
-        <TableCell>{date}</TableCell>
+        <TableCell size="small" className={classes.collapsibleDates} align="left">{date}</TableCell>
       </StyledTableRow>
       <StyledTableRow>
         <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
@@ -223,8 +224,8 @@ const Row = (rowProps: IRowProps) => {
   for (let key in dashboardModel.DateFilterModel){
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort((d1, d2) => new Date(d1).getDate() - new Date(d2).getDate());
-
+  uniqueDateArray = getSortedDates(uniqueDateArray);
+  
   return (
     <>
       <StyledTableRow>
@@ -250,7 +251,7 @@ const Row = (rowProps: IRowProps) => {
         }
       </StyledTableRow >
       <StyledTableRow>
-      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }}>
+      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
             {
@@ -280,7 +281,7 @@ const SRow = (rowProps: IRowProps) => {
   for (let key in data.DateFilterModel) {
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort((d1, d2) => parseFloat(d1) - parseFloat(d2));
+  uniqueDateArray = getSortedDates(uniqueDateArray);
 
   return (
     <React.Fragment>
