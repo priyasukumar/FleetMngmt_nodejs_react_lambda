@@ -160,8 +160,12 @@ const Row = (rowProps: IRowProps) => {
   for (let key in dashboardModel.DateFilterModel){
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort((d1, d2) => new Date(d1).getDate() - new Date(d2).getDate());
-
+  uniqueDateArray.sort((a:any,b:any)=>{
+    a = a.split('-');
+    b = b.split('-');
+    return a[2] - b[2] || a[1] - b[1] || a[0] - b[0];
+  })
+  
   return (
     <>
       <StyledTableRow>
