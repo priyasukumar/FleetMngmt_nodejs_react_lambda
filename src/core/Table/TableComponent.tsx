@@ -101,7 +101,7 @@ const CollapsibleDateFilterTable = (props:any)=>{
   return(
     <>
     <StyledTableRow>
-      <TableCell  size="small" style={{float:"left"}}>
+    <TableCell size="small" style={{float:"left"}} align="left">
       <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
