@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
-import { IDriverServiceTimeActionProps, IDriverServiceTimeContainerProps, IDriverServiceTimeComponentProps, IGroupedDriverServiceTime, IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../models/driverServiceTime';
+import { IDriverServiceTimeActionProps, IDriverServiceTimeContainerProps, IDriverServiceTimeComponentProps, IGroupedDriverServiceTime, IDriverServiceTimeModel, IDriverServiceTimeSubModel,IDriverServiceTimeDateFilterModel } from '../models/driverServiceTime';
 import DriverServiceComponent from '../components/dashboard/DriverServiceComponent';
 import { loadDriversServiceTime } from '../actions/DriverServiceTimeAction';
 import { groupBy, toFixed } from '../utils/database';
@@ -11,6 +11,7 @@ import { IDatePickerProps } from '../models/datePicker';
 import { sortBy } from '../utils/driver';
 import { Driver } from '../constants/enum';
 import { IBarComponentProps } from '../models/graph';
+import { isoToLocal } from '../utils/date';
 
 const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & IDriverServiceTimeActionProps) => {
     const headers = [
@@ -93,7 +94,8 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
 
 export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriverServiceTimeModel[] => {
     let driverServiceTime = [] as IDriverServiceTimeModel[];
-
+    const dateFormat = 'DD-MM-YYYY';
+    
     for (let key in groupedData) {
         if (key) {
             const {
@@ -111,7 +113,8 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
                 DrivingTimeHours: 0,
                 WorkTimeHours: 0,
                 RestTimeHours: 0,
-                SubModel: [] as IDriverServiceTimeSubModel[]
+                SubModel: [] as IDriverServiceTimeSubModel[],
+                DateFilterModel: {} as IDriverServiceTimeDateFilterModel
             } as IDriverServiceTimeModel;
 
             groupedData[key].map((c, index) => {
@@ -128,6 +131,7 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
                 driverServiceTimeModel.SubModel[index].RestingEndTime = c.RestingEndTime;
                 driverServiceTimeModel.SubModel[index].VehicleStartTime = c.VehicleStartTime;
                 driverServiceTimeModel.SubModel[index].VehicleEndTime = c.VehicleEndTime;
+                driverServiceTimeModel.SubModel[index].Date = isoToLocal(c.CreatedDate,dateFormat);
 
                 return c;
             });

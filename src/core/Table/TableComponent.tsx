@@ -90,6 +90,67 @@ const Header = (props: IHeaderProps) => {
   );
 };
 
+const CollapsibleDateFilterTableForDriverService = (props:any)=>{
+  const [open, setOpen] = React.useState(false);
+  const {driverServiceModel, date} = props;
+
+  return(
+    <>
+      <StyledTableRow>
+        <TableCell align="left">
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell>{date}</TableCell>
+      </StyledTableRow>
+      <StyledTableRow>
+        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+          <Collapse in={open} timeout="auto" unmountOnExit={true}>
+            <Box margin={1}>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableCell align="center">Resting StartTime</StyledTableCell>
+                    <StyledTableCell align="center">Resting EndTime</StyledTableCell>
+                    <StyledTableCell align="center">Vehicle StartTime</StyledTableCell>
+                    <StyledTableCell align="center">Vehicle EndTime</StyledTableCell>
+                  </StyledTableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    driverServiceModel.DateFilterModel[date].map((subRow: any, i: any) => (
+                      <StyledTableRow key={i}>
+                        <StyledTableCell align="center">{isoToLocal(subRow.RestingStartTime, dateFormat)}</StyledTableCell>
+                        <StyledTableCell align="center">{isoToLocal(subRow.RestingEndTime, dateFormat)}</StyledTableCell>
+                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleStartTime, dateFormat)}</StyledTableCell>
+                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleEndTime, dateFormat)}</StyledTableCell>
+                      </StyledTableRow>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            </Box>
+            <Box margin={1}>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <Typography variant="h6" gutterBottom={true} component="div">
+                    Route Information
+                  </Typography>
+                </TableHead>
+                <TableBody>
+                  <MapComponent date={date}/>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </StyledTableCell>
+      </StyledTableRow>
+    </>
+  );
+
+}
+
 const CollapsibleDateFilterTable = (props:any)=>{
     const {dashboardModel,date,driverCondition} = props;
     const [open, setOpen] = React.useState(false);
@@ -186,7 +247,7 @@ const Row = (rowProps: IRowProps) => {
       <StyledTableRow>
       <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
-            {/* <Box margin={1}>
+            <Box margin={1}>
             {
               uniqueDateArray.map((date,i)=>{
                 const data = {
@@ -197,11 +258,6 @@ const Row = (rowProps: IRowProps) => {
                 return <CollapsibleDateFilterTable key={date} {...data}/> 
               })
               }
-            </Box> */}
-            <Box margin={1}>
-              <div>
-              <MapComponent />
-              </div>
             </Box>
           </Collapse>
         </StyledTableCell>
@@ -214,6 +270,12 @@ const SRow = (rowProps: IRowProps) => {
   const data = rowProps.data as IDriverServiceTimeModel;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+
+  let uniqueDateArray = [];
+  for (let key in data.DateFilterModel) {
+    uniqueDateArray.push(key)
+  }
+  uniqueDateArray.sort((d1, d2) => parseFloat(d1) - parseFloat(d2));
 
   return (
     <React.Fragment>
@@ -236,31 +298,15 @@ const SRow = (rowProps: IRowProps) => {
         <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom={true} component="div">
-                History
-              </Typography>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <StyledTableRow>
-                    <StyledTableCell align="center">Resting StartTime</StyledTableCell>
-                    <StyledTableCell align="center">Resting EndTime</StyledTableCell>
-                    <StyledTableCell align="center">Vehicle StartTime</StyledTableCell>
-                    <StyledTableCell align="center">Vehicle EndTime</StyledTableCell>
-                  </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    (data.SubModel as Array<IDriverServiceTimeSubModel>).map((subRow, index) => (
-                      <StyledTableRow key={index}>
-                        <StyledTableCell align="center">{isoToLocal(subRow.RestingStartTime, dateFormat)}</StyledTableCell>
-                        <StyledTableCell align="center">{isoToLocal(subRow.RestingEndTime, dateFormat)}</StyledTableCell>
-                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleStartTime, dateFormat)}</StyledTableCell>
-                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleEndTime, dateFormat)}</StyledTableCell>
-                      </StyledTableRow>
-                    ))
-                  }
-                </TableBody>
-              </Table>
+            {
+              uniqueDateArray.map((date,i)=>{
+                const collapsibleData = {
+                  driverServiceModel: data,
+                  date
+                }
+                return <CollapsibleDateFilterTableForDriverService key={date} {...collapsibleData}/> 
+              })
+              }
             </Box>
           </Collapse>
         </StyledTableCell>
@@ -283,7 +329,7 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
    data.forEach((arr :any,i :number)=>{
-     if(!arr.PacketTime){
+     if(!arr.PacketTime && !arr.CreatedDate){
        return
      }
      arr.DateFilterModel = groupBy(arr.SubModel,"Date");
