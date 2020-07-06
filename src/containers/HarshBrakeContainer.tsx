@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, useSelector} from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IGroupedDashboard, IDriverCondition, ICollapsibleTableProps } from '../models/dashboard';
+import { IGroupedDashboard, IDriverCondition, ICollapsibleTableProps, IRangeFilterModelProps } from '../models/dashboard';
 import HarshBrakeComponent from '../components/dashboard/HarshBrakeComponent';
 import { groupBy } from '../utils/database';
 import { getWithSubModel } from './DashboardContainer';
@@ -14,8 +14,47 @@ import { IBarComponentProps } from '../models/graph';
 import { Driver } from '../constants/enum';
 
 const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActionProps) => {
+        const rangeFilter = {
+            rangeFilter: [
+                { id: 0, displayText: 'Select Range', from: 0, to: 'Reset'},
+                { id: 1, displayText: '0 - 10', from: 0, to: 10},
+                { id: 2, displayText: '11 - 20', from: 11, to: 20},
+                { id: 3, displayText: '21 - 30', from: 21, to: 30},
+                { id: 4, displayText: '31 - 40', from: 31, to: 40},
+                { id: 5, displayText: '41 - 50', from: 41, to: 50},
+                { id: 5, displayText: '51 - 60', from: 21, to: 60},
+                { id: 6, displayText: '61 - 70', from: 61, to: 70},
+                { id: 6, displayText: '71 - 80', from: 71, to: 80},
+                { id: 7, displayText: '81 - 90', from: 81, to: 90},
+                { id: 8, displayText: '91 - 100', from: 91, to: 100},
+                { id: 8, displayText: '101 - 110', from: 101, to: 110},
+                { id: 8, displayText: '111 - 120', from: 111, to: 120},
+          ],
+          handleRangeFilterChange: onRangeChange,
+        } as IRangeFilterModelProps;
+    
+        function onRangeChange(e: any) {
+            if(e.target.value === 'Reset')
+            {
+                setRangeFilterApplied(false);
+                onRangeFilterChange(120);
+            }
+            else
+            {
+                onRangeFilterChange(e.target.value);
+                setRangeFilterApplied(true);
+            }
+        }
+    const [harshBrakeLimit, onRangeFilterChange] = useState(200);
+    const [rangeFilterApplied, setRangeFilterApplied] = useState(false);
+    let fromharshBrakeLimit = 0;
+    if(harshBrakeLimit !== 200)
+    {
+        fromharshBrakeLimit = harshBrakeLimit-9;
+    }
+
     const groupedDataByDriverId = groupBy(props.harshBrake, 'DriverVehicleId') as IGroupedDashboard;
-    const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBraking > 0).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshBraking > 0));
+    const harshBrake = getWithSubModel(groupedDataByDriverId).filter(c => c.HarshBraking > 0 && ( c.HarshBraking >= (rangeFilterApplied? fromharshBrakeLimit:0) && c.HarshBraking <= harshBrakeLimit)).filter(c => c.SubModel = c.SubModel.filter(d => d.HarshBraking > 0));
     const harshBrakeWithLeastData = getWithSubModel(groupedDataByDriverId)
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
@@ -35,7 +74,8 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
     const collapsibleTableProps = {
         data: harshBrake,
         headers: headers,
-        driverCondition
+        driverCondition,
+        rangeFilter: rangeFilter
     } as ICollapsibleTableProps;
 
     const datePickerFormat = 'dd/MM/yyyy';
@@ -74,7 +114,7 @@ const HarshBrakeContainer = (props: IHarshBrakeContainerProps & IHarshBrakeActio
         title: 'Top Most Applied',
         xaxisTitle: 'Driver Name',
         yaxisTitle: 'Harsh Brake Count',
-        plot: sortBy(harshBrake, Driver.HarshBrake, 'desc'),
+        plot: sortBy(harshBrakeWithLeastData, Driver.HarshBrake, 'desc'),
         barColor: '#aec7e8'
     } as IBarComponentProps;
 
