@@ -53,7 +53,7 @@ const DatePicker = (props: IDatePickerProps) => {
             return;
         }
         if (diff > 10) {
-            setFromDateError('Date range should be less than 10 days');
+            setFromDateError('Date range should be less than or equal to 10 days');
             return;
         }
         
@@ -84,7 +84,7 @@ const DatePicker = (props: IDatePickerProps) => {
         }
         const diff = getDateRangeDiff(fromDateFromState, toDate, 'days');
         if (diff > 10) {
-            setToDateError('Date range should be less than 10 days');
+            setToDateError('Date range should be less than or equal to 10 days');
             return;
         }
 

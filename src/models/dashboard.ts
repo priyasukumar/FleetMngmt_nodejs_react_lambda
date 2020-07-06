@@ -120,6 +120,23 @@ export interface ICollapsibleTableProps {
     data: IDashboardModel[] | IDriverServiceTimeModel[];
     driverCondition: IDriverCondition;
     barData: IBarData[];
+    rangeFilter: IRangeFilterModelProps;
+}
+
+export interface IRangeFilterModel {
+    id: number;
+    displayText: string;
+    from: number;
+    to: number;
+
+    key: string;
+    value: string;
+    text: string;
+}
+
+export interface IRangeFilterModelProps {
+    rangeFilter: IRangeFilterModel[];
+    handleRangeFilterChange: (e: any) => void;
 }
 
 export interface IHeaderModel {

@@ -8,6 +8,7 @@ import 'react-redux-spinner/dist/react-redux-spinner.css';
 import { Spinner } from 'react-redux-spinner';
 import ReduxToastr from 'react-redux-toastr';
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
+import 'leaflet/dist/leaflet.css';
 
 const target = document.querySelector('#root');
 
