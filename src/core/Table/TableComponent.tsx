@@ -17,13 +17,14 @@ import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDash
 import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
 import { isoToLocal } from '../../utils/date';
-import { TablePagination, TableSortLabel } from '@material-ui/core';
+import { TablePagination, TableSortLabel, Grid } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
 import { groupBy } from '../../utils/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { UPDATE_PAGINATION_ROW_COUNT } from '../../constants/Actions';
+import RangeFilter from '../../components/shared/DropdownComponent';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 
@@ -268,7 +269,7 @@ const SRow = (rowProps: IRowProps) => {
 };
 
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
-  const { driverCondition, headers, barData, data } = props;
+  const { driverCondition, headers, barData, data, rangeFilter } = props;
   const classes = useRowStyles();
   const [page, setPage] = React.useState(0);
   const rowCount = useSelector((store:any)=>store.rowCount.rowCount);
@@ -354,6 +355,8 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   return (
     <>
       <div>
+      <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
+        <Grid item={true} xs={10}>
         <TextField
           className={classes.search}
           placeholder="Search"
@@ -366,6 +369,11 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
             ),
           }}
         />
+        </Grid>
+        <Grid item={true} xs={2}>
+        <RangeFilter {...rangeFilter} />
+        </Grid>
+      </Grid>
       </div>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
