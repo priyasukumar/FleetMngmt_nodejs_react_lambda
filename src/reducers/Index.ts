@@ -21,6 +21,6 @@ export default combineReducers({
   toastr: ToastrReducer,
   date: DateReducer,
   rowCount: PaginationReducer,
-  location: LocationReducer
+  location: LocationReducer,
   fuel: FuelReducer
 });
