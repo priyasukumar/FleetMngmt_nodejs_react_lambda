@@ -12,9 +12,13 @@ const apiMiddleware = ({ dispatch }: { dispatch: any }) => (next: any) => (actio
         return;
     }
 
-    const { url, method, data, onSuccess, onFailure } = action.payload;
+    const { url, method, data, onSuccess, onFailure, apiFunctionality } = action.payload;
     const dataOrParams = [Http.Get, Http.Delete].includes(method) ? 'params' : 'data';
     let apiUrl = `${API_URL}${url}`;
+
+    if(apiFunctionality === 'location'){
+        apiUrl = url
+    }
 
     const axiosRequestConfig = {
         url: apiUrl, method, [dataOrParams]: data,

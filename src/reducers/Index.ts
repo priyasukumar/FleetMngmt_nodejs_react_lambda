@@ -8,6 +8,7 @@ import HarshBrakeReducer from './HarshBrakeReducer';
 import HarshTurnReducer from './HarshTurnReducer';
 import DateReducer from './DateReducer';
 import PaginationReducer from './PaginationReducer';
+import LocationReducer from './LocationReducer';
 import FuelReducer from './FuelUsageReducer';
 
 export default combineReducers({
@@ -20,5 +21,6 @@ export default combineReducers({
   toastr: ToastrReducer,
   date: DateReducer,
   rowCount: PaginationReducer,
+  location: LocationReducer,
   fuel: FuelReducer
 });
