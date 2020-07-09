@@ -8,6 +8,7 @@ import HarshBrakeReducer from './HarshBrakeReducer';
 import HarshTurnReducer from './HarshTurnReducer';
 import DateReducer from './DateReducer';
 import PaginationReducer from './PaginationReducer';
+import FuelReducer from './FuelUsageReducer';
 
 export default combineReducers({
   dashboard: DashboardReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
   pendingTasks: PendingTasksReducer,
   toastr: ToastrReducer,
   date: DateReducer,
-  rowCount: PaginationReducer
+  rowCount: PaginationReducer,
+  fuel: FuelReducer
 });

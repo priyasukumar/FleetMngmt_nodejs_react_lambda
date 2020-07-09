@@ -13,6 +13,9 @@ export const UPDATE_HARSHTURN = 'dashboard/UPDATE_HARSHTURN';
 /* driver service time */
 export const UPDATE_DRIVER_SERVICE_TIME = 'driver/UPDATE_DRIVER_SERVICE_TIME';
 
+/* harsh turn */
+export const UPDATE_FUEL = 'dashboard/UPDATE_FUEL';
+
 /* api */
 export const API = 'api/API';
 export const API_TRANSACTION = 'api/API_TRANSACTION';

@@ -21,12 +21,14 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { Container, IconButton, Divider } from '@material-ui/core';
 import clsx from 'clsx';
+import LocalGasStationIcon from '@material-ui/icons/LocalGasStation';
 
 const Dashboard = lazy(() => import('./containers/DashboardContainer'));
 const DriverServiceTime = lazy(() => import('./containers/DriverServiceTimeContainer'));
 const HarshTurn = lazy(() => import('./containers/HarshTurnContainer'));
 const OverSpeed = lazy(() => import('./containers/OverSpeedContainer'));
 const HarshBrake = lazy(() => import('./containers/HarshBrakeContainer'));
+const fuelUsage = lazy(() => import('./containers/FuelUsageContainer'));
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -82,6 +84,7 @@ const App = () => {
     { name: 'Harsh Brake', to: '/harshbrake', icon: AirlineSeatLegroomExtra },
     { name: 'Harsh Turn', to: '/harshturn', icon: CallSplit },
     { name: 'Driver Service', to: '/driverservice', icon: EmojiTransportation },
+    { name: 'Fuel Usage', to: '/fuelusage', icon: LocalGasStationIcon }
   ];
 
   const [open, setOpen] = React.useState(false);
@@ -136,6 +139,7 @@ const App = () => {
               <Route path="/harshturn" component={HarshTurn} />
               <Route path="/harshbrake" component={HarshBrake} />
               <Route path="/driverservice" component={DriverServiceTime} />
+              <Route path="/fuelUsage" component={fuelUsage} />
             </Suspense>
           </HashRouter>
         </main>
