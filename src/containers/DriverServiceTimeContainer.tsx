@@ -51,7 +51,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
 
-    const driverServiceTime = getWithSubModel(groupedDataByDriverId, datePickerProps);
+    const driverServiceTime = getWithSubModel(groupedDataByDriverId);
 
     
     const getLocationDetails = (driverId: number | null, fromDate: Date | null, toDate: Date | null) => {
@@ -107,7 +107,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     );
 };
 
-export const getWithSubModel = (groupedData: IGroupedDriverServiceTime, datePickerProps: IDatePickerProps): IDriverServiceTimeModel[] => {
+export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriverServiceTimeModel[] => {
     let driverServiceTime = [] as IDriverServiceTimeModel[];
     const dateFormat = 'DD-MM-YYYY';
     
@@ -129,9 +129,7 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime, datePick
                 WorkTimeHours: 0,
                 RestTimeHours: 0,
                 SubModel: [] as IDriverServiceTimeSubModel[],
-                DateFilterModel: {} as IDriverServiceTimeDateFilterModel,
-                DatePickerFromDate: datePickerProps.datePickerFromDate,
-                DatePickerToDate: datePickerProps.datePickerToDate
+                DateFilterModel: {} as IDriverServiceTimeDateFilterModel
             } as IDriverServiceTimeModel;
 
             groupedData[key].map((c, index) => {
