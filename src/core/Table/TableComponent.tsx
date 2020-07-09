@@ -14,10 +14,10 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel, IDashboardDateFilterModel } from '../../models/dashboard';
-import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
+import { IDriverServiceTimeModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
-import { isoToLocal } from '../../utils/date';
-import { TablePagination, TableSortLabel } from '@material-ui/core';
+import { isoToLocal, getSortedDates } from '../../utils/date';
+import { TablePagination, TableSortLabel, Grid } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
@@ -25,6 +25,7 @@ import { groupBy } from '../../utils/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { UPDATE_PAGINATION_ROW_COUNT } from '../../constants/Actions';
 import MapComponent from '../../core/MapComponent';
+import RangeFilter from '../../components/shared/DropdownComponent';
 import { ILocationContainerProps } from '../../models/location';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
@@ -37,6 +38,9 @@ const useRowStyles = makeStyles({
   },
   search: {
     marginBottom: '1%',
+  },
+  collapsibleDates: {
+    width: "100%"
   }
 });
 
@@ -94,6 +98,7 @@ const Header = (props: IHeaderProps) => {
 const CollapsibleDateFilterTableForDriverService = (props:any)=>{
   const [open, setOpen] = React.useState(false);
   const { driverServiceModel, date } = props;
+  const classes = useRowStyles();
 
   const handleCollapseClick = () => {
     setOpen(!open)
@@ -112,12 +117,12 @@ const CollapsibleDateFilterTableForDriverService = (props:any)=>{
   return (
     <>
       <StyledTableRow>
-        <TableCell align="left">
+        <TableCell size="small" style={{ float: "left" }} align="left">
           <IconButton aria-label="expand row" size="small" onClick={handleCollapseClick}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </TableCell>
-        <TableCell>{date}</TableCell>
+        <TableCell size="small" className={classes.collapsibleDates} align="left">{date}</TableCell>
       </StyledTableRow>
       <StyledTableRow>
         <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
@@ -169,15 +174,16 @@ const CollapsibleDateFilterTableForDriverService = (props:any)=>{
 const CollapsibleDateFilterTable = (props:any)=>{
     const {dashboardModel,date,driverCondition} = props;
     const [open, setOpen] = React.useState(false);
+    const classes = useRowStyles()
   return(
     <>
     <StyledTableRow>
-      <TableCell  align="left">
+      <TableCell size="small" style={{float:"left"}} align="left">
       <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
       </TableCell>
-      <TableCell>{date}</TableCell>
+      <TableCell size="small" className={classes.collapsibleDates} align="left">{date}</TableCell>
     </StyledTableRow>
     <StyledTableRow>
       <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
@@ -233,7 +239,7 @@ const Row = (rowProps: IRowProps) => {
   for (let key in dashboardModel.DateFilterModel){
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort((d1, d2) => parseFloat(d1) - parseFloat(d2));
+  uniqueDateArray = getSortedDates(uniqueDateArray);
 
   return (
     <>
@@ -260,7 +266,7 @@ const Row = (rowProps: IRowProps) => {
         }
       </StyledTableRow >
       <StyledTableRow>
-      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }}>
+      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }}  colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit={true}>
             <Box margin={1}>
             {
@@ -291,7 +297,7 @@ const SRow = (rowProps: IRowProps) => {
   for (let key in data.DateFilterModel) {
     uniqueDateArray.push(key)
   }
-  uniqueDateArray.sort((d1, d2) => parseFloat(d1) - parseFloat(d2));
+  uniqueDateArray = getSortedDates(uniqueDateArray);
 
   return (
     <React.Fragment>
@@ -333,7 +339,7 @@ const SRow = (rowProps: IRowProps) => {
 };
 
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
-  const { driverCondition, headers, barData, data, location } = props;
+  const { driverCondition, headers, barData, data, rangeFilter, location } = props;
   const classes = useRowStyles();
   const [page, setPage] = React.useState(0);
   const rowCount = useSelector((store:any)=>store.rowCount.rowCount);
@@ -419,18 +425,25 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   return (
     <>
       <div>
-        <TextField
-          className={classes.search}
-          placeholder="Search"
-          onChange={handleSearch}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
+          <Grid item={true} xs={10}>
+            <TextField
+              className={classes.search}
+              placeholder="Search"
+              onChange={handleSearch}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid item={true} xs={2}>
+            <RangeFilter {...rangeFilter} />
+          </Grid>
+        </Grid>
       </div>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
