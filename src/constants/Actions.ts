@@ -15,6 +15,8 @@ export const UPDATE_DRIVER_SERVICE_TIME = 'driver/UPDATE_DRIVER_SERVICE_TIME';
 
 /* Map Location */
 export const UPDATE_LOCATION = 'driver/UPDATE_LOCATION';
+/* harsh turn */
+export const UPDATE_FUEL = 'dashboard/UPDATE_FUEL';
 
 /* api */
 export const API = 'api/API';
