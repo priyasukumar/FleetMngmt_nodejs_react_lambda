@@ -2,6 +2,7 @@ import { ScaleBand, PieArcDatum } from 'd3';
 import { IDriverServiceTimeModel } from './driverServiceTime';
 import { IDatePickerProps } from './datePicker';
 import {IBarComponentProps} from './graph'
+import { ILocationContainerProps } from './location';
 
 export interface IDashboardContainerProps {
     dashboard: IDashboard[];
@@ -121,6 +122,7 @@ export interface ICollapsibleTableProps {
     driverCondition: IDriverCondition;
     barData: IBarData[];
     rangeFilter: IRangeFilterModelProps;
+    location: ILocationContainerProps
 }
 
 export interface IRangeFilterModel {
@@ -148,6 +150,7 @@ export interface IRowProps {
     data: IDashboardModel | IDriverServiceTimeModel;
     driverCondition: IDriverCondition;
     barData: IBarData[];
+    location: ILocationContainerProps
 }
 
 export interface IHeaderProps {

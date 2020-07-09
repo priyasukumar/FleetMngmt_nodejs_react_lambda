@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,9 +15,9 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel, IDashboardDateFilterModel } from '../../models/dashboard';
-import { IDriverServiceTimeModel } from '../../models/driverServiceTime';
+import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
-import { isoToLocal, getSortedDates } from '../../utils/date';
+import { isoToLocal } from '../../utils/date';
 import { TablePagination, TableSortLabel, Grid } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
@@ -24,9 +25,10 @@ import TextField from '@material-ui/core/TextField';
 import { groupBy } from '../../utils/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { UPDATE_PAGINATION_ROW_COUNT } from '../../constants/Actions';
-import MapComponent from '../../core/MapComponent';
 import RangeFilter from '../../components/shared/DropdownComponent';
-import { ILocationContainerProps } from '../../models/location';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import { FormControlLabel } from '@material-ui/core';
+import Radio from '@material-ui/core/Radio';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 
@@ -39,8 +41,8 @@ const useRowStyles = makeStyles({
   search: {
     marginBottom: '1%',
   },
-  collapsibleDates: {
-    width: "100%"
+  collapsibleDates:{
+    width:"100%"
   }
 });
 
@@ -95,82 +97,6 @@ const Header = (props: IHeaderProps) => {
   );
 };
 
-const CollapsibleDateFilterTableForDriverService = (props:any)=>{
-  const [open, setOpen] = React.useState(false);
-  const { driverServiceModel, date } = props;
-  const classes = useRowStyles();
-
-  const handleCollapseClick = () => {
-    setOpen(!open)
-
-    if (!open) {
-      const fromDate = new Date(date);
-
-      const toDate = new Date(date);
-
-      toDate.setDate(toDate.getDate() + 1);
-
-      props.location.loadLocation(driverServiceModel.DriverId, fromDate, toDate)
-    }
-  };
-
-  return (
-    <>
-      <StyledTableRow>
-        <TableCell size="small" style={{ float: "left" }} align="left">
-          <IconButton aria-label="expand row" size="small" onClick={handleCollapseClick}>
-            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell size="small" className={classes.collapsibleDates} align="left">{date}</TableCell>
-      </StyledTableRow>
-      <StyledTableRow>
-        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-          <Collapse in={open} timeout="auto" unmountOnExit={true}>
-            <Box margin={1}>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <StyledTableRow>
-                    <StyledTableCell align="center">Resting StartTime</StyledTableCell>
-                    <StyledTableCell align="center">Resting EndTime</StyledTableCell>
-                    <StyledTableCell align="center">Vehicle StartTime</StyledTableCell>
-                    <StyledTableCell align="center">Vehicle EndTime</StyledTableCell>
-                  </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    driverServiceModel.DateFilterModel[date].map((subRow: any, i: any) => (
-                      <StyledTableRow key={i}>
-                        <StyledTableCell align="center">{isoToLocal(subRow.RestingStartTime, dateFormat)}</StyledTableCell>
-                        <StyledTableCell align="center">{isoToLocal(subRow.RestingEndTime, dateFormat)}</StyledTableCell>
-                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleStartTime, dateFormat)}</StyledTableCell>
-                        <StyledTableCell align="center">{isoToLocal(subRow.VehicleEndTime, dateFormat)}</StyledTableCell>
-                      </StyledTableRow>
-                    ))
-                  }
-                </TableBody>
-              </Table>
-            </Box>
-            <Box margin={1}>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <Typography variant="h6" gutterBottom={true} component="div">
-                    Route Information
-                  </Typography>
-                </TableHead>
-                <TableBody>
-                  {props.location?.location.length > 0  && <MapComponent {...props}/> }                  
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </StyledTableCell>
-      </StyledTableRow>
-    </>
-  );
-
-}
-
 const CollapsibleDateFilterTable = (props:any)=>{
     const {dashboardModel,date,driverCondition} = props;
     const [open, setOpen] = React.useState(false);
@@ -185,51 +111,64 @@ const CollapsibleDateFilterTable = (props:any)=>{
       </TableCell>
       <TableCell size="small" className={classes.collapsibleDates} align="left">{date}</TableCell>
     </StyledTableRow>
-    <StyledTableRow>
-      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-        <Collapse in={open} timeout="auto" unmountOnExit={true}>
-        <Box margin={1}>
-          <Table size="small" aria-label="purchases">
-            <TableHead>
-              <StyledTableRow>
-                {
-                  driverCondition.includeHarshBrake && <StyledTableCell align="center">Harsh Braking</StyledTableCell>
-                }
-                {
-                  driverCondition.includeHarshTurn && <StyledTableCell align="center">Harsh Turning</StyledTableCell>
-                }
-                {
-                  driverCondition.includeOverSpeed && <StyledTableCell align="center">Vehicle Speed</StyledTableCell>
-                }
-                <StyledTableCell align="center">Packet Time</StyledTableCell>
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {
-                dashboardModel.DateFilterModel[date].map((row:any,i:any)=>(
-                  <StyledTableRow key={i}>
-                      {
-                        driverCondition.includeHarshBrake && <StyledTableCell align="center">{row.HarshBraking}</StyledTableCell>
-                      }
-                      {
-                        driverCondition.includeHarshTurn && <StyledTableCell align="center">{row.HarshTurning}</StyledTableCell>
-                      }
-                      {
-                        driverCondition.includeOverSpeed && <StyledTableCell align="center">{row.VehicleSpeed}</StyledTableCell>
-                      }
-                      <StyledTableCell align="center">{row.PacketTime}</StyledTableCell>
-                  </StyledTableRow>
-                ))
-              }
-            </TableBody>
-          </Table>
-        </Box>
-        </Collapse>
-      </StyledTableCell>
-    </StyledTableRow>
     </>
   )
 }
+
+function StyledRadio(props: any) {
+  const classes = useStyles();
+
+  return (
+    <Radio
+      className={classes.root}
+      disableRipple
+      color="default"
+      checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
+      icon={<span className={classes.icon} />}
+      {...props}
+    />
+  );
+}
+const useStyles = makeStyles({
+  root: {
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+  },
+  icon: {
+    borderRadius: '50%',
+    width: 16,
+    height: 16,
+    boxShadow: 'inset 0 0 0 1px rgba(16,22,26,.2), inset 0 -1px 0 rgba(16,22,26,.1)',
+    backgroundColor: '#f5f8fa',
+    backgroundImage: 'linear-gradient(180deg,hsla(0,0%,100%,.8),hsla(0,0%,100%,0))',
+    '$root.Mui-focusVisible &': {
+      outline: '2px auto rgba(19,124,189,.6)',
+      outlineOffset: 2,
+    },
+    'input:hover ~ &': {
+      backgroundColor: '#ebf1f5',
+    },
+    'input:disabled ~ &': {
+      boxShadow: 'none',
+      background: 'rgba(206,217,224,.5)',
+    },
+  },
+  checkedIcon: {
+    backgroundColor: '#137cbd',
+    backgroundImage: 'linear-gradient(180deg,hsla(0,0%,100%,.1),hsla(0,0%,100%,0))',
+    '&:before': {
+      display: 'block',
+      width: 16,
+      height: 16,
+      backgroundImage: 'radial-gradient(#fff,#fff 28%,transparent 32%)',
+      content: '""',
+    },
+    'input:hover ~ &': {
+      backgroundColor: '#106ba3',
+    },
+  },
+});
 
 const Row = (rowProps: IRowProps) => {
   const { data, driverCondition } = rowProps;
@@ -239,65 +178,30 @@ const Row = (rowProps: IRowProps) => {
   for (let key in dashboardModel.DateFilterModel){
     uniqueDateArray.push(key)
   }
-  uniqueDateArray = getSortedDates(uniqueDateArray);
+  uniqueDateArray.sort((d1, d2) => new Date(d1).getDate() - new Date(d2).getDate());
 
   return (
     <>
       <StyledTableRow>
         <StyledTableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-          </IconButton>
+        <RadioGroup name="customized-radios">
+          <FormControlLabel control={<StyledRadio />} label="" />
+        </RadioGroup>
         </StyledTableCell>
 
         <StyledTableCell component="th" scope="row">{dashboardModel.DriverId}</StyledTableCell>
         <StyledTableCell align="left">{dashboardModel.DriverName}</StyledTableCell>
-        <StyledTableCell align="left">{dashboardModel.DriverMobile}</StyledTableCell>
         <StyledTableCell align="left">{dashboardModel.VehicleName}</StyledTableCell>
         <StyledTableCell align="left">{dashboardModel.VehicleLicenseNo}</StyledTableCell>
-        {
-          driverCondition.includeOverSpeed && <StyledTableCell align="center">{dashboardModel.OverSpeed}</StyledTableCell>
-        }
-        {
-          driverCondition.includeHarshBrake && <StyledTableCell align="center">{dashboardModel.HarshBraking}</StyledTableCell>
-        }
-        {
-          driverCondition.includeHarshTurn && <StyledTableCell align="center">{dashboardModel.HarshTurning}</StyledTableCell>
-        }
       </StyledTableRow >
-      <StyledTableRow>
-      <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }}  colSpan={10}>
-          <Collapse in={open} timeout="auto" unmountOnExit={true}>
-            <Box margin={1}>
-            {
-              uniqueDateArray.map((date,i)=>{
-                const data = {
-                  dashboardModel,
-                  date,
-                  driverCondition
-                }
-                return <CollapsibleDateFilterTable key={date} {...data}/> 
-              })
-              }
-            </Box>
-          </Collapse>
-        </StyledTableCell>
-      </StyledTableRow>
     </>
   )
 };
 
 const SRow = (rowProps: IRowProps) => {
   const data = rowProps.data as IDriverServiceTimeModel;
-  const location = rowProps.location as ILocationContainerProps;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
-
-  let uniqueDateArray = [];
-  for (let key in data.DateFilterModel) {
-    uniqueDateArray.push(key)
-  }
-  uniqueDateArray = getSortedDates(uniqueDateArray);
 
   return (
     <React.Fragment>
@@ -312,34 +216,13 @@ const SRow = (rowProps: IRowProps) => {
         </StyledTableCell>
         <StyledTableCell align="left">{data.DriverName}</StyledTableCell>
         <StyledTableCell align="left">{data.DriverMobile}</StyledTableCell>
-        <StyledTableCell align="left">{data.DrivingTimeHours}</StyledTableCell>
-        <StyledTableCell align="left">{data.WorkTimeHours}</StyledTableCell>
-        <StyledTableCell align="left">{data.RestTimeHours}</StyledTableCell>
-      </StyledTableRow>
-      <StyledTableRow>
-        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-          <Collapse in={open} timeout="auto" unmountOnExit={true}>
-            <Box margin={1}>
-            {
-              uniqueDateArray.map((date,i)=>{
-                const collapsibleData = {
-                  driverServiceModel: data,
-                  date,
-                  location
-                }
-                return <CollapsibleDateFilterTableForDriverService key={date} {...collapsibleData}/> 
-              })
-              }
-            </Box>
-          </Collapse>
-        </StyledTableCell>
       </StyledTableRow>
     </React.Fragment>
   );
 };
 
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
-  const { driverCondition, headers, barData, data, rangeFilter, location } = props;
+  const { driverCondition, headers, barData, data, rangeFilter } = props;
   const classes = useRowStyles();
   const [page, setPage] = React.useState(0);
   const rowCount = useSelector((store:any)=>store.rowCount.rowCount);
@@ -352,7 +235,7 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   /* In DateFilterModel, filter the driver data by date.
   Sort by time on each date */
    data.forEach((arr :any,i :number)=>{
-     if(!arr.PacketTime && !arr.CreatedDate){
+     if(!arr.PacketTime){
        return
      }
      arr.DateFilterModel = groupBy(arr.SubModel,"Date");
@@ -425,25 +308,25 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
   return (
     <>
       <div>
-        <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
-          <Grid item={true} xs={10}>
-            <TextField
-              className={classes.search}
-              placeholder="Search"
-              onChange={handleSearch}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item={true} xs={2}>
-            <RangeFilter {...rangeFilter} />
-          </Grid>
+      <Grid container={true} direction="row" justify="space-around" alignItems="center" spacing={2}>
+        <Grid item={true} xs={10}>
+        <TextField
+          className={classes.search}
+          placeholder="Search"
+          onChange={handleSearch}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
         </Grid>
+        <Grid item={true} xs={2}>
+        <RangeFilter {...rangeFilter} />
+        </Grid>
+      </Grid>
       </div>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
@@ -469,10 +352,8 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
               .map((driverService: IDriverServiceTimeModel, index: number) => {
                 const rowProps = {
                   data: driverService,
-                  driverCondition,
-                  location                 
+                  driverCondition
                 } as IRowProps;
-
                 return (<SRow key={driverService.DriverId} {...rowProps} />);
               })
             }       
