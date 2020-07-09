@@ -13,6 +13,9 @@ export const UPDATE_HARSHTURN = 'dashboard/UPDATE_HARSHTURN';
 /* driver service time */
 export const UPDATE_DRIVER_SERVICE_TIME = 'driver/UPDATE_DRIVER_SERVICE_TIME';
 
+/* Map Location */
+export const UPDATE_LOCATION = 'driver/UPDATE_LOCATION';
+
 /* api */
 export const API = 'api/API';
 export const API_TRANSACTION = 'api/API_TRANSACTION';

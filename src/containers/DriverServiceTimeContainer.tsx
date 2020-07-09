@@ -12,8 +12,10 @@ import { sortBy } from '../utils/driver';
 import { Driver } from '../constants/enum';
 import { IBarComponentProps } from '../models/graph';
 import { isoToLocal } from '../utils/date';
+import { loadLocation } from '../actions/LocationAction';
+import { ILocationContainerProps } from '../models/location';
 
-const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & IDriverServiceTimeActionProps) => {
+const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & IDriverServiceTimeActionProps & ILocationContainerProps) => {
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
         { columnName: 'DriverName', columnValue: 'Driver Name' },
@@ -23,13 +25,6 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         { columnName: 'RestTimeHours', columnValue: 'Rest Time Hours' },
       ];
     const groupedDataByDriverId = groupBy(props.driversServiceTime, 'DriverVehicleId') as IGroupedDriverServiceTime;
-    const driverServiceTime = getWithSubModel(groupedDataByDriverId);
-
-    const collapsibleTableProps = {
-        data: driverServiceTime,
-        headers,
-    } as ICollapsibleTableProps;
-
     const datePickerFormat = 'dd/MM/yyyy';
     const dates = useSelector((store:any) => store.date) 
     const currentDateFromState = dates.currentDate
@@ -55,6 +50,26 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
         datePickerToDate: toDate ? toDate : currentDateFromState,
         handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
     } as IDatePickerProps;
+
+    const driverServiceTime = getWithSubModel(groupedDataByDriverId, datePickerProps);
+
+    
+    const getLocationDetails = (driverId: number | null, fromDate: Date | null, toDate: Date | null) => {
+        if (driverId && toDate && fromDate) {
+            props.loadLocation(driverId, fromDate, toDate);
+        }
+    }
+
+    const locationProps = {
+        location: props.location,
+        loadLocation: (driverId: number, fromDate: Date, toDate: Date) => getLocationDetails(driverId, fromDate, toDate)
+    } as ILocationContainerProps
+
+    const collapsibleTableProps = {
+        data: driverServiceTime,
+        headers,
+        location: locationProps
+    } as ICollapsibleTableProps;
 
     const mostDrivingTime = {
         title: 'Top Driving Time',
@@ -92,7 +107,7 @@ const DriverServiceTimeContainer = (props: IDriverServiceTimeContainerProps & ID
     );
 };
 
-export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriverServiceTimeModel[] => {
+export const getWithSubModel = (groupedData: IGroupedDriverServiceTime, datePickerProps: IDatePickerProps): IDriverServiceTimeModel[] => {
     let driverServiceTime = [] as IDriverServiceTimeModel[];
     const dateFormat = 'DD-MM-YYYY';
     
@@ -114,7 +129,9 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
                 WorkTimeHours: 0,
                 RestTimeHours: 0,
                 SubModel: [] as IDriverServiceTimeSubModel[],
-                DateFilterModel: {} as IDriverServiceTimeDateFilterModel
+                DateFilterModel: {} as IDriverServiceTimeDateFilterModel,
+                DatePickerFromDate: datePickerProps.datePickerFromDate,
+                DatePickerToDate: datePickerProps.datePickerToDate
             } as IDriverServiceTimeModel;
 
             groupedData[key].map((c, index) => {
@@ -144,16 +161,18 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
     return driverServiceTime;
 };
 
-const mapStateToProps = ({ driversServiceTime }: { driversServiceTime: IDriverServiceTimeContainerProps }) => {
+const mapStateToProps = ({ driversServiceTime, location }: { driversServiceTime: IDriverServiceTimeContainerProps, location: ILocationContainerProps }) => {
     return {
-        driversServiceTime: driversServiceTime.driversServiceTime
+        driversServiceTime: driversServiceTime.driversServiceTime,
+        location: location.location
     };
 };
 
 const mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            loadDriversServiceTime: (fromDate: Date, toDate: Date) => loadDriversServiceTime(fromDate, toDate)
+            loadDriversServiceTime: (fromDate: Date, toDate: Date) => loadDriversServiceTime(fromDate, toDate),
+            loadLocation: (driverId: number, fromDate: Date, toDate: Date) => loadLocation(driverId, fromDate, toDate)
         },
         dispatch
     );
