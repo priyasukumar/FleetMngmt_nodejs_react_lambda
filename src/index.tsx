@@ -9,6 +9,7 @@ import { Spinner } from 'react-redux-spinner';
 import ReduxToastr from 'react-redux-toastr';
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 
 const target = document.querySelector('#root');
 
