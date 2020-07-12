@@ -122,7 +122,9 @@ export interface ICollapsibleTableProps {
     driverCondition: IDriverCondition;
     barData: IBarData[];
     rangeFilter: IRangeFilterModelProps;
-    location: ILocationContainerProps
+    location: ILocationContainerProps;
+    driverId: number;
+    handleDriverId: (event:any) => void;
 }
 
 export interface IRangeFilterModel {
@@ -150,7 +152,9 @@ export interface IRowProps {
     data: IDashboardModel | IDriverServiceTimeModel;
     driverCondition: IDriverCondition;
     barData: IBarData[];
-    location: ILocationContainerProps
+    location: ILocationContainerProps;
+    driverId: number;
+    handleDriverId:(event:any) => void;
 }
 
 export interface IHeaderProps {
