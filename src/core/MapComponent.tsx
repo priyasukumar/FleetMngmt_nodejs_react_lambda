@@ -2,6 +2,9 @@ import * as L from 'leaflet';
 import React, {  } from 'react';
 import 'leaflet-routing-machine';
 import { ILocationProps } from '../models/location';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+import { LatLngExpression } from 'leaflet';
 
 const MapComponent = (props: any) => {
   const { date, driverServiceModel, location } = props 
@@ -16,30 +19,41 @@ const MapComponent = (props: any) => {
       attribution: attribution
     }).addTo(map);
 
-   map.setView([location.location[0].Latitude, location.location[0].Longitude], 6);
+    map.setView([location.location[0].Latitude, location.location[0].Longitude], 6);
 
-   var waypoints: L.LatLng[] = []
+    const waypoint1 = L.latLng(38.889510,-77.032000)
+    const waypoint2 = L.latLng(35.929673,-78.948237)
 
-    //  const waypoints = [
-    //   L.latLng(16.506, 80.648),
-    //   L.latLng(17.384, 78.4866),
-    //   L.latLng(12.971, 77.5945)
-    // ];
+    var waypoints: L.LatLng[] = []
+
+    //var latlngs: LatLngExpression[] = [[38.889510,-77.032000], [35.929673,-78.948237]];
 
     location.location.map((locationDetail: ILocationProps) => {
       const waypoint = L.latLng(locationDetail.Latitude, locationDetail.Longitude)
       waypoints.push(waypoint);
+      //latlngs.push([locationDetail.Latitude, locationDetail.Longitude])
     });
 
-    let marker = L.marker([16.506, 80.648]);
-    marker.addTo(map);
+    let DefaultIcon = L.icon({
+      iconUrl: markerIcon,
+      shadowUrl: shadowUrl,
+      iconRetinaUrl: markerIcon
+    });
 
+    L.Marker.prototype.options.icon = DefaultIcon;
+
+    // var path = L.polyline(latlngs, { weight: 5, dashArray: [10, 20], color: 'blue', }).addTo(map);
+    // map.addLayer(path);
+    // map.fitBounds(path.getBounds());
+
+    L.marker(waypoints[0]).addTo(map);
+    L.marker(waypoints[waypoints.length-1]).addTo(map);
+
+    const latLng = L.latLng(0,0);
     const mapControl = L.Routing.control({
       plan: L.Routing.plan(waypoints, {
         createMarker: (i, wp) => {
-          return L.marker(wp.latLng, {
-            draggable: false
-          });
+          return L.marker(latLng);
         }
       }),
       lineOptions: {
@@ -56,7 +70,7 @@ const MapComponent = (props: any) => {
       show: false
     }).addTo(map);
 
-    map.addControl(mapControl);
+   map.addControl(mapControl);
   }
 
   React.useEffect(
@@ -66,11 +80,14 @@ const MapComponent = (props: any) => {
         leafletMap();
      // }
 
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-        iconUrl: require('leaflet/dist/images/marker-icon.png'),
-        shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-      });
+      // L.Icon.Default.mergeOptions({
+      //   iconRetinaUrl: 'leaflet/dist/images/marker-icon-2x.png',
+      //   iconUrl: 'leaflet/dist/images/marker-icon.png',
+      //   shadowUrl: 'leaflet/dist/images/marker-shadow.png'
+      // });
+
+   
+
     }, [location.location]);
 
   return (
