@@ -1,13 +1,13 @@
+import { IFuelModel } from '../models/fuelUsage';
 import { UPDATE_FUEL } from '../constants/Actions';
-import { IFuelContainerProps } from '../models/fuelUsage';
 
 const initialState = {
-    fuel: []
-} as IFuelContainerProps;
+    fuel: {}
+} as IFuelModel;
 
-const FuelReducer = (state = initialState, action: any) => {
+const FuelUsageReducer = (state = initialState, action: any) => {
     switch (action.type) {
-        case UPDATE_FUEL:
+        case UPDATE_FUEL:            
             return {
                 ...state,
                 ...action.payload
@@ -17,4 +17,4 @@ const FuelReducer = (state = initialState, action: any) => {
     }
 };
 
-export default FuelReducer;
+export default FuelUsageReducer;

@@ -1,14 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { API_URL } from '../utils/environment';
+import { API_URL, FUEL_API_URL } from '../utils/environment';
 import { Http } from '../constants/enum';
-import { API, API_TRANSACTION } from '../constants/Actions';
+import { API, API_TRANSACTION, API_FUEL } from '../constants/Actions';
 import { apiStart, showApiFailure, showApiSuccess, apiEnd } from '../actions/ApiStatus';
 import { MessageConstants } from '../constants/MessageConstants';
 
 const apiMiddleware = ({ dispatch }: { dispatch: any }) => (next: any) => (action: any) => {
     next(action);
 
-    if (action.type !== API) {
+    if (action.type !== API && action.type !== API_FUEL) {
         return;
     }
 
@@ -16,8 +16,10 @@ const apiMiddleware = ({ dispatch }: { dispatch: any }) => (next: any) => (actio
     const dataOrParams = [Http.Get, Http.Delete].includes(method) ? 'params' : 'data';
     let apiUrl = `${API_URL}${url}`;
 
-    if(apiFunctionality === 'location'){
+    if(apiFunctionality === 'location' && action.type === API){
         apiUrl = url
+    }else if(action.type === API_FUEL){
+        apiUrl = `${FUEL_API_URL}${url}`
     }
 
     const axiosRequestConfig = {

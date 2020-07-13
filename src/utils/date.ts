@@ -34,3 +34,8 @@ export const getSortedDates = (arr:Array<string>)=>{
       })
     return sortedDates;
 }
+
+export const convertToFormat = (date: string, format: string): string => {
+    const momentObj = moment(date, 'DD-MM-YYYY');
+    return momentObj.format(format);
+};

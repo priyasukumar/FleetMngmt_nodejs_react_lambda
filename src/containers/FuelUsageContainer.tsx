@@ -3,37 +3,38 @@ import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useEffect, useState } from 'react';
 import FuelComponent from '../components/dashboard/FuelUsageComponent';
-import { loadFuel } from '../actions/FuelUsageActions';
 import { groupBy } from '../utils/database';
-import { ICollapsibleTableProps, IGroupedDashboard, IDriverCondition } from '../models/dashboard';
+import { ICollapsibleTableProps, IGroupedDashboard } from '../models/dashboard';
 import { IDatePickerProps } from '../models/datePicker';
-import { IFuelComponentProps, IFuelContainerProps, IFuelActionProps } from '../models/fuelUsage';
+import { IFuelComponentProps, IFuelActionProps } from '../models/fuelUsage';
 import { getWithSubModel } from './DashboardContainer';
+import { loadFuel } from '../actions/FuelUsageActions';
+import { IDriverServiceTimeContainerProps ,IDriverServiceTimeActionProps } from '../models/driverServiceTime';
+import { ILocationContainerProps } from '../models/location';
+import { loadDriversServiceTime } from '../actions/DriverServiceTimeAction';
 
-const FuelContainer = (props: IFuelContainerProps & IFuelActionProps) => {
+const FuelContainer = (props: IDriverServiceTimeContainerProps &  IDriverServiceTimeActionProps & IFuelActionProps & ILocationContainerProps) => {
     const headers = [
         { columnName: 'DriverId', columnValue: 'Driver Id' },
         { columnName: 'DriverName', columnValue: 'Driver Name' },
-        { columnName: 'DriverMobile', columnValue: 'Driver Mobile' },
         { columnName: 'VehicleName', columnValue: 'Vehicle Name' },
+        { columnName: 'VehicleLicenseNo', columnValue: 'Vehicle License No' },
       ];
-    const groupedDataByDriverId = groupBy(props.fuel, 'DriverVehicleId') as IGroupedDashboard;
-    const DriverVehicleDetails = getWithSubModel(groupedDataByDriverId);
-    
-    const driverCondition = {
-        includeHarshBrake: false,
-        includeHarshTurn: true,
-        includeOverSpeed: false
-    } as IDriverCondition;
+    const groupedDataByDriverId = groupBy(props.driversServiceTime, 'DriverVehicleId') as IGroupedDashboard;
+    const driverVehicleData = getWithSubModel(groupedDataByDriverId);
 
-    const collapsibleTableProps = {
-        data: DriverVehicleDetails,
-        driverCondition,
-        headers,
-    } as ICollapsibleTableProps;
-
-    const datePickerFormat = 'dd/MM/yyyy';
+    const fuel = useSelector((store:any)=> store.fuel)
     const dates = useSelector((store:any) => store.date) 
+    const [driverId,setDriverId] = useState(1);
+    
+    const collapsibleTableProps = {
+        data: driverVehicleData,
+        headers,
+        driverId,
+        handleDriverId: (id:number) =>{setDriverId(id)},
+    } as ICollapsibleTableProps;
+    
+    const datePickerFormat = 'dd/MM/yyyy';
     const currentDateFromState = dates.currentDate
     const initialToDateFromState = dates.initialToDate;
     const minDate = new Date();
@@ -45,10 +46,10 @@ const FuelContainer = (props: IFuelContainerProps & IFuelActionProps) => {
         if (toDate && fromDate) {
             setToDate(toDate);
             setFromDate(fromDate);
-            props.loadData(fromDate, toDate);
+            props.loadFuelData(fromDate, toDate, driverId );
         }
     };
-
+    
     const datePickerProps = {
         datePickerDateFormat: datePickerFormat,
         datePickerMinDate: minDate,
@@ -61,31 +62,41 @@ const FuelContainer = (props: IFuelContainerProps & IFuelActionProps) => {
     const fuelComponentProps = {
         tableData: collapsibleTableProps,
         datePicker: datePickerProps,
+        fuelData: fuel
     } as IFuelComponentProps;
 
     useEffect(
         () => {
             if (fromDate && toDate) {
-                props.loadData(fromDate, toDate);
+                props.loadDriversServiceTime(new Date("2020/06/01"), new Date("2020/06/02"));
             }
         },
-        [props.loadData]);
+        []);
+    
+    useEffect(()=>{
+        if (fromDate && toDate){
+            props.loadFuelData(fromDate,toDate,driverId )
+        }
+    },[fromDate,toDate,driverId])
 
     return (
         <FuelComponent {...fuelComponentProps} />
     );
 };
 
-const mapStateToProps = ({ fuel }: { fuel: IFuelContainerProps }) => {
+const mapStateToProps = ({ driversServiceTime, location }: { driversServiceTime: IDriverServiceTimeContainerProps, location: ILocationContainerProps }) => {
     return {
-        fuel: fuel.fuel
+        driversServiceTime: driversServiceTime.driversServiceTime,
+        location: location.location
     };
 };
+
 
 const mapDispatchToProps = (dispatch: any) =>
     bindActionCreators(
         {
-            loadData: (fromDate: Date, toDate: Date) => loadFuel(fromDate, toDate),
+            loadDriversServiceTime: (fromDate: Date, toDate: Date) => loadDriversServiceTime(fromDate, toDate),
+            loadFuelData: (fromDate: Date,toDate: Date, driverId : number)=> loadFuel(fromDate, toDate, driverId)
         },
         dispatch
     );

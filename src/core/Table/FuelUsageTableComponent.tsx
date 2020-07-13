@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react';
 import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Box from '@material-ui/core/Box';
-import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,15 +7,14 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel, IDashboardDateFilterModel } from '../../models/dashboard';
-import { IDriverServiceTimeModel, IDriverServiceTimeSubModel } from '../../models/driverServiceTime';
+import { IDriverServiceTimeModel, } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
 import { isoToLocal } from '../../utils/date';
-import { TablePagination, TableSortLabel, Grid } from '@material-ui/core';
+import { TablePagination, TableSortLabel, Grid, Select } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
@@ -26,9 +22,6 @@ import { groupBy } from '../../utils/database';
 import { useSelector, useDispatch } from 'react-redux';
 import { UPDATE_PAGINATION_ROW_COUNT } from '../../constants/Actions';
 import RangeFilter from '../../components/shared/DropdownComponent';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import { FormControlLabel } from '@material-ui/core';
-import Radio from '@material-ui/core/Radio';
 
 const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
 
@@ -49,10 +42,12 @@ const useRowStyles = makeStyles({
 const StyledTableRow = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
+        '&$selected, &$selected:hover': {
+          backgroundColor: "#bdbdbd"
+        },
       },
-    },
+    selected:{},
   }),
 )(TableRow);
 
@@ -97,102 +92,27 @@ const Header = (props: IHeaderProps) => {
   );
 };
 
-const CollapsibleDateFilterTable = (props:any)=>{
-    const {dashboardModel,date,driverCondition} = props;
-    const [open, setOpen] = React.useState(false);
-    const classes = useRowStyles()
-  return(
-    <>
-    <StyledTableRow>
-      <TableCell size="small" style={{float:"left"}} align="left">
-      <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-          </IconButton>
-      </TableCell>
-      <TableCell size="small" className={classes.collapsibleDates} align="left">{date}</TableCell>
-    </StyledTableRow>
-    </>
-  )
-}
-
-function StyledRadio(props: any) {
-  const classes = useStyles();
-
-  return (
-    <Radio
-      className={classes.root}
-      disableRipple
-      color="default"
-      checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
-      icon={<span className={classes.icon} />}
-      {...props}
-    />
-  );
-}
-const useStyles = makeStyles({
-  root: {
-    '&:hover': {
-      backgroundColor: 'transparent',
-    },
-  },
-  icon: {
-    borderRadius: '50%',
-    width: 16,
-    height: 16,
-    boxShadow: 'inset 0 0 0 1px rgba(16,22,26,.2), inset 0 -1px 0 rgba(16,22,26,.1)',
-    backgroundColor: '#f5f8fa',
-    backgroundImage: 'linear-gradient(180deg,hsla(0,0%,100%,.8),hsla(0,0%,100%,0))',
-    '$root.Mui-focusVisible &': {
-      outline: '2px auto rgba(19,124,189,.6)',
-      outlineOffset: 2,
-    },
-    'input:hover ~ &': {
-      backgroundColor: '#ebf1f5',
-    },
-    'input:disabled ~ &': {
-      boxShadow: 'none',
-      background: 'rgba(206,217,224,.5)',
-    },
-  },
-  checkedIcon: {
-    backgroundColor: '#137cbd',
-    backgroundImage: 'linear-gradient(180deg,hsla(0,0%,100%,.1),hsla(0,0%,100%,0))',
-    '&:before': {
-      display: 'block',
-      width: 16,
-      height: 16,
-      backgroundImage: 'radial-gradient(#fff,#fff 28%,transparent 32%)',
-      content: '""',
-    },
-    'input:hover ~ &': {
-      backgroundColor: '#106ba3',
-    },
-  },
-});
-
 const Row = (rowProps: IRowProps) => {
-  const { data, driverCondition } = rowProps;
+  const { data, handleDriverId, driverId } = rowProps;
   let dashboardModel = data as IDashboardModel;
-  const [open, setOpen] = React.useState(false);
-  let uniqueDateArray = [];
-  for (let key in dashboardModel.DateFilterModel){
-    uniqueDateArray.push(key)
-  }
-  uniqueDateArray.sort((d1, d2) => new Date(d1).getDate() - new Date(d2).getDate());
+  const [isSelected, setIsSelected] = React.useState(false);
+
+   useEffect(()=>{
+     if(data.DriverId === driverId){
+       setIsSelected(true)
+      }else{
+        setIsSelected(false)
+      }
+    },[driverId])
 
   return (
     <>
-      <StyledTableRow>
-        <StyledTableCell>
-        <RadioGroup name="customized-radios">
-          <FormControlLabel control={<StyledRadio />} label="" />
-        </RadioGroup>
-        </StyledTableCell>
-
-        <StyledTableCell component="th" scope="row">{dashboardModel.DriverId}</StyledTableCell>
-        <StyledTableCell align="left">{dashboardModel.DriverName}</StyledTableCell>
-        <StyledTableCell align="left">{dashboardModel.VehicleName}</StyledTableCell>
-        <StyledTableCell align="left">{dashboardModel.VehicleLicenseNo}</StyledTableCell>
+      <StyledTableRow selected={isSelected} onClick={()=>handleDriverId(data.DriverId)}>
+      <StyledTableCell></StyledTableCell>
+      <StyledTableCell component="th" scope="row">{dashboardModel.DriverId}</StyledTableCell>
+      <StyledTableCell align="left">{dashboardModel.DriverName}</StyledTableCell>
+      <StyledTableCell align="left">{dashboardModel.VehicleName}</StyledTableCell>
+      <StyledTableCell align="left">{dashboardModel.VehicleLicenseNo}</StyledTableCell>
       </StyledTableRow >
     </>
   )
@@ -222,7 +142,7 @@ const SRow = (rowProps: IRowProps) => {
 };
 
 const CollapsibleTable = (props: ICollapsibleTableProps) => {
-  const { driverCondition, headers, barData, data, rangeFilter } = props;
+  const { driverCondition, headers, barData, data, rangeFilter, handleDriverId, driverId } = props;
   const classes = useRowStyles();
   const [page, setPage] = React.useState(0);
   const rowCount = useSelector((store:any)=>store.rowCount.rowCount);
@@ -331,18 +251,20 @@ const CollapsibleTable = (props: ICollapsibleTableProps) => {
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
           <Header headers={headers} onRequestSort={handleRequestSort} orderBy={orderBy} order={order} />
-          <TableBody>
+          <TableBody style={{cursor:"pointer"}}>
           {
-              (isDashboard(filteredData[0])) &&
-              (stableSort(filteredData as Array<IDashboardModel>, getComparator(order, orderBy)))
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((driver: IDashboardModel, index: number): JSX.Element => {
-                const rowProps = {
-                  data: driver as IDashboardModel,
-                  driverCondition,
-                  barData
-                } as IRowProps;
-                return (<Row key={driver.DriverId} {...rowProps} />);
+            (isDashboard(filteredData[0])) &&
+            (stableSort(filteredData as Array<IDashboardModel>, getComparator(order, orderBy)))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((driver: IDashboardModel, index: number): JSX.Element => {
+              const rowProps = {
+                data: driver as IDashboardModel,
+                driverCondition,
+                barData,
+                driverId,
+                handleDriverId
+              } as IRowProps;
+              return (<Row key={driver.DriverId} {...rowProps} />)
               })
             }
             {
