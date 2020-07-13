@@ -24,6 +24,7 @@ export const API_TRANSACTION = 'api/API_TRANSACTION';
 export const API_START = 'api/API_START';
 export const API_ERROR = 'api/API_ERROR';
 export const API_END = 'api/API_END';
+export const API_FUEL = 'api/FUEL';
 
 /* message */
 export const SHOW_SUCCESS_MESSAGE = 'toastr/SHOW_SUCCESS_MESSAGE';

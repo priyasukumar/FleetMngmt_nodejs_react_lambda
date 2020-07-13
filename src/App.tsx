@@ -28,7 +28,7 @@ const DriverServiceTime = lazy(() => import('./containers/DriverServiceTimeConta
 const HarshTurn = lazy(() => import('./containers/HarshTurnContainer'));
 const OverSpeed = lazy(() => import('./containers/OverSpeedContainer'));
 const HarshBrake = lazy(() => import('./containers/HarshBrakeContainer'));
-const fuelUsage = lazy(() => import('./containers/FuelUsageContainer'));
+const FuelUsage = lazy(() => import('./containers/FuelUsageContainer'));
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -139,7 +139,7 @@ const App = () => {
               <Route path="/harshturn" component={HarshTurn} />
               <Route path="/harshbrake" component={HarshBrake} />
               <Route path="/driverservice" component={DriverServiceTime} />
-              <Route path="/fuelUsage" component={fuelUsage} />
+              <Route path="/fuelUsage" component={FuelUsage} />
             </Suspense>
           </HashRouter>
         </main>
