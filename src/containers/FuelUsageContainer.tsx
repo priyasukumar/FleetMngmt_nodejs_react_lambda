@@ -24,7 +24,7 @@ const FuelContainer = (props: IDriverServiceTimeContainerProps &  IDriverService
     const driverVehicleData = getWithSubModel(groupedDataByDriverId);
 
     const fuel = useSelector((store:any)=> store.fuel)
-    const dates = useSelector((store:any) => store.date) 
+    const dates = useSelector((store:any) => store.fuelDate) 
     const [driverId,setDriverId] = useState(1);
     
     const collapsibleTableProps = {

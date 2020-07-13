@@ -10,6 +10,7 @@ import DateReducer from './DateReducer';
 import PaginationReducer from './PaginationReducer';
 import LocationReducer from './LocationReducer';
 import FuelReducer from './FuelUsageReducer';
+import FuelDateReducer from './FuelDateReducer';
 
 export default combineReducers({
   dashboard: DashboardReducer,
@@ -22,5 +23,6 @@ export default combineReducers({
   date: DateReducer,
   rowCount: PaginationReducer,
   location: LocationReducer,
-  fuel: FuelReducer
+  fuel: FuelReducer,
+  fuelDate: FuelDateReducer
 });

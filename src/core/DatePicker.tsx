@@ -10,7 +10,7 @@ import { IDatePickerProps } from '../models/datePicker';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 import { getDateRangeDiff } from '../utils/date';
 import { useDispatch } from 'react-redux';
-import { UPDATE_DATE } from '../constants/Actions';
+import { UPDATE_DATE ,UPDATE_FUEL_DATE } from '../constants/Actions';
 
 const useCustomThemeStyles = createMuiTheme({
     palette: {
@@ -39,13 +39,24 @@ const DatePicker = (props: IDatePickerProps) => {
         }
 
         setFromDate(fromDate)
-        dispatch({
-            type: UPDATE_DATE,
-            payload:{
-                currentDate: toDateFromState,
-                initialToDate: fromDate,
-            }
-        })
+        if(!props.isFuel){
+            dispatch({
+                type: UPDATE_DATE,
+                payload:{
+                    currentDate: toDateFromState,
+                    initialToDate: fromDate,
+                }
+            })
+        }else{
+            dispatch({
+                type: UPDATE_FUEL_DATE,
+                payload:{
+                    currentDate: toDateFromState,
+                    initialToDate: fromDate,
+                }
+            })
+
+        }
 
         const diff = getDateRangeDiff(fromDate, toDateFromState, 'days');
         if (fromDate > toDateFromState) {
@@ -73,13 +84,24 @@ const DatePicker = (props: IDatePickerProps) => {
         }
 
         setToDate(toDate)
-        dispatch({
-            type: UPDATE_DATE,
-            payload:{
-                currentDate:toDate,
-                initialToDate: fromDateFromState
-            }
-        })
+        if(!props.isFuel){
+            dispatch({
+                type: UPDATE_DATE,
+                payload:{
+                    currentDate:toDate,
+                    initialToDate: fromDateFromState
+                }
+            })
+        }else{
+            dispatch({
+                type: UPDATE_FUEL_DATE,
+                payload:{
+                    currentDate:toDate,
+                    initialToDate: fromDateFromState
+                }
+            })
+
+        }
 
         if (toDate < fromDateFromState) {
             setToDateError('To date cannot be lesser then From date');
