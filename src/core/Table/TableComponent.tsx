@@ -16,7 +16,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ICollapsibleTableProps, IRowProps, IHeaderProps, IDashboardModel, IDashboardSubModel, IDashboardDateFilterModel } from '../../models/dashboard';
 import { IDriverServiceTimeModel } from '../../models/driverServiceTime';
 import { isDashboard } from '../../containers/DashboardContainer';
-import { isoToLocal, getSortedDates } from '../../utils/date';
+import { isoToLocal, getSortedDates, convertToFormat } from '../../utils/date';
 import { TablePagination, TableSortLabel, Grid } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
@@ -104,13 +104,9 @@ const CollapsibleDateFilterTableForDriverService = (props:any)=>{
     setOpen(!open)
 
     if (!open) {
-      const fromDate = new Date(date);
-
-      const toDate = new Date(date);
-
-      toDate.setDate(toDate.getDate() + 1);
-
-      props.location.loadLocation(driverServiceModel.DriverId, fromDate, toDate)
+      const dateFormat = 'YYYY-MM-DD';
+      const fromDate = convertToFormat(date, dateFormat);
+      props.location.loadLocation(driverServiceModel.DriverId, fromDate, fromDate)
     }
   };
 
@@ -159,7 +155,7 @@ const CollapsibleDateFilterTableForDriverService = (props:any)=>{
                   </Typography>
                 </TableHead>
                 <TableBody>
-                  {props.location?.location.length > 0  && <MapComponent {...props}/> }                  
+                  {props.location?.location.length > 0  ? <MapComponent {...props}/> : <div>No Route information found</div> }                  
                 </TableBody>
               </Table>
             </Box>

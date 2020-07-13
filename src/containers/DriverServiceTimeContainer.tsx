@@ -136,17 +136,20 @@ export const getWithSubModel = (groupedData: IGroupedDriverServiceTime): IDriver
                 driverServiceTimeModel.RestTimeHours += c.RestTimeHours;
                 driverServiceTimeModel.DrivingTimeHours += c.DrivingTimeHours;
                 driverServiceTimeModel.WorkTimeHours += c.WorkTimeHours;
-                driverServiceTimeModel.SubModel[index] = {
-                    RestingStartTime: '',
-                    RestingEndTime: '',
-                    VehicleStartTime: '',
-                    VehicleEndTime: ''
-                } as IDriverServiceTimeSubModel;
-                driverServiceTimeModel.SubModel[index].RestingStartTime = c.RestingStartTime;
-                driverServiceTimeModel.SubModel[index].RestingEndTime = c.RestingEndTime;
-                driverServiceTimeModel.SubModel[index].VehicleStartTime = c.VehicleStartTime;
-                driverServiceTimeModel.SubModel[index].VehicleEndTime = c.VehicleEndTime;
-                driverServiceTimeModel.SubModel[index].Date = isoToLocal(c.CreatedDate,dateFormat);
+                if (c.RestingStartTime && c.RestingEndTime && c.VehicleStartTime && c.VehicleEndTime) {
+                    driverServiceTimeModel.SubModel[index] = {
+                        RestingStartTime: '',
+                        RestingEndTime: '',
+                        VehicleStartTime: '',
+                        VehicleEndTime: ''
+                    } as IDriverServiceTimeSubModel;
+
+                    driverServiceTimeModel.SubModel[index].RestingStartTime = c.RestingStartTime;
+                    driverServiceTimeModel.SubModel[index].RestingEndTime = c.RestingEndTime;
+                    driverServiceTimeModel.SubModel[index].VehicleStartTime = c.VehicleStartTime;
+                    driverServiceTimeModel.SubModel[index].VehicleEndTime = c.VehicleEndTime;
+                    driverServiceTimeModel.SubModel[index].Date = isoToLocal(c.CreatedDate, dateFormat);
+                }
 
                 return c;
             });
