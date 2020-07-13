@@ -23,10 +23,6 @@ const FuelUsageComponent = (props: IFuelComponentProps) => {
                     : null
                 }  
             </Grid>
-            <Grid item={true} xs={10}>
-                    MAP
-            </Grid>
-           
             </Grid>
         </>
     );

@@ -27,3 +27,16 @@ code {
 #nprogress .peg {
     box-shadow: 0 0 10px #f4590a, 0 0 5px #f4590a !important;
 }
+
+div.fuelChartToolTip {
+    position: absolute;
+    max-width: 200px;
+    height: auto;
+    padding: 5px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+    pointer-events: none;
+    font-family: sans-serif;
+    font-size:12px;
+  }
