@@ -52,7 +52,10 @@ const DatePicker = (props: IDatePickerProps) => {
             setFromDateError('From date should not be in future');
             return;
         }
-        if (diff > 10) {
+        if (props.isFuel && diff > 60){
+            setFromDateError('Date range should be less than or equal to 60 days');
+            return;
+        }else if(!props.isFuel && diff > 10) {
             setFromDateError('Date range should be less than or equal to 10 days');
             return;
         }
@@ -83,8 +86,12 @@ const DatePicker = (props: IDatePickerProps) => {
             return;
         }
         const diff = getDateRangeDiff(fromDateFromState, toDate, 'days');
-        if (diff > 10) {
-            setToDateError('Date range should be less than or equal to 10 days');
+
+        if (props.isFuel && diff > 60){
+            setFromDateError('Date range should be less than or equal to 60 days');
+            return;
+        }else if ( !props.isFuel && diff > 10) {
+            setFromDateError('Date range should be less than or equal to 10 days');
             return;
         }
 

@@ -56,7 +56,8 @@ const FuelContainer = (props: IDriverServiceTimeContainerProps &  IDriverService
         datePickerMaxDate: currentDate,
         datePickerFromDate: fromDate ? fromDate : initialToDateFromState,
         datePickerToDate: toDate ? toDate : currentDateFromState,
-        handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate)
+        handleDateChange: (fromDate: Date, toDate: Date) => handleDateChange(fromDate, toDate),
+        isFuel: true
     } as IDatePickerProps;
 
     const fuelComponentProps = {

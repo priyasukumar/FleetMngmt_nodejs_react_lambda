@@ -3,21 +3,22 @@ import * as d3 from 'd3';
 import 'd3-selection-multi';
 import { IFuelInfoModel, IRefuelModel, ITheftModel, ILeakageModel } from '../models/fuelUsage';
 import { isoToLocal } from '../utils/date';
-// import jsonData from './fuelinfo';
+import '../index.css';
 
 const FuelChartComponent = (props:any)=>{
     const { FuelInfoModel, RefuelModel, LeakageModel, TheftModel } = props.fuel;
-    // const { FuelInfoModel, RefuelModel, LeakageModel, TheftModel } = jsonData;
-    
     const dateFormat = 'DD/MM/YYYY hh:mm:ss A';
     const fuelChartContainerRef = useRef(null);
     const [currentZoomState,setCurrentZoomState] = useState<any>("");
     const width = 500, height = 500, padding= 20;
-    let fuelInfo:any,
-        datesArray:Array<Date>,
-        minDate:Date,
-        maxDate:Date,
-        maxVolume:number;
+
+    let fuelInfo: any,
+        datesArray: Array<Date>,
+        minDate: Date,
+        maxDate: Date,
+        maxVolume: number,
+        currentVolume: number
+
     const styles = {
         container: {
             display: 'grid',
@@ -49,7 +50,7 @@ const FuelChartComponent = (props:any)=>{
                 })
         return sortedDates;
     };
-  
+
     const buildFuelChart = (FuelInfoData: IFuelInfoModel[],RefuelData:IRefuelModel[],LeakageData:ILeakageModel[],TheftData:ITheftModel[])=>{
         fuelInfo = getFuelInfo(FuelInfoData)
         datesArray = FuelInfoData.map((x:IFuelInfoModel)=>x.PacketTime)
@@ -57,10 +58,10 @@ const FuelChartComponent = (props:any)=>{
         minDate = datesArray[0];
         maxDate = datesArray[datesArray.length-1];
         maxVolume = d3.max<any,any>(fuelInfo,(d:any)=>d.Volume);
-        
+        currentVolume = 0;
         const svg :any = d3.select(fuelChartContainerRef.current);
         const svgContent = svg.select(".content");
-                            
+                                
         const xScale = d3.scaleTime()
                         .domain([new Date(minDate),new Date(maxDate)])
                         .range([3*padding+10,width-padding])
@@ -85,12 +86,21 @@ const FuelChartComponent = (props:any)=>{
                                     .append('rect')
                                     .attrs({
                                         "x":(d:any)=>xScale(new Date(d.PacketTime)),
-                                        "y":(d:any)=>yScale(d.Volume),
+                                        "y":(d:any)=>{
+                                            currentVolume = 0;
+                                            fuelInfo.forEach((x:any)=>{
+                                                if(x.utcTime === d.PacketTime){
+                                                    currentVolume = x.Volume
+                                                }
+                                            }) 
+                                            return yScale(d.Volume-(d.Volume-currentVolume))
+                                        },
                                         "width":"10px",
-                                        "height": (d:any)=>height-yScale(d.Volume),
+                                        "height": height,
                                         "fill": "#43a2ca",
-                                        "class": "refuel-bar"
+                                        "class": "refuel-bar",    
                                     })
+                                    .style("opacity",0.5)
 
         const vizLeakageBar = svgContent.selectAll('.leakage-bar')
                                     .data(LeakageData)
@@ -98,12 +108,21 @@ const FuelChartComponent = (props:any)=>{
                                     .append('rect')
                                     .attrs({
                                         "x":(d:any)=>xScale(new Date(d.PacketTime)),
-                                        "y":(d:any)=>yScale(d.Volume),
+                                        "y":(d:any)=>{
+                                            currentVolume = 0;
+                                            fuelInfo.forEach((x:any)=>{
+                                                if(x.utcTime === d.PacketTime){
+                                                    currentVolume = x.Volume
+                                                }
+                                            }) 
+                                            return yScale(d.Volume-(d.Volume-currentVolume))
+                                        },
                                         "width":"10px",
-                                        "height": (d:any)=>height-yScale(d.Volume),
+                                        "height": height,
                                         "fill": "#fec44f",
                                         "class": "leakage-bar"
                                     })
+                                    .style("opacity",0.75)
         
         const vizTheftBar = svgContent.selectAll('.theft-bar')
                                 .data(TheftData)
@@ -111,9 +130,17 @@ const FuelChartComponent = (props:any)=>{
                                 .append('rect')
                                 .attrs({
                                     "x":(d:any)=>xScale(new Date(d.PacketTime)),
-                                    "y":(d:any)=>yScale(d.Volume),
+                                    "y":(d:any)=>{
+                                        currentVolume = 0;
+                                        fuelInfo.forEach((x:any)=>{
+                                            if(x.utcTime === d.PacketTime){
+                                                currentVolume = x.Volume
+                                            }
+                                        }) 
+                                        return yScale(d.Volume-(d.Volume-currentVolume))
+                                    },
                                     "width":"10px",
-                                    "height": (d:any)=>height-yScale(d.Volume),
+                                    "height": height,
                                     "fill": "#de2d26",
                                     "class": "theft-bar"
                                 })
@@ -162,13 +189,12 @@ const FuelChartComponent = (props:any)=>{
                                     "height":100,
                                     "width":500
                                 })
-        svgLegends.append("circle").attr("cx",400).attr("cy",30).attr("r", 6).style("fill", "#43a2ca")
-        svgLegends.append("circle").attr("cx",400).attr("cy",60).attr("r", 6).style("fill", "#fec44f")
+        svgLegends.append("circle").attr("cx",400).attr("cy",30).attr("r", 6).style("fill", "#43a2ca").style("opacity",0.5)
+        svgLegends.append("circle").attr("cx",400).attr("cy",60).attr("r", 6).style("fill", "#fec44f").style("opacity",0.75)
         svgLegends.append("circle").attr("cx",400).attr("cy",90).attr("r", 6).style("fill", "#de2d26")
         svgLegends.append("text").attr("x", 420).attr("y", 30).text("Refuel").style("font-size", "15px").attr("alignment-baseline","middle")
         svgLegends.append("text").attr("x", 420).attr("y", 60).text("Leakage").style("font-size", "15px").attr("alignment-baseline","middle")
         svgLegends.append("text").attr("x", 420).attr("y", 90).text("Theft").style("font-size", "15px").attr("alignment-baseline","middle")
-
     }
 
     const updateFuelChart = (FuelInfoData: IFuelInfoModel[],RefuelData:IRefuelModel[],LeakageData:ILeakageModel[],TheftData:ITheftModel[])=>{
@@ -178,7 +204,10 @@ const FuelChartComponent = (props:any)=>{
         minDate = datesArray[0];
         maxDate = datesArray[datesArray.length-1];
         maxVolume = d3.max<any,any>(fuelInfo,(d:any)=>d.Volume);
-
+        const {k,x,y} = currentZoomState
+        d3.selectAll('.fuelChartToolTip').remove()
+        const fuelChartToolTip = d3.select('body').append('div')
+                            .style("opacity",0)
         const svg :any = d3.select(fuelChartContainerRef.current);
         const svgContent = svg.select(".content");
         const xScale = d3.scaleTime()
@@ -194,7 +223,7 @@ const FuelChartComponent = (props:any)=>{
                         .range([height-(2*padding),padding])
                         
         if(currentZoomState){
-            const newYScale= currentZoomState.rescaleY(yScale)
+            const newYScale = currentZoomState.rescaleY(yScale)
             yScale.domain(newYScale.domain())
         }
 
@@ -206,30 +235,124 @@ const FuelChartComponent = (props:any)=>{
                         .attrs({
                             d:lineGen(fuelInfo),
                         })
+        svgContent.selectAll('.refuel-bar,.leakage-bar,.theft-bar').remove()
+        currentVolume = 0;
+        const vizRefeuelBar = svgContent.selectAll('.refuel-bar')
+                        .data(RefuelData)
+                        .enter()
+                        .append('rect')
+                        .attrs({
+                            "x":(d:any)=>xScale(new Date(d.PacketTime)),
+                            "y":(d:any)=>{
+                                currentVolume = 0;
+                                fuelInfo.forEach((x:any)=>{
+                                    if(x.utcTime === d.PacketTime){
+                                        currentVolume = x.Volume
+                                    }
+                                }) 
+                                return yScale(d.Volume-(d.Volume-currentVolume))
+                            },
+                            "width":"10px",
+                            "height":k*height || height,
+                            "fill": "#43a2ca",
+                            "class": "refuel-bar",
+                        })
+                        .style("opacity",0.5)
+                        .on('mouseenter',(d:any)=>{
+                            fuelChartToolTip.transition()
+                            .duration(500)
+                            .style("opacity",.85)
+                            fuelChartToolTip.html("<strong>Time: "+isoToLocal(d.PacketTime,dateFormat)+"</strong><br/>"+
+                            "<strong>Refuel Quantity: "+d.Volume+" Litres</strong>")
+                            .style("left",d3.event.pageX+"px")
+                            .style("top",d3.event.pageY-28+"px")
+                            .attrs({
+                                class:"fuelChartToolTip",
+                            })
+                        })  
+                        .on('mouseout',(d:any)=>{
+                            fuelChartToolTip.transition()
+                            .duration(300)
+                            .style("opacity",0)
+                        })
 
-        const vizRefuelBar = svgContent.selectAll(".refuel-bar")
-                                    .data(RefuelData)
-                                    .attrs({
-                                        "x":(d:any)=>xScale(new Date(d.PacketTime)),
-                                        "y":(d:any)=>yScale(d.Volume),
-                                        "height":(d:any)=>height-yScale(d.Volume)
-                                    })
+        const vizLeakageBar = svgContent.selectAll('.leakage-bar')
+                        .data(LeakageData)
+                        .enter()
+                        .append('rect')
+                        .attrs({
+                            "x":(d:any)=>xScale(new Date(d.PacketTime)),
+                            "y":(d:any)=>{
+                                currentVolume = 0;
+                                fuelInfo.forEach((x:any)=>{
+                                    if(x.utcTime === d.PacketTime){
+                                        currentVolume = x.Volume
+                                    }
+                               }) 
+                               return yScale(d.Volume-(d.Volume-currentVolume))
+                            },
+                            "width":"10px",
+                            "height":k*height || height,
+                            "fill": "#fec44f",
+                            "class": "leakage-bar"
+                        })
+                        .style("opacity",0.75)
+                        .on('mouseenter',(d:any)=>{
+                            fuelChartToolTip.transition()
+                            .duration(500)
+                            .style("opacity",.85)
+                            fuelChartToolTip.html("<strong>Time: "+isoToLocal(d.PacketTime,dateFormat)+"</strong><br/>"+
+                            "<strong>Leakage Quantity: "+d.Volume+" Litres</strong>")
+                            .style("left",d3.event.pageX+"px")
+                            .style("top",d3.event.pageY-28+"px")
+                            .attrs({
+                                class:"fuelChartToolTip",
+                            })
+                        })  
+                        .on('mouseout',(d:any)=>{
+                            fuelChartToolTip.transition()
+                            .duration(300)
+                            .style("opacity",0)
+                        })
 
-        const vizLeakageBar = svgContent.selectAll(".leakage-bar")
-                                    .data(LeakageData)
-                                    .attrs({
-                                        "x":(d:any)=>xScale(new Date(d.PacketTime)),
-                                        "y":(d:any)=>yScale(d.Volume),
-                                        "height":(d:any)=>height-yScale(d.Volume)
-                                    })
+        const vizTheftBar = svgContent.selectAll('.theft-bar')
+                        .data(TheftData)
+                        .enter()
+                        .append('rect')
+                        .attrs({
+                            "x":(d:any)=>xScale(new Date(d.PacketTime)),
+                            "y":(d:any)=>{
+                                currentVolume = 0;
+                                fuelInfo.forEach((x:any)=>{
+                                    if(x.utcTime === d.PacketTime){
+                                        currentVolume = x.Volume
+                                    }
+                            }) 
+                            return yScale(d.Volume-(d.Volume-currentVolume))
+                            },
+                            "width":"10px",
+                            "height":k*height || height,
+                            "fill": "#de2d26",
+                            "class": "theft-bar"
+                        })
+                        .on('mouseenter',(d:any)=>{
+                            fuelChartToolTip.transition()
+                            .duration(500)
+                            .style("opacity",.85)
+                            fuelChartToolTip.html("<strong>Time: "+isoToLocal(d.PacketTime,dateFormat)+"</strong><br/>"+
+                            "<strong>Theft Quantity: "+d.Volume+" Litres</strong>")
+                            .style("left",d3.event.pageX+"px")
+                            .style("top",d3.event.pageY-28+"px")
+                            .attrs({
+                                class:"fuelChartToolTip",
+                            })
+                        })  
+                        .on('mouseout',(d:any)=>{
+                            fuelChartToolTip.transition()
+                            .duration(300)
+                            .style("opacity",0)
+                        })
 
-        const vizTheftBar = svgContent.selectAll(".theft-bar")
-                                    .data(TheftData)
-                                    .attrs({
-                                        "x":(d:any)=>xScale(new Date(d.PacketTime)),
-                                        "y":(d:any)=>yScale(d.Volume),
-                                        "height":(d:any)=>height-yScale(d.Volume)
-                                    })
 
         const yAxisGen = d3.axisLeft(yScale).ticks(6);
         const xAxisGen = d3.axisBottom(xScale)
