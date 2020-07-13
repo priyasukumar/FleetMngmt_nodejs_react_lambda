@@ -7,4 +7,5 @@ export interface IDatePickerProps {
     handleFromDateChange: (fromDate: Date | null, toDate: Date | null) => void;
     handleToDateChange: (fromDate: Date | null, toDate: Date | null) => void;
     handleDateChange: (fromDate: Date | null, toDate: Date | null) => void;
+    isFuel ?: any ;
 }
