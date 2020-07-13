@@ -33,5 +33,8 @@ export const SHOW_FAILURE_MESSAGE = 'toastr/SHOW_FAILURE_MESSAGE';
 /* date */
 export const UPDATE_DATE = 'UPDATE_DATE';
 
+/* fuel date */
+export const UPDATE_FUEL_DATE = 'UPDATE_FUEL_DATE';
+
 /* pagination row count */
 export const UPDATE_PAGINATION_ROW_COUNT = 'UPDATE_PAGINATION_ROW_COUNT';
