@@ -205,6 +205,7 @@ const FuelChartComponent = (props:any)=>{
         maxDate = datesArray[datesArray.length-1];
         maxVolume = d3.max<any,any>(fuelInfo,(d:any)=>d.Volume);
         const {k,x,y} = currentZoomState
+        d3.selectAll('.fuelChartToolTip').remove()
         const fuelChartToolTip = d3.select('body').append('div')
                             .style("opacity",0)
         const svg :any = d3.select(fuelChartContainerRef.current);
