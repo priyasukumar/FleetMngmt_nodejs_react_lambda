@@ -1,14 +1,19 @@
 import * as L from 'leaflet';
-import React, {  } from 'react';
+import React, { useRef } from 'react';
 import 'leaflet-routing-machine';
-import { ILocationProps } from '../models/location';
+import { ILocationProps, ILocationContainerProps } from '../models/location';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import { LatLngExpression } from 'leaflet';
 
 const MapComponent = (props: any) => {
-  const { date, driverServiceModel, location } = props 
+  const { date, driverServiceModel } = props 
+
+  const location = props.location as ILocationContainerProps;
+
   const divId = "map-container-" + driverServiceModel.DriverId + date;
+
+  const mapContainer = useRef(null);
 
   const leafletMap = () => {
     const attribution = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>';
@@ -19,15 +24,14 @@ const MapComponent = (props: any) => {
       attribution: attribution
     }).addTo(map);
 
-    map.setView([location.location[0].Latitude, location.location[0].Longitude], 6);
+    map.setView([location.location[0].Latitude, location.location[0].Longitude], 8);
 
     const waypoint1 = L.latLng(38.889510,-77.032000)
     const waypoint2 = L.latLng(35.929673,-78.948237)
 
     var waypoints: L.LatLng[] = []
 
-    //var latlngs: LatLngExpression[] = [[38.889510,-77.032000], [35.929673,-78.948237]];
-
+    
     location.location.map((locationDetail: ILocationProps) => {
       const waypoint = L.latLng(locationDetail.Latitude, locationDetail.Longitude)
       waypoints.push(waypoint);
@@ -46,7 +50,17 @@ const MapComponent = (props: any) => {
     // map.addLayer(path);
     // map.fitBounds(path.getBounds());
 
-    L.marker(waypoints[0]).addTo(map);
+    L.marker(waypoints[0],{
+      title: "Driver: " + location.location[0].DriverName + " Vehicle: " + location.location[0].VehicleName
+    }).addTo(map);
+
+    var latlngs: LatLngExpression = [location.location[0].Latitude, location.location[0].Longitude];
+
+    // L.popup({keepInView:true,autoClose:false})
+    //   .setLatLng(latlngs)
+    //   .setContent('<p>Hello world!<br />This is a nice popup.</p>')
+    //   .openOn(map);
+  
     L.marker(waypoints[waypoints.length-1]).addTo(map);
 
     const latLng = L.latLng(0,0);
@@ -76,9 +90,9 @@ const MapComponent = (props: any) => {
   React.useEffect(
     () => {
 
-     // if (location) {
+     if (mapContainer.current) {
         leafletMap();
-     // }
+     }
 
       // L.Icon.Default.mergeOptions({
       //   iconRetinaUrl: 'leaflet/dist/images/marker-icon-2x.png',
@@ -88,10 +102,10 @@ const MapComponent = (props: any) => {
 
    
 
-    }, [location.location]);
+    }, []);
 
   return (
-    <div id={divId} style={{ height: 500 }} />
+    <div id={divId} style={{ height: 500 }} ref={mapContainer} />
   );
 };
 
